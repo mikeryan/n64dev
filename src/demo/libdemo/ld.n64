@@ -1,0 +1,116 @@
+/*
+ n64.ld script
+ */
+
+ENTRY(_start)
+OUTPUT_FORMAT(binary)
+
+SEARCH_DIR("/usr/lib/gcc-lib/mips-linux/egcs-2.91.66")
+SEARCH_DIR("/usr/mips-linux/lib")
+SEARCH_DIR("libn64")
+SEARCH_DIR(".")
+STARTUP("crt0.o")
+GROUP(-lgcc -ln64 -lc -lg -ljpeg)
+
+/*
+ * The stack to be at the top of memory, since the stack grows down. 
+ * $sp is set by crt0.S to the result of get_mem_info in n64mon.c
+ */
+
+MEMORY
+{
+	k0	:	ORIGIN = 0x80000400, LENGTH =  8M-0x0400
+	cart	:	ORIGIN = 0xB0001000, LENGTH = 32M-0x1000
+}
+
+/*
+ * Initalize some symbols to be zero so we can reference them in the
+ * crt0 without core dumping. These functions are all optional, but
+ * we do this so we can have our crt0 always use them if they exist. 
+ * This is so BSPs work better when using the crt0 installed with gcc.
+ * We have to initalize them twice, so we multiple object file
+ * formats, as some prepend an underscore.
+ */
+
+PROVIDE (hardware_init_hook = 0);
+PROVIDE (software_init_hook = 0);
+PROVIDE (__do_global_dtors = 0);
+PROVIDE (__stack = 0);
+
+SECTIONS {
+
+reloc_start = 0x80000400;
+cart_start = 0xB0001000;
+. = 0xb0001000;
+
+.text : {
+	_start_text = .;
+	/* Executable code */
+	*(.text)
+	_end_text = .;
+} > k0
+
+.data : {
+	. = ALIGN(8);
+	*(.reginfo) /* this isn't necessary but might be for gdb */
+	*(.mdebug) /* likewise */
+	. = ALIGN(8);
+	_start_data = .;
+
+	/* C++ Constructors */
+	__CTOR_LIST__ = .;
+      	LONG((__CTOR_END__ - __CTOR_LIST__) / 4 - 2)
+	*(.ctors)
+	LONG(0)
+	__CTOR_END__ = .;
+
+	/* C++ Destructors */
+ 	__DTOR_LIST__ = .;
+      	LONG((__DTOR_END__ - __DTOR_LIST__) / 4 - 2)
+ 	*(.dtors)
+	LONG(0)
+      	__DTOR_END__ = .;
+
+	. = ALIGN(8);
+	/* read only data */
+	*(.rodata)
+	/* normal data */
+	*(.data)
+	_end_data = .;
+} > k0
+
+/* Calculate $gp space. $gp is set by crt0 */
+
+. = ALIGN(8);
+_gp = . + 0x8000;
+	
+.sdata : {
+	*(.scommon)
+    	*(.sdata)
+	*(.lit4)
+	*(.lit8)
+} > k0
+
+. = ALIGN(4);
+.bss : {
+	_bss_start = .;
+	_fbss = .;
+	*(.sbss)
+	*(.bss)
+	*(COMMON)
+	/**(.rel.dyn)*/
+	_bss_end = .;
+} > k0
+
+_end = ALIGN(8); /* end of ROM relocated to RDRAM */
+
+.cart : {
+	. = ALIGN(16);
+	QUAD(0x0)
+	QUAD(0x524f4d4653000001)  /* ROMFS marker "ROMFS\0\0\1" */
+	_romfs = .;
+} > k0
+
+}
+
+

@@ -1,0 +1,32 @@
+
+CD64 Up/Download utility Ver2.11
+
+Usage:   CD64COMM -P<port> -T -X -G -D -B -F<fname> -S<start> -L<length>
+
+Example: CD64COMM -x -fTEST.BIN -sb4000000
+         CD64COMM -p300 -t -fTEST.BIN -sb4000000
+         CD64COMM -g -fTEST.BIN -sb2000000 -l800000
+         CD64COMM -p378 -x -fTEST.BIN -sb4000000
+         CD64COMM -d -fTEST.BIN -s80000400 -l100000
+         CD64COMM -b -fTEST.BIN -s80300000
+
+Options:
+  -P     pc Port address 300, 310-default, 320, 330, 378-ECP PRINTER PORT
+  -T     Transfer a block of data to CD64 any dram address, but don't do
+         anything with it or Transfer sram save data to N64 game card
+  -X     eXecute code after download to b4000000-default by CD64
+  -G     Grab game from CD64 to file or Grab sram save data from game card
+  -D     Dump system memory from N64 to file
+  -B     download BOOT EMULATOR to N64 and play uncracked game in CD64
+         or pak save file to N64 CONTROLLER PAK
+  -F     Filename of binary image to download\upload
+  -S     Start address b2000000=card start, b4000000=dram start,
+         80000000=N64 system memory start (total 32Mb),
+         80300000=boot emulator start (max. 4Mb)
+         or CONTROLLER PAK buffer (max. 512Kb),
+         a8000000=card sram start (max. 256Kb)
+  -L     Length of grab or dump 400000=32Mb, 800000=64Mb, 1000000=128Mb,
+         1800000=192Mb, 2000000=256Mb
+
+All value are hex
+

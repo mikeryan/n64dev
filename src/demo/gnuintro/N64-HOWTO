@@ -1,0 +1,53 @@
+How To Use the GNU utils for your N64 Coding Exploits
+Version 1.0
+
+This document assumes you have working code. I don't want to hear
+about your coding problems.
+
+I'm assuming you have Linux. I couldn't give a damn about many other
+OSs - sorry. This is also all from memory.
+
+Configuring and Compiling the Utils
+-----------------------------------
+You need 2 packages: binutils and gcc. You can get them from loads of
+places. Look around. 
+
+First, lets do binutils.
+run configure:
+	./configure --target=mips-mips-ecoff --prefix=$HOME/n64 \
+--with-gas [and anything else you think will be nice]
+run make
+run make install
+you should have mips-mips-ecoff-* in $HOME/n64/bin
+
+Now, gcc:
+	./configure --target=mips-mips-ecoff --prefix=$HOME/n64 \
+--with-gnu-as --with-gnu-ld [and anything else you want]
+run make LANGUAGES=c
+run make install
+
+Done!
+Well, sort of.
+
+Sorting out your configuration.
+-------------------------------
+You have to alter your specs file in: 
+$HOME/n64/lib/gcc-lib/mips-mips-ecoff/[gcc version number]
+and remove any references to libc - unless you want to cross-compile
+that as well - fool ;)
+You have to add $HOME/n64/bin to your path. If you don't know how,
+just go home now.
+dd the bootcode out from one of the roms you have lying around. Mine
+is in v64 format, so so should yours if you want to use my makefile
+unaltered. do something like dd if=rom.v64 of=boot.code bs=4k count=1
+and put boot.code in $HOME/n64/lib
+Write a little prog that updates the checksum (or use chksum64 on
+dextrose)
+And a little prog that changes the load address of the rom. I guess
+I'll release nifty soon enough.
+There's other little things you have to do as well. I don't remember
+what, but they're all trivial.
+
+Testing it out
+--------------
+type make in the directory you unzipped this file in. It should then work

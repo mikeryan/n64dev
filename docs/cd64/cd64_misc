@@ -1,0 +1,25 @@
+Colin, I disassembled the cd64 rom and figured out how to access the comm port and DRAM (still gotta work on the cdrom drive!), it totally rocks I wrote a program that emulates the cd64comm.exe on the n64, so I first transfer my program, then transfer a demo.rom using the comm port, then relocate it in the DRAM and switch mode, jump to the start address and wow it doesnt work :-( 
+
+I disassembled most of the boot code and it looks like I need to emulate that to actually get the transferred rom running in dram. Once thats done (looks pretty easy) I will be able to do everything the cd64 bios does except acess the cdrom drive. Maybe I will write my own bios ;-)
+
+Gotta say the cd64 rox for coding! I used to use the z64 but never touch it now. uhm the z64 bios contains a rom called z64bios.rom (surprising that..) I guess it would be possible to disassemble that and figure out how to use the shared memory with the 386 but it means coding your own bios in dos etc. which is a bit of a pain.
+
+It shouldnt be too difficult to get other devices talking to a pc if you interface a pio chip or something to the n64.
+
+On a related note I saw some source code on dextrose which contained references to a DN64 card? It looked like it was setting up ras and cas stuff but I'm pretty certain you cant do this with any of the backup systems, anyone know what it was?
+
+I thought the same thing, it should be possible to modify some stuff and get the debugger started as a thread once the n64 is initialised, and then modify the standard lib functions (and replace them in the rom) to record stuff to the debugger. I don't know if it would be possible to do a psyq style debugger in software only (single stepping etc.) This is for hacking roms, for coding your own stuff it might be possible to port the gnu debugger but thats a lot of work...
+
+
+Originally posted by browser:
+Can someone please tell me what is the difference in the clear CD64 and the black CD64. Please Respond to this topic.
+
+
+The black CD64 were built 128Mbits of DRAM and a portable CDROM
+reader. Depending on the age of the device, it may have the 1.1 PCB or
+the 1.2: the difference is that the 1.1 PCB tries to gather is power
+from the N64, whereas the 1.2 PCB always requires an external PSU. 
+
+Anyway you can replace the portable CDROM with any other kind of ATAPI
+cdrom, and you can upgrade the memory to 256M replacing the simm with
+a 32 megabytes 5v EDO simm.

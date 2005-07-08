@@ -1,0 +1,16 @@
+v64jr download program for Linux
+
+This is a port of Bung's drjr tool to Linux.  I've seen another v64jr
+downloader for Linux, but since no sane person would run something as
+root without source code, I decided to port the DOS version (downloaded
+from http://www.dextrose.com/files/junior-techs.zip)  I removed the
+DOS-specific stuff and added some function calls to write the parallel
+port under Linux.  Since it was originally written for a 16-bit
+enviornment, I had to change all the ints to short ints.  Also, I removed
+a few extra fclose calls since the libc gets upset if you try to close a
+file that isn't open.  That's about it...
+
+I hacked this out in just a few minutes, so I might have missed something,
+but it works great for me!  Included is the modified source code and a
+diff against the original.  Hopefully this will give a start to other
+Linux coders who want to write more N64 tools.

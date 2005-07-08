@@ -1,0 +1,12 @@
+This is the source code to a simple demo for the Nintendo 64 using the
+libn64 library. Move a sprite around the screen using control pad 1,
+press start to play an audio sample.
+
+To compile:
+
+Grab all the RPMs from http://n64dev.50megs.com/
+Install egcs,newlib,n64tools
+Type make
+
+Questions? Try the N64 coding forum at www.dextrose.com
+

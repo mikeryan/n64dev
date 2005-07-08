@@ -1,0 +1,32 @@
+/*
+ N64 Linker Script
+ You can use this for whatever you want, but greet me if you use it.
+*/
+
+ENTRY(start)
+
+MEMORY {
+	cart : ORIGIN = 0xb0000000, LENGTH = 0x40000
+	prog_start : ORIGIN = 0x80000400, LENGTH = 4M - 0x400
+}
+
+SECTIONS {
+
+.text : {
+	_start_text = .;
+	*(.text)
+	_end_text = .;
+} > prog_start
+.data ALIGN(64) : {
+	_start_data = .;
+	*(.data)
+	_end_data = .;
+} > prog_start
+.bss : {
+	_start_bss = .;
+	*(.bss)
+	*(COMMON)
+	_end_bss = .;
+} > prog_start
+_end_prog = ALIGN(64);
+}

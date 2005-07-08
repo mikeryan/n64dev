@@ -1,0 +1,381 @@
+DLRip v1.1.1.alpha instructions
+bug-reports/questions/comments : pooka@cygnus.ucdavis.edu
+
+New Since Last Version:
+-----------------------
+
+	Nothing.
+
+Purpose:
+--------
+
+	The purpose of this utility is to extract static GBI display lists
+from a ROM image and in turn use those display lists to extract 3D models
+from the image.
+	That is the _main_ purpose anyway. It also functions as a static
+GBI display list decompiler/snooper, and will output raw DL commands if
+you wish. This may be useful as a converter from Vtx_tn+DL -> Open
+Inventor or OpenGL, since you can compile your Vtx_tn+DL into an object
+file, and then extract them with DLRip and export as a useful format. Or
+maybe if you delete your source file accidentally or something, you can
+try to recover your models from an object file or ROM image. *shrug*
+	I have integrated my OpenGL trackball previewer into the program
+as well, so you are able to view the extracted models immediately. Also,
+the Open Inventor output _should_ be usable by vrml2vtx (if you disable
+the header check) so it can be viewed in that way if you want. This
+program is still experimental so don't expect fantabulous results yet
+(maybe never).
+	The Sinus/CoCo demo yields good results, but only because all the
+vertex data is in the code segment. Vertex data in other segments (static,
+for instance) will probably require a full scan of the ROM image, unless
+you can deduce somehow at what offset in the ROM image the segment base is
+located. Since segment bases for everything except the code segment are
+loaded dynamically at run time, there's no easy way to track them down
+without running the cart or scanning it. A fast computer will be
+_required_ for timely scans. On my 200Mhz R4400 at work, it takes a couple
+hours to scan for 1 model in a 10Mbit image, but on one of my computers at
+home (120Mhz 486) I was able to scan half of Mario64 in one night. Disk
+speed will have little to do with performance since all the work is
+performed in-core.
+
+
+Warnings:
+---------
+ 
+	Please use at your own risk. Always keep backups of your ROMs!
+Input files never get open for writing, but better to be safe than sorry.
+
+	This file may not be up to date or complete!
+
+	DLRip loads the entire ROM image into memory, so be prepared with
+enough RAM to hold it. For a 128Mbit image, expect to need 16Mbyte for the
+image plus 2-3Mbyte for the program and overhead, etc... You probably
+don't want to swap to disk a lot with this.
+
+	Compressed or otherwise obfuscated display lists will _not_ be
+found. This means you won't be able to rip most commercial ROM models.
+
+	Raw DL output is in _reversed_ order, meaning the lists go from
+end to beginning.
+
+Known Bugs:
+-----------
+
+	o The GBI decoder is not 100% complete. There are some commands
+that are so complex it would take way too long to write a decoder, and
+it's not in my interests to do it. Example, gsDPSetRenderMode(). You'll
+see gsDPSetRendermode()'s in the DL output, but the arguments will not be
+constants like G_RM_AA_ZB_OPA_SURF, since there's just too many
+combinations to make it worth my while. Probably about 95% of the commands
+get decoded with their full symbolic constants, but for the other 5%
+you'll have to do some detective work.
+
+	o GBI DL output could use better formatting.
+
+	o Texture coordinates are not converted from S10.5 yet.
+
+	o No transformations are applied to models (yet).
+
+	o Everything is assumed to be in Vtx_tn format. Colors or normals
+will be user-selectable soon.
+
+	o Don't be surprised if you see more than one of the same model.
+This isn't really a bug, but I'm not sure I will fix the problem ever.
+
+	o Display lists are assumed to be aligned on 32-bit boundaries.
+And scanning _always_ aligns to 32-bit boundaries.
+
+	o See the previewer docs for previewer-specific bugs.
+
+Examples:
+---------
+
+	I've included a copy of the Sinus/CoCo demo ROM image since I know
+it works with the program. I did _NOT_ write this demo. I do not have any
+official permission from the author, as I'm not entirely sure who the
+author is. As far as I can tell it was written by "Split!" Try looking
+"inside" the car.
+
+Formats:
+--------
+
+         Will read:
+		Doctor V64, Other byteflipped
+		Z64, CD64, Other non-byteflipped
+		ELF (flipped or not)
+		Anything (if you disable the format check)
+
+         And write:
+		Raw display list commands (reversed order)
+		Vtx_tn
+                Open Inventor 2.0
+		OpenGL 1.1 C Source Code
+
+Notes:
+------
+
+	ELF file support was added for testing purposes, but left in just
+in case somebody wants to use it. I don't think you will be able to 
+extract anything useful from ELF files without a full scan.
+
+Previewer:
+----------
+
+	See "preview.doc"
+
+How it works:
+-------------
+
+	Personally, I really don't care about the display lists. What I
+want is the vertex data. But since the only place that we know for sure
+will tell us where to find the vertex data is in the gsSPVertex() calls,
+that's what we have to find. Not only that though, we need to get the
+entire display list so we can parse it and build models from all the
+gsSPVertex()'s and gsSP1Triangle()'s. There's no way to find the beginning
+of display lists without gsSP*List() commands, and even gsSP*List()
+commands don't guarantee that we'll find every list since they may never
+get called by a static gsSP*List() command, but _every_ display list _has_
+to end with gsSPEndDisplayList(). So we just search for those. Once we
+find them, we start scanning backwards until we find what we think might
+be the beginning of the display list. There's really no way to tell, but
+you can be sure that if you run into data that isn't a GBI command, then
+you're either at or past the start of the list. So if we hit garbage data,
+or certain commands that are not supported, then we stop scanning and call
+that point the start of the list.  Next we go through the list and
+whenever we see a gsSPVertex() we load the vertices, and whenever we see a
+gsSP1Triangle() we add the triangle to our triangle list. We don't care if
+we get GBI commands other than gsSPVertex() or gsSP1Triangle(), because
+all we want right now is to get the models. In other words, the existance
+of other GBI commands in the DL has no effect on the triangles or vertex
+data. So we don't need to be 100% accurate when finding the beginning of
+the lists. Yes, there are a couple of exceptions which I will try to deal
+with later on, but that's the basic premise behind this program.
+
+
+Operation:
+----------
+
+usage: dlrip -i <infile> [-o <outfile>] [options]
+            -i <infile>  : input file
+            -o <outfile> : output filename base (stdout if not given)
+   Options:
+            -b           : force byteflip (default = autodetect)
+            -B           : force no byteflip (default = autodetect)
+            -c <dir>     : calculate normals (default = 1)
+                         : <dir> = 0 - don't calculate
+                         :         1 - counterclockwise
+                         :         2 - clockwise
+            -Q           : preview output in graphical viewer
+            -q <args>    : X Toolkit options for previewer
+            -f           : ignore unknown file type errors
+            -x <id>      : exclude cmd from BOL list (use mult. times)
+                         : <id> = 1 - G_SPNOOP
+                         :        2 - G_NOOP
+                         :        3 - G_RDPSETOTHERMODE
+                         :        4 - G_RDPHALF_CONT
+                         :        5 - G_RESERVED0
+                         :        6 - G_RESERVED1
+                         :        7 - G_RESERVED2
+                         :        8 - G_RESERVED3
+            -S <inc>     : scan for vertex data every <inc> words
+            -s <offset>  : set starting scan offset (in ROM image)
+            -a <loc>     : add a segment location to the LUT
+                         : <loc> = address:offset
+            -l           : only use manually-entered LUT entries
+            -L           : disable the LUT completely
+            -t <num>     : ignore models with < num tris (def=0=off)
+            -p <opt>     : ignore models with property (use mult. times)
+                         : <opt> = 1 - Zero normals
+                         :         2 - More than 5 (0,0,0) points
+            -m <opt>     : output format (default=3)
+                         : <opt> = 0 = Vtx_tn
+                         :         1 = Open Inventor 2.0
+                         :         2 = OpenGL 1.1
+                         :         3 = No output
+            -r           : output raw display lists to stdout
+            -h           : this help
+
+	A separate output file will be generated for each model found in
+the ROM image. They will be names "base0000", "base0001", etc... where
+base is the name you give with the -o option. Be warned, a scan of a large
+ROM image can generate hundreds, maybe thousands of files, some good,
+most bogus.
+
+	Output for a particular model is not written to its file until you
+select File->NextModel in the previewer (assuming you've turned on the
+previewer), or File->SaveAs. Even if you "SaveAs", the default file will
+also be created in the format specified on the command line as soon as 
+you hit File->NextModel.
+
+	The -x option is used to turn off Beginning Of List (BOL) markers.
+I scan the lists from end to beginning, and certain commands indicate the
+beginning of the list. The -x option turns off those markers so the
+scanner will keep going past those points. Use at your own risk.
+
+Use multiple -x options to turn off multiple commands.
+For example, use:
+	dlrip -i myrom.v64 -x 1 -x 2 -x 3
+instead of:
+	dlrip -i myrom.v64 -x 1,2,3  or -x 123 or anything else
+
+	The -p option is used to filter out models that fit certain criteria.
+This is particularly useful when scanning, since you only want the scanner
+to stop when it finds "real" models. Use is similar to the -x option. Specify
+a "-p <opt>" for _each_ filter you want to enable.
+For example, use:
+	dlrip -i myrom.v64 -p 1 -p 2 -p 3
+instead of:
+	dlrip -i myrom.v64 -p 1,2,3  or -p 123 or anything else
+
+Here is a description of the current filters:
+
+Zero normals - Model contains a point with normal vector (0, 0, 0).
+		       This is usually an unwanted model.
+More than 5 (0,0,0) points - Self explanatory.
+	
+
+	I have built in a simple look up table (LUT) for address mappings.
+When looking for vertex data, DLRip will first look in the LUT for an
+address in the same segment as the one it's looking for, and if it finds a
+match it will use the ROM offset stored in the LUT as the base for that
+segment. Mappings are given in the format "A:B" where A is the address in
+memory, and B is the offset (in the ROM image) of the base of the segment
+that A is in. For example, 0x01000000:0x56789 means that everything in the
+segment 0x01xxxxxx should use the ROM offset 0x56789 as the base for that
+segment. Remember that when DLRip is scanning for data it uses each
+consecutive offset as the segment base for the addresses it's trying to
+map. This means that if it's looking for address 0x01008888, and it is
+currently on offset 0x12000, it doesn't mean that it's trying to map
+address 0x01008888 to 0x12000, but rather it's trying to map the address
+0x01008888 to (0x12000 + 0x008888), because it's using 0x12000 as the base
+offset for the entire segment 0x01xxxxxx. This is confusing at first, but
+you'll get used to it.
+
+Use the -a option to add an entry into the LUT manually.
+For example:
+	dlrip -i demo.v64 -a 0x01000000:0x12000
+
+Use multiple -a options to add multiple entries.
+	dlrip -i demo.v64 -a 0x01000000:0x12000 -a 0x02000000:0x40abc
+
+Under normal conditions, if DLRip finds possible vertex data it will add
+an entry into the LUT for use later. The -l option will cause DLRip to
+_not_ add any entries to the LUT. The -L option will disable use of the
+LUT completely. Most of the time when you're scanning you will probably
+want to use the -L option.
+
+
+Scanning:
+---------
+
+	When vertex data is not in the code segment, its location in the
+ROM image is unknown. Well, it's known to the ROM itself, but not us since
+there's no symbol table or anything in the ROM itself (that I am aware
+of). Somewhere in the image is code that, at runtime, loads the
+appropriate segment offsets into the N64. Now if we could find that code,
+we would be happy, but we can't do that (yet) so instead we have to scan
+the entire ROM image trying to find the vertex data. Here's how scanning
+works.
+	First you tell DLRip that you want to scan for vertex data. You do
+this with the -S <inc> option. <inc> is how many bytes you want to
+increment by each iteration. So if you specified -S 8 then DLRip would
+look for vertex data at every 8th byte. You can use the -s <offset> option
+to specify a starting offset. So if you gave the following command:
+	
+	dlrip -i demo.v64 -S 8 -s 0x00001000
+
+Then DLRip would consider the following file locations as bases for
+whatever segment the vertex data is in:
+
+	0x00001000
+	0x00001008
+	0x00001010
+	0x00001018	
+		.
+		.
+		.
+
+	Since dlrip always aligns to 32-bit boundaries, if you use
+something like -S 3 you will get weird results. Also, higher increment values
+will mean faster, but less accurate scans, since you may skip over the
+actual start of the vertex data. Most vertex data should probably be
+aligned to 64-bit boundaries, so -S 8 is a good starting point.
+
+	If DLRip finds what it thinks might be valid vertex data, it will
+either display it in the previewer window, or write it to your output
+target, depending on whether you have the previewer enabled or not. Be
+aware that if you have the previewer enabled, DLRip won't start scanning
+again until you select File->NextModel in the previewer. This means that
+for overnight scanning, or if you just don't want to sit and wade through
+the numerous false alarms at one time, you won't want to use the
+previewer.
+
+	Since the program has no way of knowing if vertex data actually
+forms a useful model or if it just forms crap, you will get a lot of
+bogus models. I hope to devise more filters to reduce the number of bogus
+models, but for now you will have to deal with a large number of unwanted
+models. I would reccommend doing a full, preview-less scan overnight or
+while at school or whatever, outputting in Open Inventor format, and
+buzzing through them real quick afterwards.
+
+	Be advised that scanning a large ROM image without any filters can
+generate tens of thousands of possible matches, which means tens of
+thousands of output files! Be prepared with a healthy stock of inodes. 
+
+Not-Scanning:
+-------------
+
+	Using a debugger, disassembler, or emulator (or something else)
+you may be able to deduce where segments are located. There are a couple
+places I know of in any ROM image which can tell us where to find the
+static segment: osPiStartDma() and gSPVertex() calls. If you can think of
+others, please let me know. I am currently working on a system to look for
+and extract gSPSegment() and osPiStartDma() calls and arguments.
+gSPSegment() calls are just macros that basically turn into this:
+
+	Gfx.word0 = 0xbcyyyy06;	
+	Gfx.word1 = 0xwwwwwwww;
+
+	where
+		0xbc = GBI command type
+		0x06 = command "subtype"
+		yyyy = the segment number
+		wwwwwwww = the location of the segment in memory (what we want)
+
+	gcc 2.8.1 compiles those two instructions into the following MIPS
+assembly, without optimization:
+
+  0x00: 8fc20064        lw      v0,100(s8)
+  0x04: 3c03bcyy        lui     v1,0xbcyy    <- upper byte of seg #
+  0x08: 3463yy06        ori     v1,v1,0xyy06 <- lower byte of seg #
+  0x0c: ac430000        sw      v1,0(v0)
+  0x10: 8fc20064        lw      v0,100(s8)
+  0x14: 3c03wwww        lui     v1,0xwwww    <- upper hword of address
+  0x18: 3463wwww        ori     v1,v1,0xwwww <- lower hword of address
+  0x1c: ac430004        sw      v1,4(v0)
+
+And something similar when optimized. So with some pattern matching and a
+little luck, it will (should) be possible to at least narrow down the
+possible locations in the ROM image. Even if it gives you twenty possible
+matches, it's better than a plain brute force scan. The same will go for
+osPiStartDma() hopefully, especially since the code for osPiStartDma() is
+presumably the same in all ROM's (it comes from the same library I'm
+assuming). It should be easy to find the osPiStartDma() code in the ROM,
+and then locate jumps to that address. If you have ideas about other ways
+to try and deduce the segment locations, please let me know.
+
+Success:
+--------
+
+	I've had good success with simple demos. Theoretically, if you do
+a full scan you _will_ get all statically defined models, it's just a
+question of how much time you want to spend. Most commercial ROMs keep
+their models compressed in ROM I believe, so there's no way you'll be able
+to get them. It would be easy to integrate this program (or a subset of
+it) into an emulator for dynamic extraction of models, which I plan to
+start working on sometime soon. I don't know about the legality concerning
+the extraction of commerical ROM models, since that's definately
+copyrighted material. I have no intention of squaring off against Nintendo
+or any other software developer in a copyright violation suit.
+
+

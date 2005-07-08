@@ -1,0 +1,9 @@
+This is the source code to a JPEG slideshow viewer for the Nintendo 64.
+
+To compile:
+
+Grab all the RPMs from http://n64dev.50megs.com/
+Install egcs,newlib,n64tools
+Type make
+
+Questions? Try the N64 coding forum at www.dextrose.com
