@@ -1,0 +1,262 @@
+Note: This document contains some errors, please refer to n64ops#f.txt,
+n64ops#g.txt for information about the RSP opcodes, and n64ops#c.txt
+for the opcode matrix.   /anarko
+
+
+
+
+=============================================================================
+RCP Technical Information - v1.0
+=============================================================================
+
+
+Overview
+--------
+
+This is the file which I am sure many a N64 emu programmer has been waiting 
+for. I know I wanted it when I started but I had to compile this document 
+myself.
+
+Please Note: This information is a compilation from many sources and it is 
+possible that some of this may or may not be correct.  However, I have 
+endevoured to make sure that it is as accurate as possible.
+
+This document is also incomplete so I will be adding more information in 
+future releases.
+
+So what is included in this document:
+
+* RSP Overview
+* RCP Opcode Encoding
+* RCP Vector Instruction Set
+
+
+RSP Overview
+------------
+
+The RSP instruction set is essentially a 32-Bit subset of the MIPS R4000     
+instruction set, with some extensions. Instructions which are not      
+implemented include: 
+
+* Any 64-bit Instruction
+* Mulitplies
+* Divides
+* Branch Likely
+* Most System Control Opcodes
+
+The RSP Vector Unit (VU) is implemented as a MIPS Coprocessor (COP2),
+with the machine language conforming to the MIPS Coprocessor definition.  
+The RSP assembler uses a mnemonic syntax for each VU instruction.
+
+The RSP Registers are as follows:
+
+* 32 x 32 bit Scalar Registers (Normal MIPS set).
+* 32 Vector Registers, each with 8 x 16 bit entries.
+* No Scalar Multiplies or HI/LO registers.
+* 8 Vector ALUs. Each ALU appears to have a 'hidden' 32 bit accumulator 
+  and hidden flags registers.
+
+The RSP can only address it's 4K IMEM and 4K DMEM, everything else has to 
+be done via DMA.  The RCP DMA control registers are mapped to COP0 
+registers.
+
+RSP Memory is as follows:
+
+* RSP DMEM Start        0x04000000
+* RSP DMEM End          0x04000FFF
+* RSP IMEM Start        0x04001000
+* RSP IMEM End          0x04001FFF
+
+The MUL/MAC instructions do 16 x 16 -> 32 and combine this with the hidden 
+accumulator in various ways. The upshot is that it is possible to do 
+32 x 32 -> 32 multiplies in the following four instructions:
+
+* VMUDL
+* VMADM
+* VMADN
+* VMADH
+
+The COP2 control registers appear to be vector ALU flags, bit per element. 
+(VCO, VCC, VCE)
+
+The vector opcodes are all 3 operand, and the second source can have a 
+modifier allowing elements to be replicated in various ways:
+
+	Instruction                   Elements of $v3 sent to ALUs
+
+	vadd   $v1, $v2, $v3          0 1 2 3 4 5 6 7
+	vadd   $v1, $v2, $v3[0q]      0 1 2 3 0 1 2 3
+	vadd   $v1, $v2, $v3[1q]      4 5 6 7 4 5 6 7
+	vadd   $v1, $v2, $v3[0h]      0 1 0 1 0 1 0 1
+	vadd   $v1, $v2, $v3[1h]      2 3 2 3 2 3 2 3
+	vadd   $v1, $v2, $v3[2h]      4 5 4 5 4 5 4 5
+	vadd   $v1, $v2, $v3[3h]      6 7 6 7 6 7 6 7 
+	vadd   $v1, $v2, $v3[0]       0 0 0 0 0 0 0 0
+	vadd   $v1, $v2, $v3[1]       1 1 1 1 1 1 1 1
+	vadd   $v1, $v2, $v3[2]       2 2 2 2 2 2 2 2
+	vadd   $v1, $v2, $v3[3]       3 3 3 3 3 3 3 3
+	vadd   $v1, $v2, $v3[4]       4 4 4 4 4 4 4 4
+	vadd   $v1, $v2, $v3[5]       5 5 5 5 5 5 5 5
+	vadd   $v1, $v2, $v3[6]       6 6 6 6 6 6 6 6
+	vadd   $v1, $v2, $v3[7]       7 7 7 7 7 7 7 7
+
+Loads and stores can access byte, short, word, double word or quad word. 
+For sizes less than quad word, the offset in the vector regsiter can be 
+selected (on boundaries of that size).  There are a whole bunch of 'fancy' 
+loads and store which appear to shuffle the data on the way in out in 
+useful ways.  The offset for vector loads and vector stores is scaled 
+depending on the element size.
+
+The 'guess' instructions (VRCP?, VRSQ?) are pipelined - result is derived 
+from the previous instructions.
+
+With some of the Vector Multiply Instructions the Accumlator is a hidden 
+32 bit accumulator per element.
+
+* VMUDL:  acc  = (src1 * src2) >> 16, dest = acc & 0xffff
+* VMADL:  acc += (src1 * src2) >> 16, dest = acc & 0xffff
+* VMUDM:  acc  = (src1 * src2), dest = acc >> 16
+* VMADM:  acc += (src1 * src2), dest = acc >> 16
+* VMUDN:  acc  = (src1 * src2), dest = acc & 0xffff
+* VMADN:  acc += (src1 * src2), dest = acc & 0xffff
+* VMUDH:  acc  = (src1 * src2) >> 16, dest = acc >> 16
+* VMADH:  acc += (src1 * src2) >> 16, dest = acc >> 16
+
+
+RCP Opcode Encoding
+-------------------
+
+This section is still in it's preliminary stages.
+
+
+R-Type (Register) Instruction Format
+
++-----------+---------+-------+-------+-------+-----------+
+| OP        | RS      | RT    | RD    | SA    | Funct     |
++-----------+---------+-------+-------+-------+-----------+
+| 010010    | 10000   | ????? | ????? | ????? | ??????    |
+|           |         |       |       |       |           |
+| CP2 Instr | Sub OpC | VReg3 | VReg2 | VReg1 | CP2 Funct |
++-----------+---------+-------+-------+-------+-----------+
+
+
+	2..0                    COP2 Function
+	 0       1       2       3       4       5       6       7
+5..3 +-------+-------+-------+-------+-------+-------+-------+-------+
+ 0   | VMULF | VMULU | VRNDP | VMULQ | VMUDL | VMUDM | VMUDN | VMUDH |
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+ 1   | VMACF | VMACU | VRNDN | VMACQ | VMADL | VMADM | VMADN | VMADH |
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+ 2   | VADD  | VSUB  | VSUT  | VABS  | VADDC | VSUBC | VADDB | VSUBB |
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+ 3   | VACCB | VSUCB | VSAD  | VSAC  | VSUM  | VSAW  |       |       |
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+ 4   | VLT   | VEQ   | VNE   | VGE   | VCL   | VCH   | VCR   | VMRG  |
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+ 5   | VAND  | VNAND | VOR   | VNOR  | VNXOR |       |       |       |
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+ 6   |       |       |       |       |       |       |       |       |
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+ 7   | VEXTT | VEXTQ | VEXTN | VINST | VINSQ | VINSN |       |       |
+     +-------+-------+-------+-------+-------+-------+-------+-------+
+
+
+
+RCP Vector Instruction Set
+--------------------------
+
+This section is still in it's preliminary stages.  I have a lot more 
+information about each instruction but have not had the time to write it 
+all up yet.
+
+
+VMULF                   Vector (Frac) Multiply
+VMACF                   Vector (Frac) Multiply Accumulate
+VMULU                   Vector (Unsigned Frac) Multiply
+VMACU                   Vector (Unsigned Frac) Multiply Accumulate
+VRNDP                   Vector DCT Round (+)
+VRNDN                   Vector DCT Round (-)
+VMULQ                   Vector (Integer) Multiply
+VMACQ                   Vector (Integer) Multiply Accumulate
+VMUDH                   Vector (High) Multiply
+VMADH                   Vector (High) Multiply Accumulate
+VMUDM                   Vector (Mid-M) Multiply
+VMADM                   Vector (Mid-M) Multiply Accumulate
+VMUDN                   Vector (Mid-N) Multiply
+VMADN                   Vector (Mid-N) Multiply Accumulate
+VMUDL                   Vector (Low) Multiply
+VMADL                   Vector (Low) Multiply Accumulate
+VADD                    Vector Add
+VSUB                    Vector Subtract
+VSUT                    Vector SUT (vt - vs)
+VABS                    Vector Absolute Value
+VADDC                   Vector ADDC
+VSUBC                   Vector SUBC
+VADDB                   Vector Add Byte
+VSUBB                   Vector Subtract Byte
+VACCB                   Vector Add Byte/Add Accumulator
+VSUCB                   Vector Subtract Byte/Add Accumulator
+VSAD                    Vector SAD
+VSAC                    Vector SAC
+VSUM                    Vector SUM
+VSAW                    Vector SAW
+VLT                     Vector Less Than
+VEQ                     Vector Equal To
+VNE                     Vector Not Equal To
+VGE                     Vector Greater Than or Equal To
+VCL                     Vector Clip Low
+VCH                     Vector Clip High
+VCR                     Vector, 1's Complement Clip
+VMRG                    Vector Merge
+VAND                    Vector Logical AND
+VNAND                   Vector Logical NAND
+VOR                     Vector Logical OR
+VNOR                    Vector Logical NOR
+VXOR                    Vector Logical Exclusive OR
+VNXOR                   Vector Logical NOT Exclusive OR
+VNOOP                   Vector No-Operation
+VMOV                    Vector Scalar-Element Move
+VRCP                    Single Precision, Lookup Source, Write Result
+VRSQ                    Single Precision, Lookup Source, Write Result
+VRCPH                   Set Source, Write Previous Result
+VRSQH                   Set Source, Write Previous Result
+VRCPL                   Lookup Source and Previous, Write Result
+VRSQL                   Lookup Source and Previous, Write Result
+VINST                   Vector Insert Triple (5/5/5/1)
+VEXTT                   Vector Extract Triple (5/5/5/1)
+VINSQ                   Vector Insert Quad (4/4/4/4)
+VEXTQ                   Vector Extract Quad (4/4/4/4)
+VINSN                   Vector Insert Nibble (4/4/4/4) Sign-Extended
+VEXTN                   Vector Insert Nibble (4/4/4/4) Sign-Extended
+
+
+LBV                     Load Byte into Vector
+LSV                     Load Short into Vector
+LLV                     Load Word into Vector
+LDV                     Load Doubleword into Vector
+LQV                     Load Quadword into Vector
+LRV                     Load Rest Vector
+LPV                     Load Packed Vector
+LUV                     Load Unpack Vector
+LHV                     Load Half Vector
+LFV                     Load Fourth Vector
+LWV                     Load Wrap Vector
+LTV                     Load Transpose Vector
+
+
+SBV                     Store Byte from Vector
+SSV                     Store Short from Vector
+SLV                     Store Word from Vector
+SDV                     Store Doubleword from Vector
+SQV                     Store Quadword from Vector
+SRV                     Store Rest Vector
+SPV                     Store Packed Vector
+SUV                     Store Unpack Vector
+SHV                     Store Half Vector
+SFV                     Store Fourth Vector
+SWV                     Store Wrap Vector
+STV                     Store Transpose Vector
+
+I have not included the standard MIPS opcodes used in the RCP.
+
+

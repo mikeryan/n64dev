@@ -1,0 +1,40 @@
+heres how one way to make sound on N64 :
+Crazy nation trainer  (xtremeG version)
+
+   
+     [we tested button and its time to make sound!]
+       lui     $t4,8031       ;make pointer to 'yes' sound
+       addiu   $t4,$t4,4F10   ;80314f10 = start
+       addiu   $t5,$zero,4A71 ;4A71=length
+       addiu   $t6,$zero,1388 ;1388= DAC rate
+       addiu   $t7,$zero,0001 ;1=BIT rate
+       jal     here
+       nop
+    [draw yes]
+......
+
+   [we tested button and time to make 'no' sound]
+         lui     $t4,8031        ;make pointer to 'no' sound
+         addiu   $t4,$t4,12C4    ;803112C4
+         addiu   $t5,$zero,3C45  ;3C45=length
+         addiu   $t6,$zero,1388  ;DAC rate
+         addiu   $t7,$zero,0001  ;1=BIT rate
+         jal     here
+         nop
+    [draw no]
+
+.....        
+         [...initialize vid, audio]
+           addiu   $t4,$zero,0000  ;[blank out sound]
+           addiu   $t5,$zero,0000  ;initialize
+           addiu   $t6,$zero,0001
+           addiu   $t7,$zero,0001
+here:      lui     $t8,A450
+           sw      $t4,0000($t8)  ;start RDRAM address
+           sw      $t5,0004($t8)  ;length
+           addiu   $t9,$zero,0001 
+           sw      $t9,0008($t8)  ;1 = enable dma
+           sw      $t6,0010($t8)  ;dac rate 
+           sw      $t7,0014($t8)  ;bit rate 
+           jr      $ra
+           nop

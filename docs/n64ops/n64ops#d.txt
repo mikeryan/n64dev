@@ -1,0 +1,104 @@
+Nintendo 64 Toolkit: opcodes v1.1 by anarko <anarko@flashback.net>
+
+Part D: Brief list of RSP opcodes                     released on 1999-04-21
+----------------------------------------------------------------------------
+
+All information on the RSP was provided by my friend Zilmar.
+Names of the opcodes are just guessings, also maybe not all of these opcodes
+really exist on the Nintendo 64, since information on the opcodes are from
+the SGI hardware. Bear with us, updates will cover the RSP more correctly.
+
+****************************************************************************
+** Explanations                                                           **
+****************************************************************************
+v<dest> = The destination vector register, where the result will be placed.
+del     = Specifies the destination element to be used.
+offset  = 16-bit additional offset to use from a base register.
+base    = The base GPR to use for load/store operations.
+v<s1>   = Source vector register.
+v<s2>   = Source vector register.
+el      = Specifies the element to be used on a source vector register.
+
+****************************************************************************
+** Load and Store Instructions                                            **
+****************************************************************************
+LBV          $v<dest>[del], offset(base)   Load byte to vector
+LSV          $v<dest>[del], offset(base)   Load short (halfword) to vector
+LLV          $v<dest>[del], offset(base)   Load long (word) to vector
+LDV          $v<dest>[del], offset(base)   Load double (doubleword) to vector
+LQV          $v<dest>[del], offset(base)   Load quad (quadword) to vector
+LRV          $v<dest>[del], offset(base)   Load rest to vector
+LPV          $v<dest>[del], offset(base)   Load packed to vector
+LUV          $v<dest>[del], offset(base)   Load unpacked to vector
+LHV          $v<dest>[del], offset(base)   Load half to vector
+LFV          $v<dest>[del], offset(base)   Load fourth to vector
+LWV          $v<dest>[del], offset(base)   Load wrap to vector
+LTV          $v<dest>[del], offset(base)   Load transpose to vector
+
+SBV          $v<dest>[del], offset(base)   Store byte from vector
+SSV          $v<dest>[del], offset(base)   Store short (halfword) from vector
+SLV          $v<dest>[del], offset(base)   Store long (word) from vector
+SDV          $v<dest>[del], offset(base)   Store double (doubleword) from vector
+SQV          $v<dest>[del], offset(base)   Store quad (quadword) from vector
+SRV          $v<dest>[del], offset(base)   Store rest from vector
+SPV          $v<dest>[del], offset(base)   Store packed from vector
+SUV          $v<dest>[del], offset(base)   Store unpacked from vector
+SHV          $v<dest>[del], offset(base)   Store half from vector
+SFV          $v<dest>[del], offset(base)   Store fourth from vector
+SWV          $v<dest>[del], offset(base)   Store wrap from vector
+STV          $v<dest>[del], offset(base)   Store transpose from vector
+
+
+
+****************************************************************************
+** Vector Instructions                                                    **
+****************************************************************************
+VMULF        $v<dest>, $v<s1>, $v<s2>[el]  Vector (Frac) Multiply
+VMULU        $v<dest>, $v<s1>, $v<s2>[el]  Vector (Unsigned Frac) Multiply
+VRNDP        $v<dest>, $v<s1>, $v<s2>[el]  Vector DCT Round (+)
+VMULQ        $v<dest>, $v<s1>, $v<s2>[el]  Vector (Integer) Multiply
+VMUDL        $v<dest>, $v<s1>, $v<s2>[el]  Vector low multiply
+VMUDM        $v<dest>, $v<s1>, $v<s2>[el]  Vector mid-m multiply
+VMUDN        $v<dest>, $v<s1>, $v<s2>[el]  Vector mid-n multiply
+VMUDH        $v<dest>, $v<s1>, $v<s2>[el]  Vector high multiply
+VMACF        $v<dest>, $v<s1>, $v<s2>[el]  Vector (Frac) Multiply Accumulate
+VMACU        $v<dest>, $v<s1>, $v<s2>[el]  Vector (Unsigned Frac) Multiply Accumulate
+VRNDN        $v<dest>, $v<s1>, $v<s2>[el]  Vector DCT Round (-)
+VMACQ        $v<dest>, $v<s1>, $v<s2>[el]  Vector (Integer) Multiply Accumulate
+VMADL        $v<dest>, $v<s1>, $v<s2>[el]  Vector low multiply accumulate
+VMADM        $v<dest>, $v<s1>, $v<s2>[el]  Vector mid-m multiply accumulate
+VMADN        $v<dest>, $v<s1>, $v<s2>[el]  Vector mid-n multiply accumulate
+VMADH        $v<dest>, $v<s1>, $v<s2>[el]  Vector high multiply accumulate
+
+
+I don't have instruction encoding on the following: 
+
+VADD         $v<dest>, $v<s1>, $v<s2>[el]  Vector Add
+VSUB         $v<dest>, $v<s1>, $v<s2>[el]  Vector Subtract
+VABS         $v<dest>, $v<s1>, $v<s2>[el]  Vector Absolute Value
+VADDC        $v<dest>, $v<s1>, $v<s2>[el]  Vector ADDC
+VSUBC        $v<dest>, $v<s1>, $v<s2>[el]  Vector SUBC
+
+VLT          ?                             Vector Less Than
+VEQ          ?                             Vector Equal To
+VNE          ?                             Vector Not Equal To
+VGE          ?                             Vector Greater Than or Equal To
+VCL          ?                             Vector Clip Low
+VCH          ?                             Vector Clip High
+VCR          ?                             Vector, 1's Complement Clip
+VMRG         ?                             Vector Merge
+
+VAND         ?                             Vector Logical AND
+VNAND        ?                             Vector Logical NOT AND
+VOR          ?                             Vector Logical OR
+VNOR         ?                             Vector Logical NOT OR
+VXOR         ?                             Vector Logical Exclusive OR
+VNXOR        ?                             Vector Logical NOT Exclusive OR
+
+VRCP         ?                             Single Precision, Lookup Source, Write Result
+VRCPL        ?                             Lookup Source and Previous, Write Result
+VRCPH        ?                             Set Source, Write Previous Result
+VMOV         ?                             Vector Move
+VRSQ         ?                             Single Precision, Lookup Source, Write Result
+VRSQL        ?                             Lookup Source and Previous, Write Result
+VRSQH        ?                             Set Source, Write Previous Result

@@ -1,0 +1,324 @@
+      __/\__
+   ___\    /___
+ :_)          (_:
+ |              |             .
+ |   +{N64}+    |             |
+ |              |            _.  . thE LiGhtFoRCE - FAStER thAN LiGht .
+ |         ____ |        .___)|                siNce 1987
+ :  ______ \__/ :______  |    |____ ____ _________ __ ________ _____ ______
+ .  \    /_____./   __/__|    |   _|    \.)    __/ _  \_     /    _/    __/_
+ . /    /     |    _)    |    _   \_     |    _/   \   /    /.    \_.  _/   |
+ : \__________|____\  ___|____|    |_____|____|________\_____|______|_______|
+ |              :   \/ -Mo!/aL|____|[C O N S O L E   D I V I S I O N]
+ |              |
+ |              |       How to make a N64 Trainer Documentation by:
+ |_            _|                   >>>>> Icarus <<<<<
+ : )___    ___( :
+      /_  _\
+        \/
+
+
+Ladies and gentleman,
+Welcome to my "How to make a N64-Trainer" documentation.
+
+The reason why i did this doc is very simple: i am quitting
+all my activities in the "n64-scene" for many reasons, i think
+you don't care for so i won't go into that any further.
+Furthermore it would be nice to see more groups doing trainers.
+So i hope this will help some dudes to start!
+
+So however, let's come to the real documentation.
+
+First i want to explain how my trainers are working.. 
+I think you all know the hardware game-enhancers like
+"Action Replay", "Gameshark", "Gamebuster" and so on...
+with this hardware stuff you can enter codes like this e.g.:
+
+8003567C 0067
+
+
+If YES i will explain what the fuck this codes mean:
+Explanation:
+~~~~~~~~~~~~
+8003567C 0067 <-- Value to be written
+~~~~~~~~ ****
+   ^
+   |
+Memorylocation in N64 RAM
+
+If you enter such a code the Gameshark hardware or whatever
+will do the following: It updates the MEMORYLOCATION with
+the VALUE very often (don't know exactly how often i a second
+but this doesn't matter now! :-) )
+
+And exactly this is how my trainers work. So in a strictly
+definition my trainers are no REAL trainers, like i did them
+on e.g. the Amiga. On Amiga for example it was better to
+find the ROUTINE in the GAMECODE which was responsible for
+subtracting your Lives or Health etc.. and once you found 
+this routine, you had the possibility to kill it with a NOP
+or something..
+
+On N64 you can say its emulating a Gameshark.
+Unfortunately I must do it like this way but the fact is that
+i just dont have this much possiblities with hard and software
+like on my good ol' Amiga;) NMI-shit and stuff..
+
+But the result is the same so... its not a clean way but it
+works also.
+
+So basically what we have to emulate a Gameshark and this is
+very easy!:
+
+1. We need a routine which is called VERY OFTEN to replace
+   VALUES in N64-MEMORY while the user is playing the game.
+
+Okay, if you still know what i am talking about, CONTINUE READING!
+If you don't know what i am talking about, QUIT READING NOW:)
+
+
+So first step:
+HOW TO FIND A PLACE FOR YOUR "UPDATE-ROUNTINE" IN THE N64-GAMECODE:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We must try to find a routine in the GAMEROM which is called
+very often.. here we can hook up our own UPDATE-CODE which will
+do the rest (=the "trainer" itself).
+
+Personally i use "OsViSwap" but you also can use
+"WriteBackDCacheAll", or "__osRestoreInt"... i just tested my
+trainers with the above mentioned three functions and it works
+perfectly.
+
+To find this routines get the tool "LFE" from www.dextorse.com
+(LFE = [Libary-Function-Extractor] (c) Ravemax of Dextrose)
+
+Then get the library "libultra.lib" from the PSY-Q-N64-Devkit.. 
+
+Swap your gamerom now to Z64/CD64 format and make a backup of
+the rom... now RESIZE the ROM to 8 Megabit and use LFE to find
+out where the functions are in the ROM.
+
+The commandline for this is:
+
+LFE.EXE [ROM.Z64] libultra.lib 
+
+This will take a while now.. - then LFE gives u back a ".COD"
+file!
+
+Here i included such a .COD file just for example:
+
+[============BEGIN TEST.COD==============]
+0x8005e860,osSetIntMask
+0x8005e980,osWritebackDCacheAll   <--- THIS ONE MAYBE
+0x8005fee0,alSynDelete
+0x800660b0,osGetCount
+0x800660c0,__osGetSR
+0x80066150,__osDisableInt
+0x80066170,__osRestoreInt         <--- THIS ONE MAYBE, TOO
+0x80066190,__osProbeTLB
+0x80066250,__osSetCompare
+0x80066260,__osSetFpcCsr
+0x80066270,__osSetSR
+0x80066280,osMapTLBRdb
+0x800663b0,osGetThreadPri
+0x80068dc0,alFilterNew
+0x8006d560,__osGetCause
+0x8008e876,__osThreadTail
+0x8008e87e,__osRunQueue
+0x8008e882,__osActiveQueue
+0x8008e886,__osRunningThread
+0x8008e88a,__osFaultedThread
+0x80091f20,osViModeNtscLpn1
+0x80091f70,osViModeNtscLpf1
+[=============END TEST.COD===============]
+
+So now search for one of the above mentioned functions.
+Hmm... in this game we dont have a OSViSwap.. so we could
+use the "osWritebackDCacheAll"-Function for our example.
+
+Now take the resized 8-Mbit-ROM again and disassemble it with
+N64PSX by NAGRA! (get it from www.blackbag.org or 
+www.dextrose.com)
+
+The commandline will look like this:
+
+N64PSX.EXE -n64 [ROM.Z64] >ROM.ASM
+
+This nice tool will use the .COD file created by LFE
+and will mix it together with the disassembled code so you can 
+exactly see where the functions begin.. my example will bring
+ROM.ASM as a result.
+
+Now, open "ROM.ASM" in your favorite editor and search for
+the function we want to use ("osWritebackDCacheAll").
+
+[============BEGIN ROM.ASM==============]
+8005e974: 00000000 .... nop 
+8005e978: 00000000 .... nop 
+8005e97c: 00000000 .... nop 
+8005e980: 3c088000 <... lui $t0,32768 ; osWritebackDCacheAll
+8005e984: 240a2000 $. . li $t2,0x2000
+8005e988: 010a4821 ..H! addu $t1,$t0,$t2
+8005e98c: 2529fff0 %).. addiu $t1,$t1,0xfffffff0
+8005e990: bd010000 .... cache 0x1,0x0000($t0)
+8005e994: 0109082b ...+ sltu $at,$t0,$t1
+8005e998: 1420fffd . .. bnez $at,0x8005e990
+8005e99c: 25080010 %... addiu $t0,$t0,0x0010
+8005e9a0: 03e00008 .... jr $ra  <--THIS IS THE END OF THE FUNCTION!
+8005e9a4: 00000000 .... nop 
+8005e9a8: 00000000 .... nop 
+[=============END ROM.ASM===============]
+
+
+Now, we must search for the end of the function, this must
+be a "jr $ra". Once you found it, keep the memory-address
+where it is located. (In our example its: $8005e9a0)
+At this address we will hook up our trainer-routine.
+Let's move to the next chapter!
+
+THE TRAINER-ROUTINE
+~~~~~~~~~~~~~~~~~~~
+
+Okay, here we go with the main-routine which is responsible for
+updating the values in N64 RAM!
+
+This routine is very simple
+
+Just Imagine you got a Gameshark-Code like this:
+
+8003567F 0064
+
+As i said above this means for the Gameshark nothing else than:
+WRITE THE VALUE $0064 TO ADRESS $8003567F.
+
+So here a neat code which will do this for us in ASSEMBLER and
+this will be the code which will be hooked to the Function we
+found before, to go sure our routine will be executed every
+time the function osWriteBackDCacheAll is called.
+
+
+	        sub  	sp,28		;Get som Stackspace
+	        sw   	s0,0(sp)	;Better save this regs
+	        sw   	t0,4(sp)	;coz our routine below
+	        sw   	t1,8(sp)	;will trash them!
+	        sw   	t2,12(sp)	;t1 and t2 is for additional stuff
+
+
+		li	t0,$8003567F    ;Memory-Address
+		li	s0,$64          ;Value
+		nop
+		sb	s0,(t0)         ;Write it into Memory.
+
+
+	        lw   	s0,0(sp)	;Okay.. lets restore the
+	        lw   	t0,4(sp)	;regs..!
+	        lw   	t1,8(sp)
+	        lw   	t2,12(sp)
+	        add  	sp,28		;Free our Stackspace!
+		nop
+		jr	ra              ;This will jump back
+		nop                     ;to osWriteBackDCacheAll!
+
+
+That's IT!
+
+
+CODING A "LOADER" FOR HOOKING UP OUR TRAINER-ROUTINE.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Above we just coded our trainer-routine. But now we
+must attach this routine to the "osWritebackDCacheAll"-Function
+we found in the gamerom in order to get the trainer working.
+
+This is a very simple routine, too so take a look at the
+following ASM code:
+
+
+		org	$BXXXXXXX	;Orged in ROM see explanation
+
+		la	t0,patchstart	;patchstart
+		li	t1,$A0000200  	;This is place our Trainerroutine
+					;will stay
+		la	t2,patchend-patchstart+4	;Lenght to copy
+loop:
+		lw	t3,(t0)		;this loop will copy our
+		sw	t3,(t1)		;patchroutine to $A0000200
+		add	t0,t0,4		;so easy.
+		add	t1,t1,4
+		bne	t2,zero,loop
+		sub	t2,t2,4
+
+		li	t0,$A005E9A0    ; our osWritebackDCacheAll function!!
+
+		li	t1,$3c088000    ; Patch the function
+		sw	t1,(t0)
+		li	t1,$35080200    ; Patch the function
+		sw	t1,4(t0)
+		li	t1,$01000008
+		sw	t1,8(t0)
+
+		li	ra,$b0000008	;This is the universial backjump
+		lw	ra,(ra)		;routine.. explanation follows.
+		nop
+		add	ra,ra,$10
+		nop
+		jr	ra		;Back to the game!!
+		nop
+
+patchstart:
+		;here is the patchroutine (see above) :)
+patchend:
+
+
+Okay, what does this routine now?
+
+First of all i have to say something about the "org". Before you assemble
+this little loader you must search in the Gamerom for a nice unused
+place. Take your favorite hex-editor and load up your gamerom again
+and take a look.. - if you found freespace at e.g. $7FC000 in the
+rom and want to place your loader there, you have to ORG it to $B07FC000.
+
+Then our neat code will copy our "Trainerroutine" (patchstart) to a
+safe memory-location. (its $A0000200)
+
+After that it will patch the routine located at $A005E9A0. Yeees, you
+are right.. this $A005E9A0 is our osWritebackDCacheAll, we found
+some chapters ago! but be sure to replace the "8" with an "A".
+(We found $8005E9A0 and we will patch $A005E9A0)!!!
+
+Yeah, all done!, our trainerroutine is in a safe-memoryloaction where it
+can operate from, the osWritebackDCacheAll points now to our
+trainer-routine, so it will be called everytime the Function is called.
+
+So we can jump back to Gamecode: I have made a nice routine, which will
+do it universial, so no need to change something for every game.
+
+
+LAST WORDS AND OTHER STUFF
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+So.. finally we made it! we have the Trainer. The only thing you have
+to do now is to patch the ROM-Start at $1000, save the orig-code from
+this location, jump to your loaderroutine ($B07FC000) and before you
+jump back, execute the orig-code you saved from $1000. And OF COZ, doing
+a nice trainermenu in Assembler (get Titaniks excellent sources from 
+www.dextrose.com or get my trainermenu-source at dextrose.com, too)
+Thats it.. get movin'!!!!!!!!!!
+
+I hope i helped you with this document a little bit. Maybe this method
+will be nonsense, if new hardware appeares, where you can set Breakpoints
+and other usefull stuff.. But in this current point of time i think its
+a good way to do trainers.. - not the best way... but WORKS:)
+
+All infos, n64-sources etc can be obtained from www.paradogs.com, too.
+
+To make trainers is an ART not a RACE! :D
+
+Signed, Icarus of Paradox/Lightforce/Crystal/TRSi/Vision/LSD/Hellfire
+
+AUGUST - 1999!
+
+Greetings to all my friends in the scene.. stay cool.
+To all the others... FUCK OFF!
+

@@ -1,0 +1,190 @@
+This file contains information from Titanik and Niki W. Waibel,
+i have not put it together, but the info is just copied from e-mails from
+them both.
+
+
+--------------------------------------------------------------------------
+Titanik:
+--------------------------------------------------------------------------
+Those routines are a RIP of the code from TITANIK/CrazyNation,
+it's the not way the "normal" games read the joypad.
+
+
+You first have to set 2 places in memory that contains 64 bytes of
+certain values, lets call them pif1 and pif2.
+they contain the values :
+
+pif1: DW $FF010401
+      DW $00000000
+      DW $FF010401
+      DW $00000000
+      DW $FF010401
+      DW $00000000
+      DW $FF010401
+      DW $00000000
+      DW $FE000000
+      DW $00000000
+      DW $00000000
+      DW $00000000
+      DW $00000000
+      DW $00000000
+      DW $00000000
+      DW $00000001
+ 
+pif2: DW 0,0,0,0,0,0,0,0       ;by words we mean 32bits!
+      DW 0,0,0,0,0,0,0,0       ;I think this is 64 bytes..
+
+You need to initialize this register before starting (your program will
+run few a few seconds then die if not done)
+
+          addiu   t0,r0,8
+          lui     at,$BFC0
+          sw      t0,$07FC(at)    ;CLEAR BUTTONS
+          move    #8,$BFC007FC
+                    
+now when you start your program and begin your main loop the begginning
+of the loop should begin with (if you want to read joysticks):
+
+START:     
+          lui     t2,$0031        ;t2 =  if org is 80310000 then $0031
+                                  ;      if org is 80200000 then $0020
+
+                                  ;I myself am still confused bout
+                                  ;how ram is mirrored in the system
+                                  ;but this is how it is
+
+          ori     t2,t2,pif1      ;lower 16 bits pointer to pif1  
+          lui     at,$A480        ;SI DRAM ADDR.  at=$A4800000
+          sw      t2,$0000(at)    ; pif1
+          lui     t2,$1FC0
+          ori     t2,t2,$07C0     ;t2=$1fc007c0
+          lui     at,$A480
+          sw      t2,$0010(at)    ;64B DRAM -> PIF    ;poke them thar
+                                                      ;registers arrrrr
+          
+          [...do your stuff in here, then when ready to
+          loop back do this to test josticks...]
+
+          lui     t2,$0031        ;look familiar
+          ori     t2,t2,pif2
+          lui     at,$A480        ;SI DRAM ADDR
+          sw      t2,$0000(at)    ;$31pif2
+          lui     t2,$1FC0     
+          ori     t2,t2,$07C0     ;PIF joychannel
+          lui     at,$A480
+          sw      t2,$0004(at)    ;64B PIF->DRAM ;peek values to dram ? i
+                                                 ;guess this is necassary
+          lui     t1,$BFC0      
+          lbu     t1,$07FF(t1)    ;BYTE(JOY)-T1  ;for some reason this
+                                                 ;is done but I dont know why!
+          lui     t0,$BFC0        ;the value is disregarded
+
+          lhu     t0,$07C4(t0)    ;**HWORD(JOY)->T0**
+          nop
+          beq     t0,r0,START     ;***we have our joystick value in t0***
+
+          nop                     ;if no buttons mashed then start over
+
+          andi    t1,t0,$4000     ;each bit represents a button so
+                                  ;start testing them
+
+          beq     t1,r0,next1     ;I used to know what each bit represented
+                                  ; (what button) but I lost the info
+          nop                     ;andi $4000 /$8000 A/B $100/$200 left/right etc...
+                                  ; I think this is right I
+
+          [routine]               ;might have it backwords or somethin
+
+next1:  etc.. etc..
+                                  ;there are a couple of bits that i
+                                  ;dont know what they do.
+                                  ;havent figured out where the
+                                  ;analog joy data is.
+
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    From: Ben Stembridge <stembbe@mail.auburn.edu>
+      To: anarko <anarko@flashback.net>
+ Subject: some stuff for n64ops#E
+--------------------------------------------------------------------------------
+
+at 0x1FC0 07C4 - 07c5 is the status of the controller, each bit is 1 when
+the button is mashed, 0 otherwise.
+07C4 (HALFWORD-16 BITS) = STATUS OF CONTROLLER
+ %X  X  X  X  X  X  X  X  X  X  X  X  X  X  X  X
+  A  B  Z  ST U  D  L  R  ?  ?  PL PR CU CD CL CR
+A,B,Z =BUTTONS
+ST = START
+U,D,L,R = JOYPAD
+?,? = UNKNOWN
+PL,PR = PAN LEFT , PAN RIGHT BUTTONS
+CU,CD,CL,CR = C BUTTONS |UP,DOWN,LEFT,RIGHT
+
+
+
+ Ben Stembridge
+Mech. ENG.
+Auburn University 
+stembbe@mail.auburn.edu
+
+
+
+
+--------------------------------------------------------------------------
+Niki W. Waibel:
+--------------------------------------------------------------------------
+additional controller info:
+
+init controller:
+rdram -> pif
+ff010300
+ffffffff ... for each controller
+fe000000 ... at the end (after controller 4)
+
+than pif ram is set to:
+????EE??
+TTTTSS?? ... for each controller
+
+?? ... ? zero (0x00)
+EE ... error field
+       0x80: no response (no controller connected)
+       0x40: Overrun error (?)
+       0x00: no error (controller connected)
+TTTT
+   ... type field
+       0x0001 absolute
+       0x0002 relative
+       0x0004 joyport
+       0x8000 eeprom !!!
+SS ... status field
+       0x01 card on
+       0x02 card pull
+       0x04 addr crc err
+       0x80 eeprom busy
+
+
+get controller data:
+rdram -> pif
+ff010400
+ffffffff ... for each controller
+fe000000 ... at the end (after controller 4)
+
+than pif ram is set to (!!!attention!!! pif ram is actualized every read):
+0xbfc007c0: ????EE??
+0xbfc007c4: BBBBXXYY
+0xbfc007c8: |
+0xbfc007cc: |_same as above but for controller 2
+    ...
+BBBB ... buttons (you have that in controll.txt)
+XX   ... stick x pos [-128..127] or 0x80 (left) .. 0x00 (middle) .. 0x7f (right)
+YY   ... stick y pos [-128..127] or 0x80 (down) .. 0x00 (middle) .. 0x7f (up)
+!!!attention!!!
+all pur versions seem NOT to have implemented the SIGNED XX and YY bytes
+correct.
+0x80 0x81 0x82 ... 0xff 0x00 0x01 .. 0x7c 0x7e 0x7f
+-128 -127 -126       -1    0    1     125  126  127
+   left pos           middle pos        right pos
+   down pos           middle pos          up pos
+!!!attention!!!

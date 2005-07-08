@@ -1,0 +1,226 @@
+Nintendo 64 Toolkit: opcodes v1.1 by anarko <anarko@flashback.net>
+
+Part A: Brief list of R4300i opcodes                  released on 1999-04-21
+----------------------------------------------------------------------------
+
+
+****************************************************************************
+** Explanations                                                           **
+****************************************************************************
+rs     = 5-bit source register specifier
+rt     = 5-bit target (source/destination) register or branch condition
+rd     = 5-bit destination register specifier
+sa     = 5-bit shift amount
+
+fs     = 5-bit floating point source register specifier
+ft     = 5-bit floating point target (source/destination)
+         register or branch condition
+fd     = 5-bit floating point destination register specifier
+
+base   = 5-bit value
+imm    = 16 bit immediate value
+offset = 16 bit branch displacement or address displacement
+target = 26 bit jump target address
+
+=  Equal to              > Greater than          >= Greater than or equal to
+<> Not equal to          < Less than             <= Less than or equal to
+
+****************************************************************************
+** Load and Store Instructions                                            **
+****************************************************************************
+LB           rt,offset(base)  Load Byte
+LBU          rt,offset(base)  Load Byte Unsigned
+LD           rt,offset(base)  Load Doubleword
+LDL          rt,offset(base)  Load Doubleword Left
+LDR          rt,offset(base)  Load Doubleword Right
+LH           rt,offset(base)  Load Halfword
+LHU          rt,offset(base)  Load Halfword Unsigned
+LL           rt,offset(base)  Load Linked word
+LLD          rt,offset(base)  Load Linked Doubleword
+LW           rt,offset(base)  Load Word
+LWL          rt,offset(base)  Load Word Left
+LWR          rt,offset(base)  Load Word Right
+LWU          rt,offset(base)  Load Word Unsigned
+SB           rt,offset(base)  Store Byte
+SC           rt,offset(base)  Store Conditional word
+SCD          rt,offset(base)  Store Conditional Doubleword
+SD           rt,offset(base)  Store Doubleword
+SDL          rt,offset(base)  Store Doubleword Left
+SDR          rt,offset(base)  Store Doubleword Right
+SH           rt,offset(base)  Store Halfword
+SW           rt,offset(base)  Store Word
+SWL          rt,offset(base)  Store Word Left
+SWR          rt,offset(base)  Store Word Right
+SYNC                          SYNChronize shared memory
+
+****************************************************************************
+** Atithmetic Instructions                                                **
+****************************************************************************
+ADD          rd,rs,rt         ADD word
+ADDI         rt,rs,imm        ADD Immediate word
+ADDIU        rt,rs,imm        Add Immediate Unsigned word
+ADDU         rd,rs,rt         Add Unsigned word
+AND          rd,rs,rt         AND
+ANDI         rt,rs,imm        AND Immediate
+DADD         rd,rs,rt         Doubleword ADD
+DADDI        rt,rs,imm        Doubleword ADD Immediate
+DADDIU       rt,rs,imm        Doubleword ADD Immediate Unsigned
+DADDU        rd,rs,rt         Doubleword ADD Unsigned
+DDIV         rs,rt            Doubleword DIVide
+DDIVU        rs,rt            Doubleword DIVide Unsigned
+DIV          rs,rt            DIVide word
+DIVU         rs,rt            DIVide Unsigned word
+DMULT        rs,rt            Doubleword MULTiply
+DMULTU       rs,rt            Doubleword MULTiply Unsigned
+DSLL         rd,rt,sa         Doubleword Shift Left Logical
+DSLL32       rd,rt,sa         Doubleword Shift Left Logical +32
+DSLLV        rd,rt,rs         Doubleword Shift Left Logical Variable
+DSRA         rd,rt,sa         Doubleword Shift Right Arithmetic
+DSRA32       rd,rt,sa         Doubleword Shift Right Arithmetic +32
+DSRAV        rd,rt,rs         Doubleword Shift Right Arithmetic Variable
+DSRL         rd,rt,sa         Doubleword Shift Right Logical
+DSRL32       rd,rt,sa         Doubleword Shift Right Logical +32
+DSRLV        rd,rt,rs         Doubleword Shift Right Logical Variable
+DSUB         rd,rs,rt         Doubleword SUBtract
+DSUBU        rd,rs,rt         Doubleword SUBtract Unsigned
+LUI          rt,imm           Load Upper Immediate
+MFHI         rd               Move From HI register
+MFLO         rd               Move From LO register
+MTHI         rd               Move To HI register
+MTLO         rd               Move To LO register
+MULT         rs,rt            MULTiply word
+MULTU        rs,rt            MULTiply Unsigned word
+NOR          rd,rs,rt         Not OR
+OR           rd,rs,rt         OR
+ORI          rt,rs,imm        OR Immediate
+SLL          rd,rt,sa         Shift word Left Logical
+SLLV         rd,rt,rs         Shift word Left Logical Variable
+SLT          rd,rs,rt         Set on Less Than
+SLTI         rt,rs,imm        Set on Less Than Immediate
+SLTIU        rt,rs,imm        Set on Less Than Immediate Unsigned
+SLTU         rd,rs,rt         Set on Less Than Unsigned
+SRA          rd,rt,sa         Shift word Right Arithmetic
+SRAV         rd,rt,rs         Shift word Right Arithmetic Variable
+SRL          rd,rt,sa         Shift word Right Logical
+SRLV         rd,rt,rs         Shift word Right Logical Variable
+SUB          rd,rs,rt         SUBtract word
+SUBU         rd,rs,rt         SUBtract Unsigned word
+XOR          rd,rs,rt         eXclusive OR
+XORI         rt,rs,imm        eXclusive OR Immediate
+
+****************************************************************************
+** Jump and Branch Instructions                                           **
+****************************************************************************
+BEQ          rs,rt,offset     Branch on =
+BEQL         rs,rt,offset     Branch on EQual Likely
+BGEZ         rs,offset        Branch on >= Zero
+BGEZAL       rs,offset        Branch on >= Zero And Link
+BGEZALL      rs,offset        Branch on >= Zero And Link Likely
+BGEZL        rs,offset        Branch on >= Equal to Zero Likely
+BGTZ         rs,offset        Branch on > Zero
+BGTZL        rs,offset        Branch on > Zero Likely
+BLEZ         rs,offset        Branch on <= Equal to Zero
+BLEZL        rs,offset        Branch on <= Zero Likely
+BLTZ         rs,offset        Branch on < Zero
+BLTZAL       rs,offset        Branch on < Zero And Link
+BLTZALL      rs,offset        Branch on < Zero And Link Likely
+BLTZL        rs,offset        Branch on < Zero Likely
+BNE          rs,rt,offset     Branch on <>
+BNEL         rs,rt,offset     Branch on <> Likely
+J            target           Jump
+JAL          target           Jump And Link
+JALR         rs,rd            Jump And Link Register
+JR           rs               Jump Register
+
+****************************************************************************
+** Special Instructions                                                   **
+****************************************************************************
+BREAK        offset           BREAKpoint
+SYSCALL      offset           SYStem CALL
+
+****************************************************************************
+** Exception Instructions                                                 **
+****************************************************************************
+TEQ          rs,rt            Trap if =
+TEQI         rs,imm           Trap if = Immediate
+TGE          rs,rt            Trap if >=
+TGEI         rs,imm           Trap if >= Immediate
+TGEIU        rs,imm           Trap if >= Immediate Unsigned
+TGEU         rs,rt            Trap if >= Unsigned
+TLT          rs,rt            Trap if <
+TLTI         rs,imm           Trap if < Immediate
+TLTIU        rs,imm           Trap if < Immediate Unsigned
+TLTU         rs,rt            Trap if < Unsigned
+TNE          rs,rt            Trap if <>
+TNEI         rs,imm           Trap if <> Immediate
+
+****************************************************************************
+** System Control Processor (COP0) Instructions                           **
+****************************************************************************
+CACHE        op,offset(base)  CACHE
+ERET                          Return from Exception
+MFC0         rt,fs            Move Word From CP0
+MTC0         rt,fs            Move Word To CP0
+TLBP                          Probe TLB for Matching Entry
+TLBR                          Read Indexed TLB Entry
+TLBWI                         Write Indexed TLB Entry
+TLBWR                         Write Random TLB Entry
+
+****************************************************************************
+** Floating-point Unit, FPU (COP1) instructions                           **
+****************************************************************************
+ABS.fmt      fd,fs            floating-point ABSolute value
+ADD.fmt      fd,fs,ft         floating-point ADD
+BC1F         offset           Branch on FP False
+BC1FL        offset           Branch on FP False Likely
+BC1T         offset           Branch on FP True
+BC1TL        offset           Branch on FP True Likely
+C.cond.fmt   fs,ft            floating-point floating point Compare
+CEIL.L.fmt   fd,fs            floating-point CEILing convert to Long fixed-point
+CEIL.W.fmt   fd,fs            floating-point CEILing convert to Word fixed-point
+CFC1         rt,fs            Move control word From Floating-Point
+CTC1         rt,fs            Move control word To Floating-Point
+CVT.D.fmt    fd,fs            floating-point ConVerT to Double floating-point
+CVT.L.fmt    fd,fs            floating-point ConVerT to Long fixed-point
+CVT.S.fmt    fd,fs            floating-point ConVerT to Single floating-point
+CVT.W.fmt    fd,fs            floating-point ConVerT to Word fixed-point
+DIV.fmt      fd,fs,ft         floating-point DIVide
+DMFC1        rt,fs            Doubleword Move From Floating-Point
+DMTC1        rt,fs            Doubleword Move To Floating-Point
+FLOOR.L.fmt  fd,fs            floating-point FLOOR convert to Long fixed-point
+FLOOR.W.fmt  fd,fs            floating-point FLOOR convert to Word fixed-point
+LDC1         ft,offset(base)  Load Doubleword to Floating-Point
+LWC1         ft,offset(base)  Load Word to Floating-Point
+MFC1         rt,fs            Move Word From Floating-Point
+MOV.fmt      fd,fs            floating-point MOVe
+MTC1         rt,fs            Move Word To Floating-Point
+MUL.fmt      fd,fs,ft         floating-point MULtiply
+NEG.fmt      fd,fs            floating-point NEGate
+ROUND.L.fmt  fd,fs            floating-point ROUND to Long fixed-point
+ROUND.W.fmt  fd,fs            floating-point ROUND to Word fixed-point
+SDC1         ft,offset(base)  Store Doubleword from Floating-Point
+SQRT.fmt     fd,fs            floating-point SQuare RooT
+SUB.fmt      fd,fs,ft         floating-point SUBtract
+SWC1         ft,offset(base)  Store Word from Floating-Point
+TRUNC.L.fmt  fd,fs            floating-point TRUNCate to Long fixed-point
+TRUNC.W.fmt  fd,fs            floating-point TRUNCate to Word fixed-point
+
+****************************************************************************
+** Pseudo opcodes                                                         **
+****************************************************************************
+NOP                           Assembles to SLL    r0, r0, 0
+MOVE         rd, rs           Assembles to ADD    rd, r0, rs
+NEG          rd, rt           Assembles to SUB    rd, r0, rt
+NEGU         rd, rs           Assembles to SUBU   rd, r0, rs
+BNEZ         rs, offset       Assembles to BNE    rs, r0, offset
+BNEZL        rs, offset       Assembles to BNEL   rs, r0, offset
+BEQZ         rs, offset       Assembles to BEQ    rs, r0, offset
+BEQZL        rs, offset       Assembles to BEQL   rs, r0, offset
+B            offset           Assembles to BEQ    r0, r0, offset
+BAL          offset           Assembles to BGEZAL r0, offset
+LI           rt, imm          Assembles to ORI    rt, r0, imm (if imm is 16 bit)
+                                        or ADDIU  rt, r0, imm
+                                        or LUI    rt, high_16
+                                           ORI    rt, rt, low_16 (if imm is 32 bit)
+S.S          ft, offset(base) Assembles to SWC1   ft, offset(base)
+L.S          ft, offset(base) Assembles to LWC1   ft, offset(base)
