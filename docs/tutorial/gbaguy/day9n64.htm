@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>N64 ASM - Day 9</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 9</h1>
+<pre>
+
+
+			
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>Using The Serial Interface</b></h2>
+<p style="color: green;"><pre><b>
+	The Serial Interface (a.k.a The SI Registers) is used for many things including reading controller
+data and writing to mempaks and using the Rumble. I recommend that you see LaC's hardware doc for the best
+info on using the SI.
+
+<h3 align="center" style="color: LightCoral;"><b>The Info</b></h3>
+	The SI does DMA with a 64 byte command packet between PIH RAM and main memory (PIH RAM is in main
+memory, but it's like taboo to use normal writes with it...). The 64b command packet can be visualized like
+this (all diagrams adapted/copied from LaC's doc):
+
+[64byte block] at 0xbfc007c0 (1fc007c0)
+   { Command    :  Results placed here when you DMA the data back to main memory
+    ff 00 00 00 : 00 00 00 00 - 8 bytes 
+    ff 00 00 00 : 00 00 00 00 - 8 bytes
+    ff 00 00 00 : 00 00 00 00 - 8 bytes
+    ff 00 00 00 : 00 00 00 00 - 8 bytes
+    ff 00 00 00 : 00 00 00 00 - 8 bytes
+    ff 00 00 00 : 00 00 00 00 - 8 bytes
+    ff 00 00 00 : 00 00 00 00 - 8 bytes
+    ff 00 00 00 : 00 00 00 01 - 8 bytes
+   }                       ^^pif status/control byte
+
+	It will help for our purposes that the last byte, refered to by LaC as the control byte, always be 01.
+Although there's room for 4 bytes, most commands only use 3, so put the Reset command ($FF) in the first spot
+to align everything so you get the Results conveniently 4 byte aligned.
+
+	This diagram describes the form of the 3 bytes of the command:
+
+      Command Types:
+        
+         | Command |       Description        |t |r |
+         +---------+--------------------------+-----+
+         |   00    |   request info (status)  |01|03|
+         |   01    |   read button values     |01|04|
+         |   02    |   read from mempack slot |03|21|
+         |   03    |   write to mempack slot  |23|01|
+         |   04    |   read eeprom            |02|08|
+         |   05    |   write eeprom           |10|01|
+         |   ff    |   reset                  |01|03|
+              NOTE: values are in hex
+													t r Command
+Every command is in the form of (referring to the diagram): t r Command. So reading a controller is 0xFF010401 (that
+first 0xFF is the alignment thing from the first diagram.). The only thing that I understand how to do so far is read
+the controllers, the command packet for reading the controllers looks like this:
+
+       [64byte block]            
+      {      command  data       
+     	   ff 010401 - ffffffff 
+     	   ff 010401 - ffffffff  
+     	   ff 010401 - ffffffff 
+     	   ff 010401 - ffffffff  
+           fe 000000 - 00000000   
+           00 000000 - 00000000  
+           00 000000 - 00000000  
+           00 000000 - 00000001  
+      }                          
+
+The byte 0xFE means that there aren't any more commands, it can be left off if the packet is totally full of commands.
+Appearantly, the controller that we are reading changes by 1 with each controller read command, so the first one is
+controller 1, then #2,#3,and #4. Also, if you just read 1 controller, the reading resets between sending command packets,
+so you can't read each controller 1 at a time with 1 read command in each packet (I don't know why you'd do that, but you
+can't anyway...).
+
+Note that some commands aren't only 3 bytes long, that's because of the real meaning of t and r. t is how many bytes
+we are sending in this specific command not including the r byte (but including, appearantly, the Command byte that
+comes after r ). r is how many bytes we want returned as Results from the PIH. Also note that having more than 3
+bytes in the specific command makes the previous type of diagram out of alignment with where the results are going to
+end up. Results will always end up after the specific command, they just might not be perfectly aligned on those 4
+bytes...
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	Most (more like all) of this information was edited from LaC's hardware document v0.8.
+	Please note that this was just to explain SI (or atleast how I understand it, might not be correct.) and
+doing specific things like reading controllers and making the RumblePak go will be covered in separate "Day"s.	
+
+	Read The Docs!,
+		- GBAGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day10n64.htm">Day 10</a></center>
+
+</b></pre></p>
+</body>
+</html>

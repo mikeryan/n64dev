@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>N64 ASM - Day 7</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 7</h1>
+<pre>
+
+
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>The Delay Slot</b></h2>
+<p style="color: green;"><pre><b>
+	This thing is so Evil and Cool at the same time, I can't come up
+seem to come up with even a good joke for the intro (I said "Sl<u>o</u>t!", maybe?).
+
+<h3 align="center" style="color: LightCoral;"><b>The Info</b></h3>
+	This information is brought to you by HCS:
+
+	The code for this isn't that much different than we've seen before
+or that you could have come up with on your own. So here we go (the whole thing):
+(It has been slightly edited)(HCS, I hope you don't mind.):
+
+This is the instruction immediately after a jump or branch instruction. It is executed during the jump (actually, while 
+the instruction at the target is being fetched). For example, if we have
+
+code:--------------------------------------------------------------------------------
+    jal dest
+    addi t0,t0,1
+--------------------------------------------------------------------------------
+
+Both the jump and the addition will occur. There are some instructions which can't be in 
+delay slots though (I don't have my manual with me right now and I don't remember what they are)
+and asmn64 checks for those. One good application for this is to make loops:
+
+code:--------------------------------------------------------------------------------
+    li   t0,7
+loop:
+    ; something to be done 8 times
+    bnez t0, loop
+    addi t0,-1
+--------------------------------------------------------------------------------
+
+The increment (decrement in this case) is had for free, during time the processor would be 
+otherwise wasting. It is important, whenever you code a jump, to put a NOP after it until 
+you intend to use the delay slot, otherwise some other part of the code might execute 
+accidentally. I believe that asmn64 has a command line switch to do this for you automatically.
+
+The exception to the delay slot execution is several branches called "likely". Actually, they still
+execute the instruction in the delay slot, but if the branch is not taken the delay instruction
+is skipped. This takes some extra time for the processor to ignore the instruction, so they 
+should only be used when it is "likely" that the branch will be taken.
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	It's always good to get the information from someone who knows what they're talking about!
+
+	Important stuff!,
+		- GbaGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day8n64.htm">Day 8</a></center>
+
+</b></pre></p>
+</body>
+</html>

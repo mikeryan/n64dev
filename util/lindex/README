@@ -1,0 +1,48 @@
+# --------------------------------------------------------------------------
+#
+# LinDex - DexDrive Utilities For Linux
+# Copyright (C) 2001 Dan Page [http://www.phoo.org]
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+#
+# --------------------------------------------------------------------------
+
+1. LINDEX - DEXDRIVE UTILITIES FOR LINUX
+
+  I got a DexDrive because I wanted to backup my PlayStation memory cards and
+  reuse them rather than forking out for some new ones.  Problem was, one of
+  them was a bit iffy and kept turning up errors under the Windows version of
+  the DexDrive software.  I couldn't find any utilities to perform a test on
+  the card so I wrote my own.  
+
+  Once I got a solid driver working, I started to think about writing some 
+  more utilities to read and write the same saved game files as the Windows
+  software -- a worthy cause since InterAct don't supply any non-Windows
+  drivers for the DexDrive.  At this point I found out about the Dexux project
+  so I stopped working on LinDex, safe in the knowledge that someone else was
+  working on similar software.
+
+2. FEEDBACK
+
+  LinDex was written entirely by me so any feedback, bug reports and so on can
+  be directed via email to Dan <dan@phoo.org> or by taking a look at the LinDex
+  web pages <http://www.phoo.org>.
+
+
+3. RESOURCES
+
+  Dexux                          http://sourceforge.net/projects/dexux
+  PSX Game Edit                  http://moberg-dybdal.dk/psxge
+  Working with PSX Memory Cards  http://www.darklock.com/thps/dexdrive.html

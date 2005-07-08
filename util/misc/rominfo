@@ -1,0 +1,63 @@
+#!/usr/bin/perl -w
+# -thogard  May 13 2000
+
+#set up country/company tables
+%countries=("\0" => "None", 'J' =>"Japan",'E' =>"US" ,'P'=>"Germany?");
+%comp=("\0"=>"None", 'N' =>"Nintendo" );
+
+#@files=("pdx-tetr.v64","jpegview.rom","x");
+@files=@ARGV;
+
+foreach $fname (@files) {
+
+		# magic numbers on the 1st 4 bytes of a cart rom
+		#in Network order (same on all machines)
+		#'80371240' v64 format (bigendian)
+		#'37804012' rom fomrat (bytes are swaped intel style)
+		#in typical intelish boxes
+		#'12408037' v64 format (byte swaped)
+		#'40123780' rom format (normal mips format)
+
+		unless (open IN,"<$fname") {
+			warn "can't read file $!";
+			next;
+		}
+		binmode IN;
+
+		$size=-s IN;
+		#get 1st 4 bytes and then check it for byteswapedness
+		read (IN,$cookie,4);
+		$cookie=unpack("N",$cookie) || 0 ; # or 0 for -w
+		$byteswap=$cookie==0x37804012;
+		seek(IN,32,0);
+		read(IN,$title,16);
+		#company is at 58 or 59 depending on byte swap xor fixes this
+		seek(IN,58^(!$byteswap),0);
+		read(IN,$company,1);
+		seek(IN,63^(!$byteswap),0);
+		read(IN,$country,1);
+
+		#fast way in perl to swap every two butes.
+		#unpack in little-endian and repack in big-endian
+		$title=pack("n16",unpack("v16",$title)) if $byteswap;
+
+		if($cookie==0x37804012) {
+				$format=" ROM format (lowbyte/highbyte)";
+		} elsif($cookie==0x80371240) {
+				$format=" V64 format (highbyte/lowbyte)";
+		} else {
+				print "$fname is not a valid ROM file (cookie=$cookie)\n";
+				next;
+		}
+		$cookie=sprintf ("%x ","$cookie");
+		print <<EOF;
+
+Filename: $fname ($size)
+Title: $title
+Cookie: $cookie $format
+Country: '$country' $countries{$country}
+Company: '$company' $comp{$company}
+
+EOF
+
+}

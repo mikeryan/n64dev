@@ -1,0 +1,45 @@
+Dexux
+Version 0.0.0, Development Snapshot 3
+All trademarks mentioned here are properties of their respective owners.
+
+This software does not work.  If you try to use it as if it's a finished
+product, you will be very disappointed.  This is a development snapshot
+made to indicate that the code is at a somewhat stable point in its
+development cycle, and that it's not known to do very very bad things.
+
+With that out of the way, welcome, and thanks for downloading this software.
+This software, when finished, will allow the user to read and write Playstation
+memory cards using the DexDrive from InterAct Accessories.  Currently, the
+code is able to perform read and write operations, but there is no interface
+and the read and write functions are called with hard-coded block numbers
+and filenames.  In other words, the low-level stuff is mostly done, but
+there is no interface at all.
+
+If you'd like to try it out, please edit dexux.c and enable the
+copy_card_todisk() function in main().  This will cause dexux, when compiled
+and executed, to copy Block 1's header and data to a file called
+dexux-copy_block in the current directory.  The file format is very simple:
+there are 128 bytes from chunk 0x01, block 0x00 (the header) followed by 8192
+bytes from chunks 0x00 through 0x40, block 0x01 (the data).  (By the time
+dexux is ready for public consumption, I will have designed a more flexible
+data format.)
+
+Then, go use DexPlorer to erase whatever's on Block 1.  Edit dexux.c again,
+this time disabling copy_card_todisk() and enabling copy_card_tocard().  when
+compiled and executed, dexux will write dexux-copy_block to the memory card.
+Check that it works in DexPlorer.
+
+There is lots of crud in dexux.c, so don't read too much into the rest of
+the code.  A function may not contain code that matches its name or its
+description (in the comment next to the prototype).
+
+If any of this is confusing, wait a little while for dexux to become ready
+for public consumption before trying it out.  You really don't want to start
+learning anything with what you've got in this archive.
+
+If you try out dexux, please drop me a line at wmono@users.sourceforge.net
+even if just to say that you've downloaded the snapshot archive.  Thanks.
+
+William Ono
+May 27, 2000.
+

@@ -1,0 +1,11 @@
+Start address of program needs to be modified per program:
+
+6101  :  ??????? (for now N64CICC doesen't change the EP adress)
+6102  :  nothing
+6103  :  Add $100000 ($80000400 would be $80100400 instead)
+6105  :  nothing
+6106  :  Add $200000 ($80000400 would be $80200400 instead).
+
+To disassembly existing bootcode:
+n64-objdump -b binary -m mips -EB -D boot/6105 
+

@@ -1,0 +1,137 @@
+<html>
+<head>
+<title>N64 ASM - Day 8</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 8</h1>
+<pre>
+
+
+			
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>Getting Code Onto The RSP</b></h2>
+<p style="color: green;"><pre><b>
+	The RSP is <font size="3pts"><sup>M</sup>-<sub>a</sub>-<sup>g</sup>-<sub>i</sub>-<sup>c</sup>-<sub>a</sub>-<sup>l</sup></font>!
+
+	Just keep saying that to yourself any time you can't figure why your code isn't working! :)
+	Just kidding!
+
+<h3 align="center" style="color: LightCoral;"><b>The RSP</b></h3>
+	First, read N64OPS#H.TXT (Anarko's N64OPS doc, which if you don't have by now, pretend I'm hitting
+you with a trout!!!) and look at the SP registers section.
+
+	The RSP is like another processor and contains most of the instructions of the main R4300i. The RSP can
+only address main memory from 0xA4000000 To 0xA40FFFFF, if you want to access other parts of memory you
+have to use the SP Mem. Registers to DMA to other parts of main memory. Conveniently, the SP registers
+reside in the part of main memory that the RSP can access.
+
+	There are two sections of the RSP's memory that are for Data and Code respectively, one is DMEM that
+stores Data and is at 0xA4000000 to 0xA4000FFF (small :( ). The other is IMEM and stores code for the RSP
+to execute and is at 0xA4001000 to 0xA4001FFF.
+
+<h3 align="center" style="color: LightCoral;"><b>The SP Registers</b></h3>
+	The RSP Memory registers start at 0xA4040000 and are:
+(These aren't in order and are only the ones that we are going to need today.)
+
+	SP_MEM_ADDR_REG (0xA4040000) - Location to DMEM or IMEM to write to, commonly zero. Bit 12 selects
+					 (1) IMEM or (0) DMEM.
+					So to transfer to/from starting at 0 write 0x1000 for IMEM or 0x0 for DMEM
+					to this register.
+
+	SP_DRAM_ADDR_REG (0xA4040004) - Location in main memory to DMA to/from.
+	SP_RD_LEN_REG (0xA4040008) - The length in bytes of data to read from main memory INTO the RSP.
+					When you write to this register, DMA will start.
+
+	SP_WR_LEN_REG (0xA404000C) - The length in bytes of data to read from RSP TO main memory.
+					Writing to this register will also start DMA.
+
+	SP_PC_REG (0xA4080000) - The Program Counter for the RSP, set it to 0x0 before starting the RSP.
+	
+	SP_STATUS_REG (0xA4040010) - Allows you to set breaks and halts and interrupts and stuff, you need to
+					clear a bunch of that stuff in this register to start the RSP.
+
+<h3 align="center" style="color: LightCoral;"><b>Setting Up DMA</b></h3>
+	Setting up DMA is quite simple, 3 steps:
+
+		1) Set SP_MEM_ADDR_REG.
+		2) Set SP_DRAM_ADDR_REG.
+		3) Set SP_RD_LEN_REG (SP_RD_LEN_REG is Main Mem. -> RSP)
+		
+	Writing to a length register causes to DMA to go.
+
+<h3 align="center" style="color: LightCoral;"><b>Making The RSP Go</b></h3>
+	Making the RSP go is 2 steps:
+
+		1) Set SP_PC_REG (zero is just fine.)
+		2) Set SP_STATUS_REG (you need to clear almost everything that can be
+			cleared in the first 9 bits (0-8) (See N64OPS#H.txt)
+
+	After you clear the halts and breaks and stuff the RSP will start running it's code.
+
+<h3 align="center" style="color: LightCoral;"><b>The Code File</b></h3>
+	Here's the code to get some code onto the RSP:
+
+;;---CODE START---;;
+	org $80000400
+
+	li   t1,8         ; that crash protection code
+        lui    t0,$bfc0    
+        sw   t1,$07fc(t0)
+
+	la t0,0xA4040000 ; SP_MEM_ADDR_REG
+	li t1,0x1000    ; 0x1000 is the start of IMEM (remember as far as the RSP knows it's memory starts at zero,
+; but we know it's memory really starts at 0xA4000000)
+	sw t1,0(t0)    ; SP memory address
+
+	la t0,0xA4040004 ; SP_DRAM_ADDR_REG
+	la t1,RCPCode   ; address of our code to put in the RSP's IMEM.
+	sw t1,0(t0)
+
+	la t0,0xA4040008 ; SP_RD_LEN_REG
+	li t1,72     ; length in bytes, to find this value, multiply the #lines of code that you're putting in the RSP * 8
+	sw t1,0(t0)  ; the DMA will start after this write is done.
+ 
+	nop
+	nop ;time for the emulator, I'll leave making a loop to wait until DMA is done an exercise to you (my kind reader.)
+
+	la t0,0xA4080000 ; SP_PC_REG
+	la t1,0x0        ; just set it to zero
+	sw t1,0(t0)
+
+	la t0,0xA4040010  ; SP_STATUS_REG
+	li t1,%100101101  ; clears a bunch of things like halt and break. (See N64OPS#H.txt)
+	sw t1,0(t0)       ; and makes the code run
+
+infin:
+	nop
+	j infin
+	nop
+
+RCPCode:
+	obj 0x0  ; sets the base of the code so that jumps/branches will be correct.
+always:
+	nop
+	j always
+	objend   ; not sure if it's endobj on some assemblers...
+	nop
+	nop
+	nop
+;;---CODE END---;;
+
+	I realize that the code doesn't do anything, I just wanted to get code onto the RSP.
+To verify that it works, take a look at Nemu's debugger under "Commands" and under the RSP tab,
+you should see just an infinite loop (a J instruction to the address above it).
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	Hopefully I'll be able to do more with the RSP and therefore teach you more as time goes on.
+
+	Happy coding!,
+		- GbaGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day9n64.htm">Day 9</a></center>
+
+</b></pre></p>
+</body>
+</html>

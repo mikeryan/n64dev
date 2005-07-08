@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# Turns off the DexDrive, for when dexux fails during execution
+#
+/bin/echo -e 'IAI\7\0' > /dev/ttyS1

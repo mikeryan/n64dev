@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>N64 ASM - Day 1</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 1</h1>
+<pre>
+
+
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>Figuring out the Assembler</b></h2>
+<p style="color: green;"><pre><b>
+	First, there are several assemblers you could use for the N64, the one I've had
+the most luck using is ASMN6432.EXE from the PSY-Q devkit. Unfortunately, I can't tell
+you where to get the devkit (which does contain a C compiler, so if you're not macho enough
+to use assembler, you can go right ahead and use those illegal libs!), because many people
+would object to it. It's simple enough to find with a search on Google, I regularly loose
+the URL and then find it again in about 30 min. with Google. <I>LEARN THE WAYS OF THE GOOGLE!</I>
+
+	The other assemblers that I've had some success with are the one by <a href="http://here.is/halleyscomet">HalleysCometSoftware</a>
+and Anarko's assembler (in that order). You can get HCS's assembler (and good demo code) from the link above.
+Anarko's assembler is on <a href="http://www.dextrose.com/">Dextrose</a>. 
+
+	I recommend creating a directory like C:\n64asm\ , so that it has no spaces and you can just
+keep everything in there. Each one of these assemblers needs a different style command to assemble,
+they are: (On the DOS/CMD command-line)
+
+	For ASMN6432.EXE:
+		asmn6432 /p SOURCE,OUTPUTFILE.BIN
+		copy HEADER /B+OUTPUTFILE.BIN OUTPUTFILE.N64
+
+	For n64asm.exe (Anarko's):
+		Look at the demo sources for the header puesdo-codes, and type n64asm by itself
+		on the command-line for how to assemble.
+
+	For n64.exe (HCS's):
+		n64 SOURCE.ASM -r
+
+You may have noticed that ASMN6432 needs an extra command that adds the rom header, you can get
+that from HCS's zip file. 
+		
+	Second, I must say that what I know about the N64 (everything I know at a certain time
+that can be applied toward a certain working code file will be eventually described in a "Day"),
+which isn't much as I write this, came from reading documents found on Dextrose and the web AND
+from HCS kindly putting up with my endless questions on Dextrose's Forum, this (hopefully to be
+these) document(hopefully (s)) would not have been possible without his help.
+
+<h3 align="center" style="color: LightCoral;"><b>Our First ROM</b></h3>
+	From here on out, I assume you are using ASMN6432, but N64.exe (HCS's assembler) has
+almost the same syntax and, now that I think of it, Anarko's assembler is still quite similar, you'll just have
+to figure out how to use each one (and maybe tinker the code a little to get it to assemble on
+your chosen assembler.
+
+	Here's our first code file:
+
+	;;---START OF CODE FILE---;;
+		org $80000400
+
+		li   t1,8
+        	lui    t0,$bfc0
+        	sw   t1,$07fc(t0)
+
+	infin:
+		nop
+		j infin
+	;;---END OF CODE FILE---;;
+
+Now to see what each line does:
+
+	org $80000400
+
+This tells the assembler where the entry point of the code is in N64 memory ($80000400 is standard for ASM progs).
+
+	li t1,8
+	lui t0,$bfc0
+	sw t1,$07fc(t0)
+
+These lines (which I got from HCS), stop the N64 from crashing in 5 secs. after your
+program starts (according to HCS, and some other people). I'm not going to explain
+them until later (because I don't what about them stops the N64 from crashing).
+
+	infin:
+
+If you don't know what that is, I suggest you go read either the GBA or NES assembly sections (the
+GBA one is better written in my opinion). <a href="http://k2pts.home.attbi.com/gbaguy/gbaasm.htm">Here's a link for you</a>.
+
+	nop
+
+A Classic, it does nothing, that's right, <u>nothing</u>, except that you should put NOPs
+after labels, a spot appearantly known as a "Delay Slot", some assemblers get pissed off
+if you have anything but a NOP in the Delay Slot.
+
+	j infin
+
+J is the jump instruction, J jumps to a label, like Goto in BASIC. In this case, J jumps to
+infin, creating an infinite loop like while(1); .
+
+Assemble your file like shown in the beginning, if you get no errors, you've done a good job.
+(I recommend (again) that you keep your assembler and code files in C:\n64asm\, and CD to that
+directory in DOS, when you want to assemble something)
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	Tomorrow, we'll download an emulator and a plugin needed for the type of programming
+where using. Hopefully, we'll quickly get to setting up our VI (Video Interface) registers.
+
+	Until Next Time,
+		-Mike H a.k.a GbaGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day2n64.htm">Day 2</a></center>
+
+</b></pre></p>
+</body>
+</html>

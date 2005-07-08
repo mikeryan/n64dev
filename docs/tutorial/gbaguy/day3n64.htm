@@ -1,0 +1,119 @@
+<html>
+<head>
+<title>N64 ASM - Day 3</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 3</h1>
+<pre>
+
+
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>Video Interface Registers</b></h2>
+<p style="color: green;"><pre><b>
+	The VI (Video Interface) Memory Mapped Registers start at 0xA4400000 in N64 main memory
+and allow you to initialize the bitmapped screen in many different ways (See Anarko's N64OPS on <a href="http://www.dextrose.com/">Dextrose</a>.
+Anarko's document lists them starting at 0x<u>0</u>4400000, I don't know why. The Video Registers are:
+(As listed by Nemu's debugger):
+
+	VI_STATUS_REG (0xA4400000)     - Chooses color-depth, and some gamma/antialias/interlacing options
+	VI_DRAM_ADDR_REG (0xA4400004)  - The address of the currect framebuffer (set it to the memory you're going to
+					use for the N64's bitmapped screen.)
+	VI_H_WIDTH_REG (0xA4400008)    - The Horizontal Resolution of the framebuffer.
+	VI_V_INTR_REG (0xA440000C)     - Not sure. Check out N64OPS.
+	VI_V_CURRENT_LINE_REG (0xA4400010)  - I think it gives the current line that is being drawn. (use it to check
+						for VBlank??)
+	VI_TIMING_REG (0xA4400014)     - Not sure what it means that N64OPS says..
+	VI_V_SYNC_REG (0xA4400018)     - "number of half-lines per field", what the **** does that mean?
+	VI_H_SYNC_REG (0xA440001C)     - Don't know. See N64OPS.
+	VI_H_SYNC_LEAP_REG (0xA4400020)  - Don't know. See N64OPS.
+	VI_H_VIDEO_REG (0xA4400024)      - Ditto.
+	VI_V_VIDEO_REG (0xA4400028)      - Ditto.
+	VI_V_BURST_REG (0xA440002C)      - Ditto.
+	VI_X_SCALE_REG (0xA4400030)      - Seems obvious, but description is a little wierd, commonly seen at 0x200.
+	VI_Y_SCALE_REG (0xA4400034)      - Seems obvious, but description is a little wierd, commonly seen at 0x400.
+
+I'll fill out this chart as I figure out exactly what each one does. See Anarko's N64OPS for his
+description (which come almost straight from the comments from the official dev headers).
+
+If anyone has some more info on these, please email me (I'm going to be saying that alot, aren't I? :) )
+
+<h3 align="center" style="color: LightCoral;"><b>Before We Get Started</b></h3>
+	You're probably wondering how to run your ROM. Well, Nemu (which you can get from <a href="http://www.zophar.net">Zophar</a>)
+has a pretty good debugger. To run the ROMs that we'll eventually get to making, you need this
+<a href="http://www.zophar.net/utilities/download/CFB%20Plugin.zip">Plugin</a> for Nemu to support the bitmap-mode
+drawing that we'll be doing (Thanks again to HCS, for pointing me to it).
+
+<h3 align="center" style="color: LightCoral;"><b>Initialization of Video</b></h3>
+	But first, there's 2 instructions we still need to learn: LW and SW. They work like so:
+	
+	LW Loads a 32-bit Word from memory like this:
+		lw t1,0(t3) ; the 32-bit word at the address created by the memory location 
+			    ; in t3 + zero in this case, will be put into t1. 
+	Here's another:
+		lw t0,4(t1) ; the 32bit word at the address created by the memory location in t1 +4 will be put into
+			    ; t0. So if the address 0xA0200004 has 32 in it,
+			    ; and t1 has 0xA0200000 in it plus the 4 will be 0xA0200004 and then t0 will end up with
+			    ; the 32.
+
+	I hope you understood that.
+
+	SW works in precisely the same way except that it will store the register on the left into the memory address
+created by the register plus offset on the right. (The 4 and the zero in the examples are the offsets.)
+
+Here's our video initialization code:
+	;;---CODE START---;;
+	; I should mention that while I use 0x in this tutorial's text for hexadecimal numbers,
+	; ASMN6432.exe uses $.
+        la   t0,$A4400000 ; VI status register (start of VI reg. mem.)
+        li   t1, $103002 ; basically 16bit color and some other things
+        sw   t1,0(t0)
+        la   t1,0xa0200000 ; address of screen bitmap (framebuffer)
+        sw   t1,4(t0)
+        li   t1,320        ; width of screen (horizontal resolution?)
+        sw   t1,8(t0)
+        li   t1,$2         ; Don't know.
+        sw   t1,12(t0)
+        li   t1,$0         ; Ditto.
+        sw   t1,16(t0)
+        li   t1,$3e52239   ; Ditto until next comment
+        sw   t1,20(t0)
+        li   t1,$0000020d
+        sw   t1,24(t0)
+        li   t1,$00000c15
+        sw   t1,28(t0)
+        li   t1,$0c150c15
+        sw   t1,32(t0)
+        li   t1,$006c02ec
+        sw   t1,36(t0)
+        li   t1,$002501ff
+        sw   t1,40(t0)
+        li   t1,$000e0204
+        sw   t1,44(t0)
+        li   t1,$200      ; something about horizontal scaling?
+        sw   t1,48(t0)
+        li   t1,$400      ; something about vertical scaling?
+        sw   t1,52(t0)
+	;;---CODE END---;;
+
+It basically selects a 320x240 16 bit mode, and does some other stuff I don't know yet.
+(That code is essentailly the same as code that HCS was again, nice enough to show me, so
+now I use 320x240 16 bit mode.)
+It probably wouldn't be too hard to change that to 32 bit color, but I just don't feel like
+it (I think you'd have to change $103002 to $103003) and 16 bit color is plenty for most things.
+The offsets are not permanently added to the register in ()s, so in the code, the offsets just keep
+gaining by 4, for each VI register set.
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	Tomorrow, we'll learn some math instructions and then the next day, we'll do some loops.
+Then, we'll put together a code file that clears the screen (with code that, yep, HCS showed me.)
+
+	Hold on! We're getting there!,
+		- GBAGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day4n64.htm">Day 4</a></center>
+
+</b></pre></p>
+</body>
+</html>

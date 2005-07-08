@@ -1,0 +1,8 @@
+#------------------------------------------------------------------------------
+# PlayStation memory card games/images
+0       string          VgsM\1\0        PlayStation memory card (VGS format)
+0       string          123-456-STD\0   PlayStation memory card (GME format)
+0       string          MC\0\0\0\0\0\0  PlayStation memory card (MCD format)
+54      string          SC              PlayStation game save (PSX format)
+128     string          SC              PlayStation game save (MCS format)
+

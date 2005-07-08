@@ -1,0 +1,77 @@
+<html>
+<head>
+<title>N64 ASM - Day 2</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 2</h1>
+<pre>
+
+
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>Some Instructions</b></h2>
+<p style="color: green;"><pre><b>
+	In the other tutorials, I may have sort of taught the assembly language
+and the system workings at the same time. I don't think that would be best this
+time around because of the N64 being somewhat more complex. So today, I'll just
+describe the registers and the instructions: LI,LA,LW,SW.
+
+<h3 align="center" style="color: LightCoral;"><b>Before We Get Started</b></h3>
+	You're probably wondering how to run your ROM. Well, Nemu (which you can get from <a href="http://www.zophar.net">Zophar</a>)
+has a pretty good debugger. To run the ROMs that we'll eventually get to making, you need this
+<a href="http://www.zophar.net/utilities/download/CFB%20Plugin.zip">Plugin</a> for Nemu to support the bitmap-mode
+drawing that we'll be doing (Thanks again to HCS, for pointing me to it).
+
+<h3 align="center" style="color: LightCoral;"><b>The R4300i</b></h3>
+	The main processor that will be running all of our code for a while is a standard RISC MIPS R4300i,
+similar to the one in the PS1 (identical maybe?). It runs at ~93MHz. This thing has even more registers
+than the ARM7 in the GBA!! There are 32 registers, I'm still not positive what they all are for, but they are
+(in the order listed in Nemu's debugger):
+
+	R0    - Special in that it is always zero, you can't change it.
+	AT    - Not entirely sure. Seems to be available to us.
+	V0-V1 - Don't know.
+	A0-A3 - Are used to pass parameters to subroutines.
+	T0-T7 - Temporary data registers, what we should use for regular coding.
+	S0-S7 - Called "Save" or "Saved" registers, preserved across subroutine calls??
+	T8-T9 - Don't know, maybe same as other 'T' registers.
+	K0-K1 - No Clue.
+	GP    - No Clue.
+	SP    - See AT
+	S8    - No Clue.
+	RA    - Stores the Return Address for subroutine calls.
+	
+If someone can email me and fill me in on the ones that I don't know or anything that's wrong that you
+ever see, please correct me. (I suppose I'll look at the MIPS tech docs and fill out the rest of the list)
+
+<h3 align="center" style="color: LightCoral;"><b>The LI,LA Instructions</b></h3>
+	First, the LI instruction. The LI instruction takes 2 operands (parameters):
+
+		li t0, 2  ;  the register on the left will get the number on the right.
+	
+	simple enough.
+
+	Now, the LA instruction. It also takes 2 operands:
+
+		la t4, LABEL  ; the register on the left will get the address of the label on the right.
+
+	Easy, but there's another use. You can (have to with HCS's assembler) use it the same as LI also,
+so like this:
+
+		la t0,2  ; register/left gets number/right
+
+	Wow, that was way easier and shorter to explain than I thought it was going to be... (Did I miss something?)
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	Hopefully tomorrow, we'll take a look at the Video Interface Mem. Registers.
+	Nintendo seems to like memory mapping their initialization interfaces...
+
+	Happy Learning!,
+		- GbaGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day3n64.htm">Day 3</a></center>
+
+</b></pre></p>
+</body>
+</html>

@@ -1,0 +1,7 @@
+Notes on the source code...					Christopher Field 05/10/98
+
+a)	Its messy
+b)	Half of it isn't implemented (e.g. IPS patching)
+c)	It compiles fine under both Visual C/C++ 5.0 and 6.0
+d)	If you do anything with the source, then it'd be nice if you sent me a copy.
+e)	I'm not supporting it, you're on your own!

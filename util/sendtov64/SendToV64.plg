@@ -1,0 +1,46 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: SendToV64 - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x809 /fo"Release/resource.res" /d "NDEBUG" "D:\Visualc\SendToV64\resource.rc"" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP8261.TMP" with contents
+[
+/nologo /ML /W3 /GX /O1 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Release/SendToV64.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"D:\Visualc\SendToV64\port.cpp"
+"D:\Visualc\SendToV64\syncv64.cpp"
+"D:\Visualc\SendToV64\Winmain.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP8261.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP8262.TMP" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/SendToV64.pdb" /machine:I386 /out:"Release/SendToV64.exe" 
+.\Release\port.obj
+.\Release\syncv64.obj
+.\Release\Winmain.obj
+.\Release\resource.res
+]
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP8262.TMP"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+port.cpp
+syncv64.cpp
+D:\Visualc\SendToV64\syncv64.cpp(65) : warning C4101: 'lMaxWait' : unreferenced local variable
+D:\Visualc\SendToV64\syncv64.cpp(134) : warning C4244: '=' : conversion from 'long' to 'char', possible loss of data
+D:\Visualc\SendToV64\syncv64.cpp(135) : warning C4244: '=' : conversion from 'long' to 'char', possible loss of data
+D:\Visualc\SendToV64\syncv64.cpp(136) : warning C4244: '=' : conversion from 'long' to 'char', possible loss of data
+D:\Visualc\SendToV64\syncv64.cpp(137) : warning C4244: '=' : conversion from 'long' to 'char', possible loss of data
+Winmain.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+SendToV64.exe - 0 error(s), 5 warning(s)
+</pre>
+</body>
+</html>

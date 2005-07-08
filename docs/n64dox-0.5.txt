@@ -1,0 +1,518 @@
+LaC's n64 hardware dox... v0.5 (public release)
+
+---------------
+ release notes
+---------------
+  This little doc is my attempt to make the n64 coding scene a little
+better I hope. It is a compilation of stuff i've been working on for some
+months... a result of alot of reversing of several games compiled with
+libultra, and some help from certain people.   It is mainly for people who
+wish to code without using a developement library (like libultra). It is
+specfically for doing intros,trainers, etc... to attach to roms. It is very
+simplistic, and assumes you have some knowledge already. In other words this
+doc isnt really meant for people just starting. You should probably have read
+the libultra docs and be familiar with the n64 hardware... and the purpose of
+things like the AI,PI,SI,VI etc...
+I suppose some emulation author could find use of this too.
+ Some people will probably be mad I released this doc, but I guess since
+nothing is really happening in the n64 scene it might get things moving?
+Especially from people that really want to hack. Also I have noticed some
+really crappy and inaccurate info being released which basically looks like
+stuff ripped from czn intros or something and contains no real knowledge. Yes
+all you freedom of information people... you want info... hack it yourself.
+Or read this doc, then hack some more ;)
+Also I can't guarantee the 100% accuracy of any of this document. Also I liked
+to be greeted if you are using my dox or my source code in your work.
+
+ NOTE:
+   SOME symbols in the follow text will reference symbols #define'd in RCP.H
+   or r4300.h so make sure you look there when you are confused. Yes I know t
+   hey are part of the standard devkit and some people dont have it... but i'm
+   sure you can find these files if you really need to.
+
+-VI  (video interface)
+
+  Accessing the video on the n64 is very easy (like most things in this doc)
+
+  * initialization:
+     The video hardware is initialized by simply writing all the necessary
+     values to the vi regs.  I'm only going to discuss one mode here, but u
+     can easily find the values for other modes by just printing out reg
+     values to the screen after initing your favorite mode with libultra.  
+     You can also alter values of course to make your own modes.  That I will
+     not discuss here.  The one i'm discussing is the simple 320x240 RGBA
+     16bit non-antialiasing mode.
+
+     The base address of the VI regs are mapped at 0xa4400000, so to simply
+     write a value to a reg in r4300 asm would be like this:
+       ;;this is just an example but it happens to be the write to the
+       ;;VI_H_WIDTH_REG defined in RCP.H
+       lui      at,0xa440     ;at=0xa4400000
+       li       t0,0x140      ;t0=0x140
+       sw       t0,0x8(at)    ;write t0 to reg at $at+0x8 
+
+      in C:
+
+       IO_WRITE(VI_H_WIDTH_REG,0x140);  //IO_WRITE and IO_READ are in r4300.h
+
+      Ok to initialize this mode here are the values to write for each reg:
+
+  -> (VI_CONTROL_REG, 0x0000320e)
+  -> (VI_DRAM_ADDR_REG,0)
+  -> (VI_H_WIDTH_REG,0x140)
+  -> (VI_V_INTR_REG,0x2)
+  -> (VI_V_CURRENT_LINE_REG,0x0)
+  -> (VI_TIMING_REG,0x03e52239) 
+  -> (VI_V_SYNC_REG,0x0000020d)
+  -> (VI_H_SYNC_REG,0x00000c15)
+  -> (VI_H_SYNC_LEAP_REG,0x0c150c15)
+  -> (VI_H_VIDEO_REG,0x006c02ec)
+  -> (VI_V_VIDEO_REG,0x002501ff)
+  -> (VI_V_BURST_REG,0x000e0204)
+  -> (VI_X_SCALE_REG,0x200);
+  -> (VI_Y_SCALE_REG,0x01000400)
+
+    All the values are pretty obvious and dont need much explaining. And with
+    a little hacking you can come up with your own modes.
+
+    If you've managed to get this far you know that the video screen is just
+    showing zebra stripes or some garbage. The reason for this is you have
+    not set the frame buffer for this video mode.  This is what
+    osViSwapBuffer() is for (if you have used libultra). to set your frame
+    buffer simply write the rdram address of the buffer to VI_DRAM_ADDR_REG
+    or just change the init code to have it set it up.
+    Now you can simply write your graphics to the buffer and they'll be
+    updated.
+
+    NOTE: There is ALOT of other things you can tweek, change, by messing with
+    the VI regs... mess around... figure it out. 
+    Also note that there can be cache problems with the video if you are using
+    a virtual address like 0x80200000 in your VI_DRAM_ADDR_REG, try using the
+    physical address 0xa0200000 instead or make sure you are writing back and
+    invalidatiing the cache lines. if you are confused about physical and
+    virtual addresses or how the cache works, read the r4300 man... and if you
+    still don't understand it totally, join the club.
+
+  * end init
+
+  * vertical retrace wait:
+     pseudo code:
+     while ( VI_CURRENT_REG != 512 )  {wait}  // I got this value from bpoint
+  * end retrace wait
+
+-AI  (audio interface)
+
+  The audio interface is probably the easiest thing to do.
+
+  * initialization:
+
+    None needed.  Altho I suppose you can include setting the sound frequency
+    and/or enabling the AI_CONTROL_REG as initialization (step #4 below)
+
+  * end init
+
+  * setting frequency:
+
+    1. Set the dac rate
+       write to AI_DACRATE_REG this value: (VI_NTSC_CLOCK/freq)-1
+                                                ^could be pal
+    2. Set the bitrate (4bit, 8bit, or 16bit)
+       write to the AI_BITRATE_REG the value: bitrate-1
+
+  * end frequency
+
+  * sending sound buffer
+
+    1. Before sending a buffer, its a good idea to make sure one isnt already
+       being played.  Simply read AI_STATUS_REG then AND it with
+       AI_STATUS_FIFO_FULL.  if the result is true... then wait.
+
+    2. Write the 64bit aligned address of the sound buffer to AI_DRAM_ADDR_REG
+
+    3. Write the length of the buffer be played to AI_LEN_REG
+       NOTE: this length must be multiple of 8, no larger than 262144 bytes.
+
+    4. Write AI_CONTROL_DMA_ON to the AI_CONTROL_REG (only needed once)
+
+  * end sound buffer     
+
+  NOTE: If you have read the libultra manuals you will notice when it
+        discusses the AI routines (osAi.man) it says the AI regs are double
+        buffered. This is important to realize that you can send one buffer
+        while another is playing. Also note that the AI_LEN_REG counts down
+        to 0 as the current buffer is being played. This can be useful to tell
+        how much of the buffer is left.
+
+-PI  (peripheral interface)
+
+  * init pif:  ( you should do this before you do anything! )
+
+    1. Simply write 0x8 to PIF_RAM_START+0x3c
+
+  * end init pif
+
+  * PI DMA transfer 
+
+    1. Wait for previous dma transfer to finish (see next explanation)
+    2. Write the physical dram address of the dma transfer to PI_DRAM_ADDR_REG
+       NOTE: To convert from a virtual address to physical, simply
+             AND the address with 0x1fffffff.
+    3. Write the physical cart address to PI_CART_ADDR_REG.
+    4. Write the length-1 of the dma transfer to PI_WR_LEN_REG
+       this is from cart->rdram change this to RD   ^  for the other way
+       also note you must write a 0x2 to PI_STATUS_REG in order to write to
+       the cart space (0xb0000000) 
+    NOTE: The cart addr must be 2 byte aligned, and the rdram addres must
+          8-byte aligned. Once again make sure you write back the cache lines
+          and invalidate the cache lines if needed, or you will run into
+          trouble.
+
+  * end PI DMA transfer
+
+  * PI DMA wait
+
+    1. Read PI_STATUS_REG then AND it with 0x3, if its true... then wait until
+       it is not true.
+
+    NOTE: Look at RCP.H for more information on the PI_STATUS_REG and the PI
+          in general.
+
+
+  * end PI DMA wait
+
+-reading and writing the new sram chip (DS1) -
+
+  Sram is mapped at 0xa8000000.
+  The trick is that you cannot write to it directly, you must us the PI.
+  Actually it is possible to write to it directly, but I dont know how because
+  it needs to be timed carefully.
+  Its a little tricky which requires writing some values into some PI regs
+  to initialize the PI correctly for the type of transfer protocol the sram
+  needs for successful data transfer.
+
+    * Init the PI for sram
+
+      1. write 0x05 to the PI_BSD_DOM2_LAT_REG.
+      2. write 0x0c to the PI_BSD_DOM2_PWD_REG.
+      3. write 0x0d to the PI_BSD_DOM2_PGS_REG.
+      4. write 0x02 to the PI_BSD_DOM2_RLS_REG.
+
+    * End init PI for sram
+
+  Now you should be able to use the PI to transfer between rdram and sram.
+  (refer to the dox above concerning PI, but replace the ROM address with
+  sram address 0xa8000000).
+
+
+-SI  (serial interface)
+
+   The SI is very similar to the PI for obvious reasons. It is used mainly for
+   accessing the joyport and pifram... which will be dicussed in the next
+   section.
+
+   * SI DMA transfer
+    1. Wait for previous dma transfer to finish (see next explanation)
+
+    2. Write the physical dram address of the dma transfer to SI_DRAM_ADDR_REG
+
+    3. Write PIF_RAM_START to the SI_PIF_ADDR_RD64B_REG or the
+      SI_PIF_ADDR_WR64B_REG, depending on what you wish to do (read or write).
+      This will cause a 64B read or write between pif_ram and rdram.
+
+    NOTE: The SI addr must be 2 byte aligned, and the rdram addres must
+          8-byte aligned. Once again make sure you write back the cache lines
+          and invalidate the cache lines if needed, or you will run into
+          trouble.
+
+   * end SI DMA tranfer
+
+   * SI DMA wait
+
+    1. Read SI_STATUS_REG then AND it with 0x3, if its true... then wait until
+       it is not true.
+
+    NOTE: Look at RCP.H for more information on the SI_STATUS_REG and the SI
+          in general.
+
+   * end SI DMA wait
+
+-PIF Usage-  (controller reading/detection)
+
+   If you have done research and peeked at the RCP.h file you should
+   already know some things about the pif.  The SI is used to send commands
+   to the pif ram that tell the pif what to do.  The SI is also used to read
+   the results of those commands back. You can tell the pif to do alot of 
+   stuff. for instance... reading joysticks, reading mempacks, detecting
+   joysticks, detecting mempacks, activating the rumblepack, detecting the
+   rumble pack, reading cartridge eeprom... etc.  In this version of the
+   document I will only cover reading joysticks and detection.
+
+   Below is a very brief and not so detailed view of pif command structure
+   and an example of using them to perform some operations.
+
+   first this is how pif ram is setup:
+
+   [64byte block] at 0xbfc007c0 (1fc007c0)
+   {              command       data recv
+    channel 1  -  00 00 00 00 : 00 00 00 00 - 8 bytes 
+    channel 2  -  00 00 00 00 : 00 00 00 00 - 8 bytes
+    channel 3  -  00 00 00 00 : 00 00 00 00 - 8 bytes
+    channel 4  -  00 00 00 00 : 00 00 00 00 - 8 bytes
+    channel 5  -  00 00 00 00 : 00 00 00 00 - 8 bytes
+                  00 00 00 00 : 00 00 00 00 - 8 bytes  (dummy data)
+                  00 00 00 00 : 00 00 00 00 - 8 bytes  (dummy data)
+                  00 00 00 00 : 00 00 00 00 - 8 bytes  (dummy data)
+   }                                     ^^pif status control byte
+
+   This is how you should visualize it for operations I describe below. For
+   other stuff it is setup differently... but in all cases it is just
+   64 bytes.
+
+   Each channel can contain a command in the first 4 bytes (the left column).
+
+   Each command has a structure like so:
+
+   byte 1 = 0xff for new command | 0xfe for end of commands 
+   byte 2 = number of bytes to send
+   byte 3 = number of bytes to recieve
+   byte 4 = Command Type
+
+   Command Types:
+
+   00 = get status
+   01 = read button values
+   02 = read from mempack
+   03 = write to mempack
+   ff = reset controller
+   04 = read eeprom
+   05 = write eeprom
+
+   Here is an example on how to build a command for reading a joystick:
+
+   * Init the joysticks for reading
+
+     send the pif command block to pif_ram using the SI DMA
+     -----------------------------++------------------------------
+     such a block to read 4 joys: ||  such a block to read 1 joy:
+      [64byte block]              ||   [64byte block]
+      {    command    data        ||   {
+     joy1  ff010401 - ffffffff    ||  joy1  ff010401 - ffffffff
+     joy2  ff010401 - ffffffff    ||        00000000 - ffffffff
+     joy3  ff010401 - ffffffff    ||        00000000 - ffffffff
+     joy4  ff010401 - ffffffff    ||        00000000 - ffffffff
+           fe000000 - 00000000    ||        fe000000 - 00000000  
+           00000000 - 00000000    ||        00000000 - 00000000
+           00000000 - 00000000    ||        00000000 - 00000000
+           00000000 - 00000001    ||        00000000 - 00000001
+      }                           ||    }
+      ----------------------------++------------------------------
+      after sending this the joystick values will now be updated in pif RAM
+      NOTE: make sure you put the ffffffff in the data column, otherwise it
+            will cause errors.
+
+     ff010401 is the command that reads the joystick values.
+     |
+     ff is basically a flag for a new command.
+     01 says we are going to send 1 byte (the command type).
+     04 says we are going to read 4 bytes (into the data column)
+     01 is the command type (read button values).
+
+     You will notice the 5th channel command is fe, this command signals
+     the end of the command block.  The 00000001 tells the pif there is a new
+     command block to be processed.  Without this the command block will not 
+     be executed. 
+
+    * end Init joysticks
+
+
+    * Read Joysticks
+        The joy values can be read from the spaces marked by 0xFFFFFFFF in the
+        block above.  Of course you must first DMA from pif ram back to rdram.
+        Or you can just read the data directly by making a pointer to
+        0xbfc007c0 (start of the pif_ram), although I would not recommend that
+        method.
+        Here would be a sufficient C code to read in a controller's values:
+
+        void siReadJoy(int cont,OSContPad *p)
+        {                                     
+         unsigned char pif_block[64];
+         si_DMA_from_pif (pif_block); 
+         memcpy (p,pif_block+((cont*8)+4),4);
+        }
+
+        The OSContPad structure is in the libultra header file OS.H
+
+    * end Read Joysticks
+
+    * Detecting if Joysticks are connected
+
+      This is very easy and can be done after you send any command to read
+      or write something to the controllers.  Whenever you try and execute a
+      command on a channel and that device on the channel (like a joystick)
+      is not present the pif will write an error value to the command column
+      that the error occured in. For instance... lets say you did the example
+      above and you tried to read controller values.  Well if you tried to
+      read the controller values for all four joystick channels you will
+      notice that if you don't have a joystick physically plugged in to the
+      port(s) you are reading from, then no values will appear.  Well I think
+      this is an obvious result.  But also notice that the pif will put an
+      error value into the upper 4 bits of the 3rd byte in the command column.
+
+      The Error values are as follows:
+
+      0 - no error, operation successful.
+      8 - error, device not present for specified command.
+      4 - error, unable to send/recieve the number bytes for command type.
+
+
+      This would be an example of the result of trying to read 4 controllers
+      (like in above example) and only a joystick in port 3 is connected:
+
+     -----------------------------------+
+      [64byte block] read from pif ram  |
+      {    command    data              |
+     joy1  ff018401 - ffffffff          <--- 8 is the error code for device
+     joy2  ff018401 - ffffffff          |    not present.
+     joy3  ff010401 - 00000000          <--- read was successful on this 
+     joy4  ff018401 - ffffffff          |    channel, no buttons being pressed
+           fe000000 - 00000000          |
+           00000000 - 00000000          |
+           00000000 - 00000000          |
+           00000000 - 00000000          |
+      }                                 |
+     -----------------------------------+
+
+      This would be an example of the result of trying to read 5 bytes for the
+      read joystick command:  (all 4 joysticks are connected)
+
+     -----------------------------------+
+      [64byte block] sent to pif ram    |
+      {    command    data              |
+     joy1  ff010501 - ffffffff          <---
+     joy2  ff010501 - ffffffff          <--- note we tried to read 5 instead
+     joy3  ff010501 - ffffffff          <--- of 4.  The device only allows you
+     joy4  ff010501 - ffffffff          <--- to read 4 bytes with that command
+           fe000000 - 00000000          |
+           00000000 - 00000000          |
+           00000000 - 00000000          |
+           00000000 - 00000001          |
+      }                                 |
+     -----------------------------------+
+     -----------------------------------+
+      [64byte block] read from pif ram  |
+      {    command    data              |
+     joy1  ff014501 - 00000000          <--- (note that no buttons are being
+     joy2  ff014501 - 00000000          <---  pressed on any controller)
+     joy3  ff014501 - 00000000          <--- notice the 4. It is the error
+     joy4  ff014501 - 00000000          <--- code for send/recieve.
+           fe000000 - 00000000          |    
+           00000000 - 00000000          |
+           00000000 - 00000000          |
+           00000000 - 00000000          |
+      }                                 |
+      ----------------------------------+
+
+      NOTE: Even though we tried to read an extra byte for the buttons values
+            the button values will still appear... but the error code will
+            still be generated because there is only 4 bytes to be read, not
+            5.
+
+    * end Detecting if Joysticks are connected 
+
+    * Getting controller status
+
+     ff010300 is the command used to get the controller status.
+     |
+     ff is basically a flag for a new command.
+     01 says we are going to send 1 byte (the command type).
+     03 says we are going to read 3 bytes (into the data column)
+     00 is the command type (get controller status).
+
+     Here is and example of reading the status from 4 controllers
+     Only the first two controllers are actually plugged in.
+     There is a pack in the 1st controller and there is no pack in the second
+     controller.
+
+     -----------------------------------+
+      [64byte block] sent to pif ram    |
+      {    command    data              |
+     joy1  ff010300 - ffffffff          |
+     joy2  ff010300 - ffffffff          |
+     joy3  ff010300 - ffffffff          |
+     joy4  ff010300 - ffffffff          |
+           fe000000 - 00000000          |
+           00000000 - 00000000          |
+           00000000 - 00000000          |
+           00000000 - 00000001          |
+      }                                 |
+     -----------------------------------+
+     -----------------------------------+
+      [64byte block] read from pif ram  |
+      {    command    data              |
+     joy1  ff010300 - 050001ff          <--- notice only 3 bytes were read
+     joy2  ff010300 - 050002ff          <--- that is why the last byte is 
+     joy3  ff018300 - ffffffff          |    still ff                     
+     joy4  ff018300 - ffffffff          |                          
+           fe000000 - 00000000          |    
+           00000000 - 00000000          |
+           00000000 - 00000000          |
+           00000000 - 00000000          |
+      }                                 |
+      ----------------------------------+
+
+    The first two bytes in the data column is the controller type.  I'm not
+    exactly sure what use this is... do steering wheels have a different
+    controller type? ;) I dunno.
+    The 3rd byte is useful.  Its for detecting if there is something plugged
+    into the mempack slot on the controller.
+    1 = pack present
+    2 = nothing plugged in
+
+    * end Getting controller status
+
+    * reading/writing cart eeprom
+
+      COMING NEXT RELEASE
+
+    * end reading/writing cart eeprom
+
+    * reading/writing mempack eeprom
+
+      COMING NEXT RELEASE
+
+    * end reading/writing mempack eeprom
+
+
+
+--------
+ Future
+--------
+  I know this document isnt much as it stands but I plan on adding some rsp
+info into it and of course any other info I currently havent included as time 
+permits.
+Also all my source code for the stuff in this doc might get released.
+but right now everything is meant to build with SN's assembler and linker. i
+wish to recode it so it compiles with a freeware assembler... so once I do
+that I will release source... or maybe before ;)
+
+__-----------------------------------------------__
+  greets to people who helped me with some stuff!
+__-----------------------------------------------__
+
+  nagra, bpoint, hartec, jovis, wild_fire, datawiz
+
+
+
+Questions & Comments: about anything except where to get a devkit or libultra
+or roms or header file or whatever.  In other words if you have a question
+about stuff in this doc and you are fairly intelligent, or you have a question
+about how to implement things in your n64 program or emulator...
+
+contact LaC on IRC efnet in #n64dev
+or if you must:
+
+EMAIL: LaC@dextrose.com
+
+
+
+-EOF-

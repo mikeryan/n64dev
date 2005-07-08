@@ -1,0 +1,74 @@
+0000-1FFF Block 0 (Control Block)
+   00- 7F Block 0   200-27F Block 4   400-47F Block 8   600-67F Block C
+   80- FF Block 1   280-2FF Block 5   480-4FF Block 9   680-6FF Block D
+  100-17F Block 2   300-37F Block 6   500-57F Block A   700-77F Block E
+  180-1FF Block 3   380-38F Block 7   580-5FF Block B   780-7FF Block F
+
+ 800-11FF Reserved    1200-1F7F N.A.    1F80-1FFF Write test frame
+
+2000-3FFF Block 1    C000- DFFF Block 6   16000-17FFF Block B
+4000-5FFF Block 2    E000- FFFF Block 7   18000-19FFF Block C
+6000-7FFF Block 3   10000-11FFF Block 8   1A000-1BFFF Block D
+8000-9FFF Block 4   12000-13FFF Block 9   1C000-1DFFF Block E
+A000-BFFF Block 5   14000-15FFF Block A   1E000-1FFFF Block F
+
+Block 0 Frames 0-15
+  Offset 00     Block status
+                51  First block
+                52  Middle block
+                53  Last block
+  Offset 01-03  00 00 00
+  Offset 04-06  Use bytes (length of save game)
+                00 20 00  1 block     00 20 01   9 blocks
+                00 40 00  2 blocks    00 40 01  10 blocks
+                00 60 00  3 blocks    00 60 01  11 blocks
+                00 80 00  4 blocks    00 80 01  12 blocks
+                00 A0 00  5 blocks    00 A0 01  13 blocks
+                00 C0 00  6 blocks    00 C0 01  14 blocks
+                00 E0 00  7 blocks    00 E0 01  15 blocks
+                00 00 01  8 blocks
+                The length is only given in the first block (0x51),
+                All other blocks (status 0x52 & 0x53) have a length
+                of  00 20 00  regardless of the number of block left.
+  Offset 07     00
+  Offset 08-09  Link order block
+                Next block in multi-block save (Numbered from 0)
+                A value of  01 00  refers to block at 0x4000
+                A value of  07 00  refers to block at 0x10000
+                A value of  0E 00  refers to the last block (0x1E000)
+  Offset 0A-0B  Country Code (BI, BA, BE)
+  Offset 0C-15  Product Code (SAAA-00000)
+  Offset 16-1D  Identifier
+  Offset 1E-7E  Unused
+  Offset 7F     XOR
+
+Block 1-F
+  Offset  00- 5F  Title
+  Offset  60- 7F  Palette
+Grn Grn Grn Red | Red Red Red Red | Nul Blu Blu Blu | Blu Blu Grn Grn
+ 32  16  8  128 |  64  32  16  8  |     128  64  32 |  16  8  128  64
+  Offset  80- FF  First image
+  Offset 100-17F  Second image
+
+Red   1F 00  0001 1111 0000 0000
+Green E0 03  1110 0000 0000 0011
+Blue  00 7C  0000 0000 0111 1100
+             GGGR RRRR NBBB BBGG
+             3451 2345  123 4512
+          0  0000 0000 0000 0000
+          8  0010 0001 0000 0100
+         16  0100 0010 0000 1000
+         32  1000 0100 0001 0000
+         64  0000 1000 0010 0001
+        128  0001 0000 0100 0010
+
+Same format:  MC, MCD & DDF
+GME is MCD with extra header
+VGS is MCD with extra header
+
+MCS -> PSX (74 byte smaller)
+  Remove bytes  00-09   10 bytes
+  MCS bytes x0A-x1D becomes PSX bytes x00-x14
+  PSX bytes x15-x31 appears to be the name in ASCII
+  PSX bytes x32-x35 appears to always be 0x1D 0x0B 0x0B 0x00
+  MCS offset x80 begins at PSX offset x36

@@ -1,0 +1,412 @@
+The analyze infomation of PAD-controler and Memery I/F in PlayStation
+							95/ 4/17 T.Fujita
+					   96/1/4 translated by H.Kashima
+
+CAUTION: No warranty in this infomation. 
+
+1. pin assign
+
+	memory card
+        _______________________________ 
+       |                               |
+       |  O  O  O    O  O  O    O  O   |    (front view PSX)
+       |_______________________________|
+
+    pin   9  7  6    5  4  3    2  1
+
+	     PS   PAD connecter
+	 =============================
+	|  O  O  O| O  O  O| O  O  O |    (front view PSX)
+	 \________|________|_________/
+
+    pin    9  8  7  6  5  4  3  2  1
+
+	Pin signal  dir active description
+	--------------------------------------------------------------------
+	 1. dat      in   pos  data from pad or memory-card
+	 2. cmd      out  pos  command data to pad or memory-card
+	 3. +7V      --   --   +7.6V power source for CD-ROM drive
+	 4. gnd      --   --
+	 5. +3V      --   --   +3.6V power source for system
+	 6. sel      out  neg  select pad or memory-card
+	 7. clk      out  --   data shift clock 
+	 8.   --     --   --   N.A.
+	 9. ack      in   neg  acknowladge signal from pad or memory-card
+	--------------------------------------------------------------------
+
+	*1) direction(in/out) is based from PSX
+
+	*2) metal edge in pad connecter is connected pin 4 and sheald calbe.
+
+	*3) signal SEL in PAD1, PAD2 is separated.
+
+
+2. Comminucation timing chart
+
+  Timing is compatibled in PAD, Memory-card.
+  
+
+Overview
+      ____                                                              _____
+ SEL-     |____________________________________________________________|     
+      ______        ____        ____        ____        ____        _________
+ CLK        ||||||||    ||||||||    ||||||||    ||||||||    ||||||||         
+      _______________________________________________________________________
+ CMD       X  01h   XXXX  42h   XXXX  00h   XXXX  00h   XXXX  00h   XXXX     
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
+           _____________________________________________________________     
+ DAT  -----XXXXXXXXXXXXX   ID   XXXX   5Ah  XXXX  key1  XXXX  key2  XXXX-----
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
+
+ ACK- ---------------|_|---------|_|---------|_|---------|_|-----------------
+
+
+top command. first comminucation(device check?)
+      ____                                                                   
+ SEL-     |__________________________________________________________________
+      ______   _   _   _   _   _   _   _   __________________   _   _   _   _
+ CLK        |_| |_| |_| |_| |_| |_| |_| |_|                  |_| |_| |_| |_| 
+      __________                                                  ___        
+ CMD            |________________________________________________|   |_______
+                                                             ____            
+ DAT  -----XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    |___________
+                                                                             
+ ACK- ----------------------------------------------|___|--------------------
+
+	X = none, - = Hi-Z
+
+    0x81 is memory-card, 0x01 is standard-pad at top command.
+
+    serial data transfer is LSB-First format.
+
+    data is down edged output, PSX is read at up edge in shift clock.
+
+    PSX expects No-connection if not returned Acknoledge less than 100 usec.
+
+    clock pluse is 250KHz.
+
+    no need Acknoledge at last data.
+
+    Acknoledge signal width is more than 2 usec.
+
+    time is 16msec between SEL from previous SEL.
+
+    SEL- for memory card in PAD access.
+
+
+3. example schematic chart of interface(5 volte to 3.3 volte convertion)
+
+example in PAD
+
+	  PAD			       PS system
+			  /|  P  R,200ohm 		P=pullup(no need?)
+	PAD SEL   ---- O<  |--+--\/\/\/-- PS SEL-	
+			  \|				
+			HC14
+			  /|  P  R,200ohm
+	PAD CMD-  ---- O<  |--+--\/\/\/-- PS CMD 	
+			  \|				
+			HC14
+			  /|  P  R,200ohm
+	PAD CLK-  ---- O<  |--+--\/\/\/-- PS CLK 	
+			  \|				
+			HC14
+	PAD DAT   _________				
+			  |				
+			|\O				
+		    ----| > ------------- PS DAT	
+		   |	|/ 				
+		   V	HC125
+	PAD ACK-  _________				
+			   |				
+			|\O				
+		    ----| > ------------- PS ACK-	
+		   |	|/				
+		   V   HC125
+
+
+example in PSX
+
+	PSX				  PAD
+							
+	    SEL-  _________				
+			   |				
+			|\O  P			P=pullup
+		    ----| >--+---------- PAD SEL-	
+		   |	|/ 				
+		   V	HC125
+	    CLK   _________				
+			   |				
+			|\O  P			
+		    ----| >--+---------- PAD CLK	
+		   |	|/				
+		   V   HC125
+	    CMD   _________				
+			   |				
+			|\O  P			
+		    ----| >--+---------- PAD CMD	
+		   |	|/				
+		   V   HC125
+
+			/|  P  R,200ohm
+	    DAT-  ----O< |--+--\/\/\/-- PAD DAT	
+			\|				
+			HC14
+
+			/|  P  R,200ohm
+	    ACK-  ----O< |--+--\/\/\/-- PAD ACK- 	
+			\|				
+			HC14
+
+
+4. communication format in PAD
+
+  must be start translation, after command expected "0x01h" from PS-system.
+  PAD has 1-byte ID. pad is send a 2 byte of key-code + extend code after
+PAD ID 'Z'(5Ah).
+
+	normal pad		    timing flow ->
+
+	 10000000 01000010 01011010 01234567 01234567
+	|--------|--------|--------|--------|--------|
+ CMD	|   01h  |  42h   |   00h  |   00h  |   00h  |
+	|--------|--------|--------|--------|--------|
+         xxxxxxxx 10000010 10100101 01234567 01234567
+	|--------|--------|--------|--------|--------|
+ DAT	|  ----  |  41h   |   5ah  |  SW.1  |  SW.2  |
+	|--------|--------|--------|--------|--------|
+		  device ID   'Z'
+
+	data contents of normal PAD.(push low)
+	+----------+----+----+----+----+----+----+----+----+
+	|  byte    | b7 | b6 | b5 | b4 | b3 | b2 | b1 | b0 |
+	+==========+====+====+====+====+====+====+====+====+
+	|   +0     |               -----                   |  N.A.
+	+----------+---------------------------------------+
+	|   +1     |                0x41                   | 'A'
+	+----------+---------------------------------------+
+	|   +2     |                0x5a                   | 'Z'
+	+----------+----+----+----+----+----+----+----+----+
+	|   +3     |LEFT|DOWN|RGHT| UP | STA|  1 |  1 | SEL|
+	+----------+----+----+----+----+----+----+----+----+
+	|   +4     | [] | X  | O  | /\ | R1 | L1 | R2 | L2 |
+	+----------+----+----+----+----+----+----+----+----+
+
+	data contents NEGCON(NAMCO analog controler, push low)
+	+----------+----+----+----+----+----+----+----+----+
+	|  byte    | b7 | b6 | b5 | b4 | b3 | b2 | b1 | b0 |
+	+==========+====+====+====+====+====+====+====+====+
+	|   +0     |               -----                   |  N.A.
+	+----------+---------------------------------------+
+	|   +1     |                0x23                   |
+	+----------+---------------------------------------+
+	|   +2     |                0x5a                   | 'Z'
+	+----------+----+----+----+----+----+----+----+----+
+	|   +3     |LEFT|DOWN|RGHT| UP | STA|  1 |  1 |  1 |
+	+----------+----+----+----+----+----+----+----+----+
+	|   +4     |  1 |  1 |  A |  B |  R |  1 |  1 |  1 |
+	+----------+----+----+----+----+----+----+----+----+
+	|   +5     | handle data   right:0x00, center:0x80 |
+	+----------+---------------------------------------+
+	|   +6     |  I button ADC data (7bit unsigned)    |  00h to 7Fh?
+	+----------+---------------------------------------+
+	|   +7     |       II button ADC data              |  00h to 7Fh?
+	+----------+---------------------------------------+
+	|   +8     |        L button ADC data              |  00h to 7Fh?
+	+----------+---------------------------------------+
+        unknown data bit length in +6 to +8 ADC datas. (7 or 8 may be)
+
+	mouse data contents(push low)
+	+----------+----+----+----+----+----+----+----+----+
+	|  byte    | b7 | b6 | b5 | b4 | b3 | b2 | b1 | b0 |
+	+==========+====+====+====+====+====+====+====+====+
+	|   +0     |               -----                   |  N.A.
+	+----------+---------------------------------------+
+	|   +1     |                0x12                   |
+	+----------+---------------------------------------+
+	|   +2     |                0x5a                   | 'Z'
+	+----------+----+----+----+----+----+----+----+----+
+	|   +3     |  1 |  1 |  1 |  1 |  1 |  1 |  1 |  1 |
+	+----------+----+----+----+----+----+----+----+----+
+	|   +4     |  1 |  1 |  1 |  1 |LEFT|RGHT|  0 |  0 |
+	+----------+----+----+----+----+----+----+----+----+
+	|   +5     | V moves 8bitSigned up:+,dwn:-,stay:00 |
+	+----------+---------------------------------------+
+	|   +6     | H moves 8bitSigned up:+,dwn:-,stay:00 |
+	+----------+---------------------------------------+
+
+
+4. communicaion format in memory-card
+
+memory-card starts data transfer after received command '0x81'
+communication system uses 128-byte per one frame.
+
+WRITE command
+
+    section            size     description
+    -------------------------------------------------------------------------
+    command header        4     memory write command(see figure)
+    address set           2	set a address for write(frames)
+    data block		128	write data for memory
+    XOR flag		  1	exclusive-or code for data check
+    end status	          2	result status from write command
+    end flag		  1	end flag
+    -------------------------------------------------------------------------
+	total		138
+
+     command header			     address pointer
+    |--------|--------|--------|--------|  |--------|--------|
+CMD |   81h  | 57h 'W'|   00h  |   00h  |  | addr.H | addr.L |
+    |--------|--------|--------|--------|  |--------|--------|
+DAT |  ----  |  00h   | 5Ah 'Z'| 5Dh ']'|  |  00h   | addr.H |
+    |--------|--------|--------|--------|  |--------|--------|
+
+     data block					     XOR flag
+    |--------|--------|--------|--------|--------|  |--------|  
+CMD |  dt 1  |  dt 2  |  ....  | dt 127 | dt 128 |  |   xor  |  
+    |--------|--------|--------|--------|--------|  |--------|  
+DAT | addr.L |  dt 1  |  ....  | dt 126 | dt 127 |  | dt 128 |  
+    |--------|--------|--------|--------|--------|  |--------|  
+
+	end status	  end flag		end flag(in case of error)
+    |--------|--------|	|--------|		|--------|
+CMD |   00h  |   00h  |	|   00h  |		|   00h  |
+    |--------|--------|	|--------|		|--------|
+DAT | 5Ch '\'| 5Dh ']'|	| 47h 'G'|		| 4Eh 'N'|
+    |--------|--------|	|--------|		|--------|
+
+    XOR flag = XOR datas in address pointer area and data block area statistics.
+
+   *) if case of error in write command(end flag = 'N'), never write.
+
+example of write data(namco ridge racer)
+
+	output data from PlayStation
+	+0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F   ASCII
+   +00  81 57 00 00 00 80 53 43 11 01 82 71 82 68 82 63   .W....SC..ÇqÇhÇc
+   +10  82 66 82 64 81 40 82 71 82 60 82 62 82 64 82 71   ÇfÇdÅ@ÇqÇ`ÇbÇdÇq
+   +20  81 40 83 5E 83 43 83 80 83 65 81 5B 83 75 83 8B   Å@É^ÉCÉÄÉeÅ[ÉuÉã
+   +30  00 CD 7B 7B 77 7B FB C7 FB D7 FB DB FB DB DD DB   .Õ{{w{........›€
+   +40  DB DB DB DB 7D C7 CB CD FD FD FF FC B7 CC FD DC   €€€€}«ÀÕ.....Ã.‹
+   +50  FF DE FF FC FF FC DB FF DD FD DD FD FD DF C7 77   .ﬁ......›.›..ﬂ«w
+   +60  C7 77 B7 77 B7 77 BC F7 7A EF 38 EB F5 E2 B3 DE   «w∑w∑wº...8..‚≥ﬁ
+   +70  71 D6 4F D2 EC C5 8A B9 48 AD E6 A0 DD D2 5D C6   q÷O“..äπH≠Ê†›“]∆
+   +80  FE B9 7C AD 1A A1 1A 00 00 00                     .π|≠.°....      
+
+	output data from memory-card
+	+0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F   ASCII
+   +00  01 00 5A 5D 00 00 80 53 43 11 01 82 71 82 68 82   ..Z]...SC..ÇqÇhÇc
+   +10  63 82 66 82 64 81 40 82 71 82 60 82 62 82 64 82    ÇfÇdÅ@ÇqÇ`ÇbÇdÇq
+   +20  71 81 40 83 5E 83 43 83 80 83 65 81 5B 83 75 83    Å@É^ÉCÉÄÉeÅ[ÉuÉã
+   +30  8B 00 CD 7B 7B 77 7B FB C7 FB D7 FB DB FB DB DD    .Õ{{w{........› 
+   +40  DB DB DB DB DB 7D C7 CB CD FD FD FF FC B7 CC FD   €€€€€}«ÀÕ.....Ã. 
+   +50  DC FF DE FF FC FF FC DB FF DD FD DD FD FD DF C7   ‹.ﬁ......›.›..ﬂ« 
+   +60  77 C7 77 B7 77 B7 77 BC F7 7A EF 38 EB F5 E2 B3   w«w∑w∑wº...8..‚≥ 
+   +70  DE 71 D6 4F D2 EC C5 8A B9 48 AD E6 A0 DD D2 5D   ﬁq÷O“..äπH≠Ê†›“] 
+   +80  C6 FE B9 7C AD 1A A1 5C 5D 47                     ∆.π|≠.°\]G       
+
+
+
+read command
+
+    section		byte	description
+    -------------------------------------------------------------------------
+    command header	  4	memory read command(see figure)
+    address pointer	  4	address pointer for read(frame)
+    command reaction	  1	received acknowlegde from memory.
+    data header		  1	data header from memory.
+    data address	  2	address of read data
+    data block		128	read data from memory-card
+    XOR flag		  1	excrusive-or code for data check
+    end flag		  1	end flag
+    -------------------------------------------------------------------------
+      total		140
+
+     command header			    address pointer	command responce
+    |--------|--------|--------|--------|  |--------|--------|	|--------|
+CMD |   81h  | 52h 'R'|   00h  |   00h  |  | addr.H | addr.L |	|   00h  |
+    |--------|--------|--------|--------|  |--------|--------|	|--------|
+DAT |  ----  |  00h   | 5Ah 'Z'| 5Dh ']'|  |   00h  |  00h   |	| 5Ch '\'|
+    |--------|--------|--------|--------|  |--------|--------|	|--------|
+
+     data header     data address
+    |--------|	    |--------|--------|
+CMD |   00h  |	    |   00h  |   00h  |
+    |--------|	    |--------|--------|
+DAT | 5Dh ']'|	    | Addr.H | Addr.L |
+    |--------|	    |--------|--------|
+
+     data block					     XOR flag      END flag
+    |--------|--------|--------|--------|--------|  |--------|    |--------|
+CMD |   00h  |   00h  |  ....  |   00h  |   00h  |  |   00h  |    |   00h  |
+    |--------|--------|--------|--------|--------|  |--------|    |--------|
+DAT |  dt 1  |  dt 2  |  ....  | dt 127 | dt 128 |  |   xor  |    | 47h 'G'|
+    |--------|--------|--------|--------|--------|  |--------|    |--------|
+
+
+example of read data(namco ridge racer)
+
+	output data from PSX
+	+0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F   ASCII
+   +00  81 52 00 00 00 80 00 00 00 00 00 00 00 00 00 00   .R.............. 
+   +10  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................ 
+   +20  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................ 
+   +30  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................ 
+   +40  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................ 
+   +50  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................ 
+   +60  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................ 
+   +70  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................ 
+   +80  00 00 00 00 00 00 00 00 00 00 00 00               ............     
+
+	output data from memory-card
+	+0 +1 +2 +3 +4 +5 +6 +7 +8 +9 +A +B +C +D +E +F   ASCII
+   +00  01 00 5A 5D 00 00 5C 5D 00 80 53 43 11 01 82 71   ..Z]..\]..SC..Çq 
+   +10  82 68 82 63 82 66 82 64 81 40 82 71 82 60 82 62   ÇhÇcÇfÇdÅ@ÇqÇ`Çb 
+   +20  82 64 82 71 81 40 83 5E 83 43 83 80 83 65 81 5B   ÇdÇqÅ@É^ÉCÉÄÉeÅ[ 
+   +30  83 75 83 8B 00 CD 7B 7B 77 7B FB C7 FB D7 FB DB   ÉuÉã.Õ{{w{...... 
+   +40  FB DB DD DB DB DB DB DB 7D C7 CB CD FD FD FF FC   ..›€€€€€}«ÀÕ.... 
+   +50  B7 CC FD DC FF DE FF FC FF FC DB FF DD FD DD FD   .Ã.‹.ﬁ......›.›. 
+   +60  FD DF C7 77 C7 77 B7 77 B7 77 BC F7 7A EF 38 EB   .ﬂ«w«w∑w∑wº...8. 
+   +70  F5 E2 B3 DE 71 D6 4F D2 EC C5 8A B9 48 AD E6 A0   .‚≥ﬁq÷O“..äπH≠Ê† 
+   +80  DD D2 5D C6 FE B9 7C AD 1A A1 1A 47               ›“]∆.π|≠.°.G     
+
+
+
+5. format in memory-card
+
+  (about format in 15 block's memory-card)
+  * blocked memory operate. 8Kbyte per block in 128KByte.
+  * top block is block allocation table.
+
+  list of block contents
+
+	block#  name                description
+	  0     block allocation    card ID, directory information
+	  1     data block 1        data area
+          2     data block 
+	  |	      |
+	 14     data block 14       data area
+	 15     data block 15       data area
+
+  * 1 block is 64 separated frame. 128 byte par frame.
+
+  control block
+
+	frame#	description
+	  0	memory card ID
+	 1-15	directory of data block 1 to 15(product #, flag information)
+	16-35	directory of data block(reserved)
+	36-62	N.A.
+	 63	write test frame(used by card-menu)
+
+     *) control block has XOR-code in last data(+7Fh)
+     *) Memory card ID is maked 'MC.....'
+
+frame contents in data block
+
+	frame	description
+	 +0	title(used by card-menu)
+	 +1	character data(used by card-menu)
+	 +2	character data(in case of take an animation in card-menu)
+	+2,+3.. saved data
+

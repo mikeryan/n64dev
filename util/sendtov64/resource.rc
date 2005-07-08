@@ -1,0 +1,262 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAINDLG DIALOG DISCARDABLE  0, 0, 182, 146
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Send To V64 v1.1a - BETA"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Send",IDC_SEND,5,125,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,125,125,50,14
+    LTEXT           "Ready.",IDC_TITLE,5,5,145,10
+    RTEXT           "",IDC_PERCENTDONE,155,5,19,10
+    CONTROL         "Progress2",IDC_PROGRESS,"msctls_progress32",WS_BORDER,5,
+                    20,170,15
+    GROUPBOX        "Information",IDC_FRAME,5,40,170,80
+    LTEXT           "Title",IDC_STATIC_TITLE,42,55,14,8
+    LTEXT           "",IDC_NAME,61,55,104,10,SS_SUNKEN
+    LTEXT           "Country ID",IDC_STATIC_COUNTRY,22,85,34,8
+    LTEXT           "",IDC_COUNTRY,61,85,104,10,SS_SUNKEN
+    LTEXT           "Size (MBits)",IDC_STATIC_SIZE,18,100,38,8
+    LTEXT           "",IDC_ROMSIZE,61,100,24,10,SS_SUNKEN
+    LTEXT           "Size (MBytes)",IDC_STATIC_SIZEMB,95,100,44,8
+    LTEXT           "",IDC_SIZEMB,145,100,20,10,SS_SUNKEN
+    LTEXT           "ROM Format",IDC_STATIC,15,70,41,8
+    LTEXT           "",IDC_FORMAT,61,70,104,10,SS_SUNKEN
+    PUSHBUTTON      "Button1",IDC_TEST,70,125,40,10,NOT WS_VISIBLE
+END
+
+IDD_CONFIG DIALOG DISCARDABLE  0, 0, 217, 181
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Send To V64 Configuration"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,160,5,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,160,22,50,14
+    PUSHBUTTON      "About",IDABOUT,160,160,50,14
+    GROUPBOX        "Port",IDC_STATIC,5,5,140,35,WS_GROUP
+    CONTROL         "LPT1",IDC_LPT1,"Button",BS_AUTORADIOBUTTON,15,20,33,10
+    CONTROL         "LPT2",IDC_LPT2,"Button",BS_AUTORADIOBUTTON,60,20,33,10
+    CONTROL         "LPT3",IDC_LPT3,"Button",BS_AUTORADIOBUTTON,105,20,33,10
+    GROUPBOX        "Associations",IDC_STATIC,5,45,140,55
+    CONTROL         ".v64",IDC_V64CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,60,30,10
+    CONTROL         ".z64",IDC_Z64CHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,60,60,29,10
+    CONTROL         ".rom",IDC_ROMCHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,105,60,29,10
+    CONTROL         ".pal",IDC_PALCHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,80,27,10
+    CONTROL         ".jap",IDC_JAPCHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,60,80,27,10
+    CONTROL         ".usa",IDC_USACHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,105,80,29,10
+    ICON            IDI_ICON1,IDC_STATIC,175,80,21,20
+    GROUPBOX        "Other Associations",IDC_STATIC,5,105,140,70
+    CONTROL         ".gb",IDC_GB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
+                    120,26,10
+    CONTROL         ".sfc",IDC_SFC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,105,
+                    120,27,10
+    CONTROL         ".nes",IDC_NES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,
+                    120,29,10
+    CONTROL         ".gg",IDC_GG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
+                    140,26,10
+    CONTROL         ".md",IDC_MD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,
+                    140,27,10
+    CONTROL         ".pce",IDC_PCE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,105,
+                    140,30,10
+    CONTROL         ".neo",IDC_NEO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,
+                    160,30,10
+    CONTROL         ".emu",IDC_EMU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,
+                    160,31,10
+    CONTROL         ".mp3",IDC_MP3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,105,
+                    160,30,10
+END
+
+IDD_IPSPATCH DIALOG DISCARDABLE  0, 0, 157, 101
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SendToV64 - IPS Patch"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Patch",IDC_PATCH,5,80,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,100,80,50,14
+    GROUPBOX        "Information",IDC_STATIC,5,5,145,65
+    LTEXT           "Address",IDC_STATIC,15,35,26,8
+    LTEXT           "Loop",IDC_STATIC,85,50,17,8
+    LTEXT           "",IDC_LOOP,110,50,25,10,SS_SUNKEN
+    LTEXT           "",IDC_ADDRESS,50,35,85,10,SS_SUNKEN
+    LTEXT           "Value",IDC_STATIC,15,50,19,8
+    LTEXT           "",IDC_VALUE,50,50,25,10,SS_SUNKEN
+    LTEXT           "Status",IDC_STATIC,15,20,21,8
+    LTEXT           "",IDC_STATUS,50,20,85,10,SS_SUNKEN
+END
+
+IDD_EXTDLG DIALOG DISCARDABLE  0, 0, 187, 87
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Send To V64 v1.1a"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Send",IDC_SEND,10,65,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,130,65,50,14
+    LTEXT           "Ready.",IDC_TITLE,10,10,145,10
+    CONTROL         "Progress2",IDC_PROGRESS,"msctls_progress32",WS_BORDER,
+                    10,25,170,15
+    CTEXT           "",IDC_EXTRATEXT,10,45,170,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 210
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 174
+    END
+
+    IDD_IPSPATCH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 150
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 94
+    END
+
+    IDD_EXTDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 80
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904b0"
+        BEGIN
+            VALUE "Comments", "Send utility for N64 backup units\0"
+            VALUE "CompanyName", "Chris Field\0"
+            VALUE "FileDescription", "SendToV64\0"
+            VALUE "FileVersion", "1.1\0"
+            VALUE "InternalName", "SendToV64\0"
+            VALUE "LegalCopyright", "Copyright © 1998\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "SendToV64.exe\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "SendToV64\0"
+            VALUE "ProductVersion", "1.1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "main.ico"
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

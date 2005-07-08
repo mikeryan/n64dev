@@ -1,0 +1,101 @@
+<html>
+<head>
+<title>N64 ASM - Day 6</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 6</h1>
+<pre>
+
+
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>See Screen, See Pic On Screen</b></h2>
+<p style="color: green;"><pre><b>
+	Today we'll put a picture on the screen.
+
+<h3 align="center" style="color: LightCoral;"><b>First</b></h3>
+	Make a 320x240 bitmap in MSPaint, save in C:\n64asm\ as pic.bmp.
+Next, goto <a href="http://www.dextrose.com/">Dextrose</a> and download the
+patch to the GroundZero Devkit, what we want is the BMP2N64 program. Copy
+BMP2N64.exe to your n64 assembly folder. Open a DOS Prompt and type:
+
+cd <i>your assembly folder path</i>
+bmp2n64 -in:pic.bmp -out:pic -label:pic -16
+
+Two files should be created, you can delete the .H file, but keep the .S file.
+The .S File may work as is, but I recommend you delete the lines before
+the label and replace all ".half"s with "dh" (no quotes).
+
+<h3 align="center" style="color: LightCoral;"><b>The Code</b></h3>
+
+	The code for this isn't that much different than we've seen before
+or that you could have come up with on your own. So here we go (the whole thing):
+
+;;---CODE START---;;
+	org $80000400 ; starting point
+
+	li   t1,8         ; crash protection
+        lui    t0,$bfc0   ; I still don't know what this specifically does.
+        sw   t1,$07fc(t0)
+
+        la   t0,$A4400000  ; start of VI regs. ; this block initializes Video
+        li   t1, $103002
+        sw   t1,0(t0)
+        la   t1,$a0200000 ; the frame buffer address
+        sw   t1,4(t0)
+        li   t1,320
+        sw   t1,8(t0)
+        li   t1,$2
+        sw   t1,12(t0)
+        li   t1,$0
+        sw   t1,16(t0)
+        li   t1,$3e52239
+        sw   t1,20(t0)
+        li   t1,$0000020d
+        sw   t1,24(t0)
+        li   t1,$00000c15
+        sw   t1,28(t0)
+        li   t1,$0c150c15
+        sw   t1,32(t0)
+        li   t1,$006c02ec
+        sw   t1,36(t0)
+        li   t1,$002501ff
+        sw   t1,40(t0)
+        li   t1,$000e0204
+        sw   t1,44(t0)
+        li   t1,$200
+        sw   t1,48(t0)
+        li   t1,$400
+        sw   t1,52(t0)
+
+	li t0,0xa0200000
+	li t3,2
+	la t2,MKImage ; MKImage should be the label in your .S file
+	li t1,320*240*2-2
+drawImage:
+	lh t4,0(t2)
+	sh t4,0(t0)   ; there's probably a better way, but oh well :)
+	add t2,t2,t3
+	add t0,t0,t3
+	sub t1,t1,t3  ; there's a better place for this that'll be discussed later
+	bnez t1,drawImage
+
+infin:
+	nop
+	j infin
+
+	include MKImage.S ; MKImage.S should be the filename of your .S File
+;;---CODE STOP---;;
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	I hope you take the time to understand code and not just rip it :)!
+
+	Until Next Time!,
+		- Mike H a.k.a GbaGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day7n64.htm">Day 7</a></center>
+
+</b></pre></p>
+</body>
+</html>

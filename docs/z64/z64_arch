@@ -1,0 +1,59 @@
+The Z64 contains an ALi chip, which is far more than a 386: it is a
+more or less complete PC (memory, dma and timers, isa bus, keyboard
+and simple ISA-based IDE) with that chip, a clock generator and a few
+of DRAM chip you have a completely running system.
+The N64 interface is done (in HW1.x and 2.x) with a QuickLogic PLD,
+while in the 3.x hardware is implemented on-dice in the CPU (which ALi
+is able to customize up to a certain degree...) The "ROM" memory and
+the emulation interface is visible to the Z64 as a set of I/O ports.
+
+The Z64 has 512k of RAM (upgradable to 1Meg soldering in the
+appropriate chip) and 512K of flash memory (this memory is paged).
+it works at ~28MHz. The "ROM" is a 5V dual-bank EDO SIMM. A non-edo or 3.3V
+(5v tolerant) part WON'T work.
+
+the layout of the flash is as follows:
+
+4k of "boot rom": the rom is structured as a ISA-EXTENSION bios (which
+makes the rest of the flash a bootable disk)
+
+444k of a virtual drive (the Z64 sees this as 'A:') formatted as a
+normal MSDOS FAT12 floppy.
+
+64k in which the bios for the x86 is stored two times.
+
+The Z64 uses Caldera's OpenDOS as operating system, but it works just
+fine with any MSDOS-Like OS (for example the EXCELLENT RxDOS, which
+became totally free recently).
+
+The internal bios is limited to CHS addressing for the hard drive, so
+you could have an hard disk of no more than 5xx megabytes, but OpenDOS
+has an even harder limitation: the rom'able version only supports
+512 bytes (1 sector) clusters, so you can have only 32 megs as
+harddrive. This limitation is bypassed by the IOMega GUEST.EXE so it
+is possible to use a zip disk -- most probably using the GUEST.EXE of
+the 250M zip it should work fine.
+
+The Z64 user interface is a simple MSDOS program (the on-screen N64
+gui is done by sending to the N64 a special "ROM")
+
+The Flash-Rom in HW2 is a SST 28SF040
+On the SST site (http://www.ssti.com/) this chip is well documented.
+It's unlikely that software can fry this chip, but it can get in a non-accessible state.
+On the above site you can find instructions to exit this state.
+
+The CDROM is not a problem related to bios or cluster size: in fact
+the "cdrom.sys" driver and MSCDEX.EXE do handle all the accesses to
+the CD directly (the "cdrom.sys" generally hits the hardware directly
+exposing a known interface via a device for MSCDEX.EXE, which hooks
+itself to the int vectors and ADDS functionality to the existing BIOS
+and DOS). The problem is the Z64.EXE program, which makes certain
+assumptions regarding the environment in which he lives: first off the
+drive containing the roms must be writeable -- try to protect the zip
+with the zip tools on the pc -- second it assumes to detect
+insertion/removal of the disk using the ASPI interface (directly
+addressing a "ZIP 100" device. If these requirements are not met it
+behaves somewhat weirdly (don't understand why it still works with
+250M zip, but it does, oddly enough)
+
+

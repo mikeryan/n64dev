@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>N64 ASM - Day 4</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 4</h1>
+<pre>
+
+
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>Math</b></h2>
+<p style="color: green;"><pre><b>
+	Today is going to be all about the math instructions ADD and SUB.
+
+<h3 align="center" style="color: LightCoral;"><b>The ADD Instruction</b></h3>
+	Now, reel in the fish slowly! Oops, ADD means ADDition, not Attension Deficit Disorder!
+What was I thinking!.
+
+	Ok, now that the bad joke is out of the way, ADD works like this:
+		ADD t1,t2,t3  ; t1 = t2 + t3; is just about the simplest way I can describe it.
+
+	I've also seen:
+		ADD t1, 2 ; which is supposed to be t1 += 2, appearantly. THIS DOESN'T ALWAYS WORK!
+		; alot of the time, an assembler either errors or interprets this as t1 += V0
+	
+	Which brings me to another point, a register's (in some assemblers) number can be used
+instead it it's t1,v0,a3 style name. See Nemu's debugger for as far as I know, is the correct order.
+
+<h3 align="center" style="color: LightCoral;"><b>The SUB Instruction</b></h3>
+	INSERT BAD JOKE ABOUT SubWay HERE.
+
+	The SUB Instruction works like so:
+		SUB t0,t4,t5 ; t0 = t4 - t5; There's a chance I might have t4 and t5 in the wrong order,
+		; but I think I have it right.
+
+	The "I've also seen" comment applies to SUB as well.
+
+<h3 align="center" style="color: LightCoral;"><b>The MUL/DIV Instruction</b></h3>
+	The MUL and DIV Instructions work like this (as far as I can tell):
+
+		MUL t0,t2,t4 ; t0 = t2 * t4;
+
+		DIV t1,t0,t6 ; t1 = t0 / t6;
+
+	Also note that all these math instructions use signed numbers.
+
+<h3 align="center" style="color: LightCoral;"><b>Comparison/Branch Instructions</b></h3>
+	This would have been shorter than I wanted it to be, so I'll have to talk about Comparison/Branch Instructions
+also.
+
+	The first instruction we'll learn is BNEZ, BNEZ is a psuedo-instruction that only Anarko's assembler doesn't
+support (along with LA). BNEZ is used like so:
+
+	bnez t1, LABEL ; IF t1 not equal zero THEN GOTO LABEL
+
+For assemblers that don't support it, use:
+
+	bne t1,$0,LABEL ; same as above, note that $0 is the special CPU register that is permanently zero.
+
+The other use for BNE (no Z) is:
+
+	bne t1,t3,LABEL ; IF t1 not equal t3 THEN GOTO LABEL
+
+There is also:
+
+	beq t1,t3,LABEL ; IF t1 == t3 THEN GOTO LABEL
+
+	blt t0,t1,LABEL ; IF t0 less than t1 THEN GOTO LABEL
+
+	bgt t0,t1,LABEL ; IF t0 greater then t1 THEN GOTO LABEL
+
+	ble t2,t4,LABEL ; IF t2 less or = to t4 THEN GOTO LABEL
+
+	bge t2,t4,LABEL ; IF t2 greater or = to t4 THEN GOTO LABEL
+
+Add a U to the end of the instruction (like BGEU) to compare unsigned numbers.
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	Tomorrow, we'll either learn another set of instructions, or we'll do
+something else (maybe a pic on screen)!
+
+	Until Next Time!,
+		- Mike H a.k.a GbaGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day5n64.htm">Day 5</a></center>
+
+</b></pre></p>
+</body>
+</html>

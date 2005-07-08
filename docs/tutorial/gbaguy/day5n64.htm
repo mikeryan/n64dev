@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>N64 ASM - Day 5</title>
+</head>
+<body bgcolor="lavender">
+<h1 align="center" style="color: LightCoral; width: 100%; filter:shadow()">Day 5</h1>
+<pre>
+
+
+
+</pre>
+<h2 align="center" style="color: LightCoral;"><b>Subroutines</b></h2>
+<p style="color: green;"><pre><b>
+	Today is going to be short (maybe) and be about subroutines.
+The N64 CPU's subroutine call instruction is JAL (Jump And Link) it works
+like so:
+
+	JAL LABEL  ; jump to LABEL, putting return address in ra.
+	NOP        ; you should put a NOP after JALs also. Delay Slot?
+
+Then at LABEL you have:
+	
+LABEL:
+	NOP ; Delay Slot NOP
+	JR ra  ; Jump Register ra (that contains return address)
+
+Note that you can't nest subroutine calls, as a subroutine call will erase
+the old return value in ra. The GBA is also like that, the NES is not.
+
+It would help if there was a built-in stack. (Is there?)
+
+<h3 align="center" style="color: LightCoral;"><b>The LUI Instruction</b></h3>
+	I'm not sure what the LUI instruction does, but I'm fairly sure
+that it loads the second 16bits of a register, like so:
+
+	LI t1,0       ; t1 = $00000000
+	LUI t1,$a440  ; after instruction, r1 = $a4400000
+
+Simple enough, if I didn't miss anything.
+
+<h3 align="center" style="color: LightCoral;"><b>This Day In Review</b></h3>
+
+	Tomorrow, we'll definitely put a pic on the screen!
+
+	I Can't Wait!,
+		- GbaGuy
+
+<center><a href="n64asm.htm">Intro</a> - <a href="day6n64.htm">Day 6</a></center>
+
+</b></pre></p>
+</body>
+</html>

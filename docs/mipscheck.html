@@ -1,0 +1,479 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<HEAD>
+
+<TITLE>SGI TPL View (mipscheck)</TITLE>
+<STYLE>
+<!--
+.sr {
+    font-family: Verdana, Helvetica, Arial, Sans-serif;
+    font-size: 10pt;
+}
+.noleft {
+    margin-left: -7px;
+}
+.noul {
+    color: #000000; 
+    text-decoration: none;
+}
+div.navfooter td,th {
+    font-family: Verdana, Helvetica, Arial, Sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+}
+div.navheader td,th {
+    font-family: Verdana, Helvetica, Arial, Sans-serif;
+    font-size: 10pt;
+    font-weight: bold;
+}
+-->
+</STYLE>
+<META NAME="description" content="SGI Technical Publications Library">
+<META NAME="keywords" content="SGI, publications, documentation, help, books">
+<META NAME="owner" content="webmaster@techpubs.sgi.com">
+
+</HEAD>
+
+<BODY TEXT="#000000" LINK="#006600" ALINK="#006600" VLINK="#666666" BGCOLOR="#F9F9F9" TOPMARGIN="0" MARGINHEIGHT="0">
+
+<!-- Global Navigation -->
+<div CLASS="noleft">
+<a href="#sgi_skip_nav" alt="skip navigation header"></a>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#7C7F87">
+<TD ALIGN="LEFT" ROWSPAN="3" WIDTH="126"><A NAME="X"></A><A HREF="http://www.sgi.com/"><IMG SRC="/library/tpl/images/common/sgi_logo_us.gif" ALT="www.sgi.com" HEIGHT="79" WIDTH="126" BORDER="0"></A></TD>
+<TD><NOBR>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="650" VALIGN="top">
+<TR>
+<TD WIDTH="212"><IMG SRC="/library/tpl/images/dots/dot_clear.gif" WIDTH="1" HEIGHT="54"></TD>
+<TD WIDTH="285" VALIGN="top"><NOBR><A HREF="http://www.sgi.com/sales/"><IMG SRC="/library/tpl/images/nav/nav_buy.gif" HEIGHT="21" WIDTH="60" BORDER="0"></A><IMG
+ SRC="/library/tpl/images/nav/nav_top_spacer.gif" HEIGHT="21" WIDTH="15"><A 
+ HREF="http://www.sgi.com/resellers/"><IMG SRC="/library/tpl/images/nav/nav_resellers.gif" HEIGHT="21" WIDTH="61" BORDER="0"></A><IMG 
+ SRC="/library/tpl/images/nav/nav_top_spacer.gif" HEIGHT="21" WIDTH="15"><A 
+ HREF="http://www.sgi.com/company_info/"><IMG SRC="/library/tpl/images/nav/nav_company_info.gif" HEIGHT="21" WIDTH="73" BORDER="0"></A><IMG 
+ SRC="/library/tpl/images/nav/nav_top_spacer.gif" HEIGHT="21" WIDTH="15"><A 
+ HREF="http://www.sgi.com/employment/"><IMG SRC="/library/tpl/images/nav/nav_careers.gif" HEIGHT="21" WIDTH="46" BORDER="0"></A></NOBR></TD>
+ <TD WIDTH="160" ALIGN="left" VALIGN="top" BGCOLOR="#7C7F87"><NOBR><IMG
+  SRC="/library/tpl/images/dots/dot_clear.gif" HEIGHT="1" WIDTH="15"><A
+ HREF="http://www.sgi.com/search/"><IMG SRC="/library/tpl/images/nav/nav_search.gif" HEIGHT="26" WIDTH="67" BORDER="0"></A><A 
+ HREF="http://www.sgi.com/"><IMG SRC="/library/tpl/images/nav/nav_home1.gif" HEIGHT="26" WIDTH="59" BORDER="0"></A></NOBR></TD>
+</TR>
+</TABLE>
+</NOBR></TD>
+</TR>
+
+<TR BGCOLOR="#7C7F87">
+  <TD WIDTH="100%"><IMG
+    SRC="/library/tpl/images/dots/dot_clear.gif" HEIGHT="1" WIDTH="10"></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#CFCFCF" COLSPAN="2" WIDTH="95%"><NOBR><A HREF="http://www.sgi.com/products/"><IMG SRC="/library/tpl/images/nav/nav_prod_corner0.gif" ALT="" WIDTH="30" HEIGHT="23" BORDER="0"></A><A 
+  HREF="http://www.sgi.com/products/"><IMG SRC="/library/tpl/images/nav/nav_prod0.gif" ALT="[Products]" WIDTH="108" HEIGHT="23" BORDER="0"></A><A 
+  HREF="http://www.sgi.com/industries/"><IMG SRC="/library/tpl/images/nav/nav_ind0.gif" ALT="[Industries]" WIDTH="111" HEIGHT="23" BORDER="0"></A><A 
+  HREF="http://www.sgi.com/developers/"><IMG SRC="/library/tpl/images/nav/nav_dev0.gif" ALT="[Developers]" WIDTH="120" HEIGHT="23" BORDER="0"></A><A 
+  HREF="http://www.sgi.com/support/"><IMG SRC="/library/tpl/images/nav/nav_support1.gif" ALT="[Support]" WIDTH="168" HEIGHT="23" BORDER="0"</A><A 
+  HREF="http://www.sgi.com/fun/"><IMG SRC="/library/tpl/images/nav/nav_fun0.gif" ALT="[Serious Fun]" WIDTH="117" HEIGHT="23" BORDER="0"></A></NOBR></TD></TR>
+</TABLE>
+</DIV></DIV>
+<!-- End Global Navigation -->
+
+<!--- site banner --->
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR><TD ALIGN="RIGHT"><IMG SRC="/library/tpl/images/b_techpubs.gif" ALT="SGI Techpubs Library" WIDTH="225" HEIGHT="40"></TD></TR>
+</TABLE><a name="sgi_skip_nav"></a>
+
+<p><font style="line-height:125%" face="Verdana,Helvetica,Arial,Sans-serif"><b><a href="/library/tpl/cgi-bin/init.cgi?coll=0650">IRIX 6.5</a>&nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a href="/library/tpl/cgi-bin/browse.cgi?coll=0650&db=man">Man Pages</a></b><br><a href="javascript:window.find();">find in page</a></font></p>
+
+<!-- 
+Copyright 1996-2003 Silicon Graphics, Inc.
+ALL RIGHTS RESERVED
+
+UNPUBLISHED:  Rights reserved under the copyright laws of the United
+States.   Use of a copyright notice is precautionary only and does not
+imply publication or disclosure.
+
+U.S. GOVERNMENT RESTRICTED RIGHTS LEGEND:
+Use, duplication or disclosure by the Government is subject to restrictions
+as set forth in FAR 52.227.19(c)(2) or subparagraph (c)(1)(ii) of the Rights
+in Technical Data and Computer Software clause at DFARS 252.227-7013 and/or
+in similar or successor clauses in the FAR, or the DOD or NASA FAR
+Supplement.  Contractor/manufacturer is Silicon Graphics, Inc.,
+2011 N. Shoreline Blvd. Mountain View, CA 94039-7311.
+THE CONTENT OF THIS WORK CONTAINS CONFIDENTIAL AND PROPRIETARY
+INFORMATION OF SILICON GRAPHICS, INC. ANY DUPLICATION, MODIFICATION,
+DISTRIBUTION, OR DISCLOSURE IN ANY FORM, IN WHOLE, OR IN PART, IS STRICTLY
+PROHIBITED WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF SILICON
+GRAPHICS, INC.
+-->
+
+<P>
+<PRE style="margin-left: 8px">
+<BIG><B>MIPSCHECK(1)</B></BIG>
+
+&nbsp;<B>NAME</B>
+
+     <B>mipscheck</B>, <B>r8kpp</B>, <B>r5kpp</B>, <B>u64check</B> - Examines binaries for instruction
+     sequences
+
+&nbsp;<B>SYNOPSIS</B>
+
+     <B>mipscheck</B> [<B>-v</B>]  [-<I>condition</I>[:<I>action</I>...] ... ] <I>files</I>
+
+     <B>r8kpp</B> [<B>-v</B>]  [-<I>condition</I>[:<I>action</I>...] ... ] <I>files</I>
+
+     <B>r5kpp</B> [-<I>v</I>]  [-<I>condition</I>[:<I>action</I>...] ... ] <I>files</I>
+
+     <B>u64check</B> [<B>-v</B>]  [-<I>condition</I>[:<I>action</I>...] ... ] <I>files</I>
+
+&nbsp;<B>DESCRIPTION</B>
+
+     <B>mipscheck</B> examines binaries for instruction sequences that may have
+     processor specific behavior.  It reports which conditions it found,
+     and in certain cases, will modify the sequence so that the binary
+     behaves consistently on all platforms.  On exit, <B>mipscheck</B> returns an
+     exit status which is the number of occurrences of the specified
+     condition(s) found.
+
+     The <B>-v</B> option generates verbose output, including the address of each
+     problem found.
+
+     Specifying <B>mipscheck</B> operates on object files, archives files,
+     executables, and DSOs.  Specifying <B>r8kpp</B>, <B>r5kpp</B>, <B>u64check</B> are
+     alternative ways of invoking <B>mipscheck</B> which imply default values
+     designed specifically for the specified architecture.
+
+   <B>Conditions</B>
+     <B>-pref</B>[:<I>action</I>...]   Look for and remove prefetch instructions.
+
+                         The <B>pref</B> and <B>prefx</B> prefetch instructions are part
+                         of the mips4 instruction set.  They are fully
+                         implemented on the r10000 and the r5000 but are
+                         not supported on r8000 based machines.  See the
+                         r8000 errata sheet for more details.
+
+                         The default actions are:  <B>-</B>
+                         <B>pref:check:noforce:repair</B>
+
+     <B>-mfhilo</B>[:<I>action</I>...] Look for instructions that reference the HI or LO
+                         registers and are one or two instructions after a
+                         <B>mfhi</B> or <B>mflo</B> instruction.
+
+                         The mips1, mips2, and mips3 instruction sets
+                         specify that there is a two instruction hazard
+                         between a <B>mflo</B> instruction and a following
+                         instruction that references the LO register.  This
+                         hazard was removed from the mips4 instruction set
+                         (that is, it was up to the processor to supply the
+                         hardware interlock).  The r8000 and the r10000
+                         have this hardware interlock but the r5000 does
+                         not; this requires the compiler to continue to
+                         enforce the scheduling hazard.
+
+                         It is possible that Irix 6.1 64bit binaries may
+                         have this relaxed instruction scheduling sequence.
+                         As of Irix 6.2, all SGI compilers generate code
+                         that does not depend upon the processor handling
+                         the hardware interlock, but rather the compilers
+                         schedule the instructions to avoid it.  See the
+                         r5000 errata sheet for more details.
+
+                         The default actions are:  <B>-</B>
+                         <B>mfhilo:check:noforce:norepair</B>
+
+     <B>-cvtl</B>[:<I>action</I>...]   Look for cvt.s.l and cvt.d.l instructions.  These
+                         instructions convert 64-bit integers to single or
+                         double floating point format.
+
+                         Revision [1.1] of the r5000 can misexecute cvt.s.l
+                         and cvt.d.l instructions when the 64-bit integer
+                         input data is in either of the following ranges:
+
+          0x7FF0 0000 0000 0000    to    0x7FFF FFFF FFFF FFFF
+          0x8000 0000 0000 0000    to    0x800F FFFF FFFF FFFF
+
+                         When input data is in the preceding ranges, these
+                         instructions are supposed to trap into the kernel
+                         where they will be emulated in software.
+                         Unfortunately, they do not trap and they generate
+                         an incorrect result.  These instructions are
+                         fairly rare and are found in mips3 and mips4
+                         executables only; they are never in mips1 or mips2
+                         programs.  There is a work-around for this
+                         problem, implemented entirely within the operating
+                         system kernel, which should be invisible to all
+                         user programs.  See the r5000 errata sheet for
+                         more details.
+
+                         The default actions are:  <B>-</B>
+                         <B>cvtl:check:noforce:norepair</B>
+
+     <B>-fmulmul</B>[:<I>action</I>]   Look for a floating point multiply immediately
+                         followed by a floating point or integer multiply.
+
+                         Very early versions of the r4300 (used only in the
+                         Nintendo Ultra64 Game Player) could mis-execute
+                         the second multiply instruction when the first
+                         multiply encountered a NaN or an Infinity operand.
+                         See the r4300 errata sheet for more details.
+
+                         The default actions are:  <B>-</B>
+                         <B>fmulmul:check:noforce:norepair</B>
+
+     <B>-idivmul</B>[:<I>action</I>]   Look for integer divides and multiplies in
+                         branch-delay slots or preceding a branch-target.
+
+                         On the r10000, under extremely rare conditions, if
+                         an integer multiply or integer divide is
+                         interrupted, the EPC (Exception Program Counter)
+                         will point to the instruction following the
+                         multiply/divide and the HI register will not be
+                         updated.  There is a work-around for this problem
+                         implemented entirely within the operating system
+                         kernel, which should be invisible to all user
+                         programs.  See the r10000 errata sheet for more
+                         details.
+
+                         The default actions are:  <B>-</B>
+                         <B>idivmul:check:noforce:norepair</B>
+
+   <B>Actions</B>
+     Each condition has an optional colon (:) separated list of actions
+     associated with it.  <I>action</I> can be any of the following:
+
+     <B>check</B>          Check for the specified condition (default action).
+
+     <B>nocheck</B>        Do not check for the specified condition.
+
+     <B>force</B>          Examine the instruction sections for the condition even
+                    if <B>mipscheck</B> has other means of determining that the
+                    condition does not exist.  For example, an instruction
+                    sequence involving mips4 instructions could not exist
+                    in a mips3 executable.  <B>force</B> instructs <B>mipscheck</B> to
+                    search for the condition anyway.
+
+     <B>noforce</B>        Do not examine the instruction sequences unless
+                    necessary (default action).
+
+     <B>repair</B>         Modify the instruction sequence so that it does not hit
+                    the specified condition.  This action is valid only
+                    with the <B>-pref</B> condition.
+
+     <B>norepair</B>       Do not modify the code (default action).
+
+     If a condition is specified with no actions, <B>mipscheck</B> assumes the
+     default actions.  For example, specifying <B>-mfhilo</B> is equivalent to
+     <B>-mfhilo:check:noforce:norepair</B>.
+
+   <B>Unexpected</B> <B>Behaviors</B>
+     The <B>-fmulmul</B> option may give a false positive in the case of a
+     floating point multiply instruction in a branch delay slot.  The
+     <B>mipscheck</B> program does not look at the target of the branch and so
+     must assume that the branch target may be another multiply
+     instruction.
+
+     The <B>-pref:force</B> option will almost always give false positives because
+     it will report on every prefetch instruction found instead of just the
+     combinations of prefetches that can lead to mis-execution on an r8000.
+
+     Because <B>mipscheck</B> cannot examine input data for data-dependent
+     problems, it must report on instruction sequences that may fail under
+     the proper conditions.  For example, <B>mipscheck</B> will report all <B>cvt.d.l</B>
+     instructions, not just the ones that may get bad input data.
+
+     Similarly, because <B>mipscheck</B> cannot know about tlb-miss and cache-miss
+     behavior, it must report on instruction sequences that might trigger
+     the r4000 branch-at-end-of-page problem even though the actual
+     conditions required to hit it are quite rare.
+
+&nbsp;<B>NOTES</B>
+
+     &quot;Is this anything to be concerned about?&quot;  is a valid question.  In
+     general, the answer is no.  But SGI developers and some customers who
+     have access to early revisions of systems may need this tool to help
+     identify and/or repair problems.  The following are some relevant
+     cases:
+
+     1. Irix 6.1 binaries compiled with <B>-n32</B> <B>-mips4</B> that are moved to an
+        r5000 system should be checked with <B>r5kpp.</B> There should be no such
+        binaries in the field; but because experimental systems and
+        experimental compilers were available, it is possible that such
+        binaries exist.
+
+     2. The Irix 6.2 (and later) operating systems for r8000s will
+        automatically patch any running program to remove the prefetch
+        instructions.  This will not affect the performance on an r8000 but
+        it will avoid the r8000 prefetch problem.  In rare cases, the
+        kernel will not be able to avoid the problem and will request that
+        the user run the binary through <B>r8kpp</B> to execute the repair
+        permanently.
+
+     3. Ultra64 game developers should always run <I>u64check</I> to locate cases
+        where their assembly code violates the game player's hardware
+        restrictions.
+
+     4. Irix 6.2 binaries compiled using <B>-mips3</B> or <B>-mips4</B>, using 64-bit
+        integers, and running on Revision [1.1] of the r5000 may, in rare
+        cases, encounter the cvtl problem.  The kernel handles this case
+        but incurs a small overhead for checking on this condition.  The
+        overhead should be negligible.  If <I>r5kpp</I> finds no problem in an
+        executable, it will mark the executable as &quot;clean&quot;, which helps the
+        kernel eliminate the overhead.
+
+     5. On all MIPS processors, when an instruction is interrupted, the EPC
+        (Exception Program Counter) points to the interrupted instruction.
+        The exception to that rule is when the interrupted instruction is
+        in a branch-delay slot, in which case the EPC points to the
+        previous branch instruction.  On an r10000, if the kernel ever
+        detects a &quot;bad&quot; EPC for an interrupted integer multiply or integer
+        divide, the kernel will silently (and at no measurable performance
+        cost) repair the EPC  and the damaged HI register.  If the
+        interrupted instruction is in a branch-delay slot of an
+        unconditional branch, the kernel may not be able to repair the EPC
+        and will abort the program, reporting the result in the SYSLOG.
+
+     To make it easier for the kernel to detect and repair the EPC in these
+     cases, the compiler will not put an integer multiply or divide in a
+     branch delay slot of an unconditional branch, nor will it make the
+     following instruction a branch target.  Versions 6.2 through 7.2 of
+     the SGI compilers occasionally break these rules when generating code
+     <B>-mips4</B>.  This is not a problem but it makes it more difficult for the
+     kernel to detect and repair the problem.  Compiler versions 7.2.1 and
+     later always obey these two rules.
+
+&nbsp;<B>EXIT</B> <B>CODES</B>
+
+     <B>mipscheck</B> terminates with an exit code set to the number of conditions
+     found.  For example, if it found 10 <B>-mfhilo</B> problems, it would
+     terminate with an exit code of 10.  In the case of <B>r8kpp,</B> this may be
+     a little misleading because the command has not only found each of the
+     problem conditions but it has repaired them as well.  If you were to
+     run <B>r8kpp</B> on the binary a second time, no conditions would be reported
+     because the binary has been patched.
+
+&nbsp;<B>EXAMPLES</B>
+
+     The following example shows how to build a mips4 binary and verify
+     that there are no prefetch instructions:
+
+          % cc -mips4 -n32 -o bean bean.c
+          % mipscheck -pref:check:norepair bean
+          % echo $status
+
+     The following example shows how to compile a file to be linked into an
+     Ultra64 Game program and verify that there are no dangerous multiply
+     pairs:
+
+          % cc -mips2 -32 -c bean.c
+          % mipscheck -fmulmul:check:norepair bean.o
+          % echo $status
+
+     This example examines the location of the <B>cvtl</B> problem(s) in the
+     <B>/bin/sh</B> program.
+
+          % mipscheck -v -cvtl:check:norepair:force /bin/sh
+          mipscheck [1.6]
+          /bin/sh: r5000 cvt.d.l cvt.s.l  problem at 0x100138d0
+          cvtl found   : 1
+
+     By invoking <B>r8kpp</B>, you are specifying that all r8000 specific
+     conditions should be checked for and repaired.  This is equivalent to
+     specifying the following:
+
+          % mipscheck -pref:check:noforce:repair  myprog
+
+     By invoking <B>r5kpp</B>, you are specifying that all r5000 specific
+     conditions should be checked for and reported.  This is equivalent to
+     specifying the following:
+
+          % mipscheck -mfhilo:check:noforce:norepair  \
+                 -cvtl:check:noforce:repair myprog
+
+     By invoking <B>u64check</B>, you are specifying that all r4300 specific
+     conditions should be checked for and reported.  This is equivalent to
+     specifying the following:
+
+          % mipscheck -fmulmul:check:noforce:norepair  myprog
+
+&nbsp;<B>FILES</B>
+
+     <B>/usr/sbin/mipscheck</B>   <B>mipscheck</B> executable
+
+     <B>/usr/sbin/r8kpp</B>       Symbolic link to <B>/usr/sbin/mipscheck</B>
+
+     <B>/usr/sbin/r5kpp</B>       Symbolic link to <B>/usr/sbin/mipscheck</B>
+
+     <B>/usr/sbin/u64check</B>    Symbolic link to <B>/usr/sbin/mipscheck</B>
+
+&nbsp;<B>SEE</B> <B>ALSO</B>
+
+     <A HREF="/library/tpl/cgi-bin/getdoc.cgi?cmd=getdoc&coll=0650&db=man&fname=1%20elfdump"><B>elfdump</B>(1)</A>
+
+     <B>http://www.mips.com</B> for information on chips.
+
+
+
+</PRE>
+</P>
+
+<P><BR></P>
+
+<P><center>
+<font face="helvetica,arial" size="-1">
+<B>
+<A HREF="/library/tpl/cgi-bin/init.cgi">home/search</A> | 
+<A HREF="/library/tpl/cgi-bin/shownew.cgi">what's new</A> | 
+<A HREF="/library/tpl/cgi-bin/feedback.cgi">feedback</A> | 
+<A HREF="/library/tpl/cgi-bin/help.cgi">help</A>
+</B>
+</font>
+</center>
+</P>
+
+<P><center>
+<font face="helvetica,arial" size="-2">
+<A HREF="http://www.sgi.com/company_info/terms.html" TARGET="_top">terms of use</A> | 
+<A HREF="http://www.sgi.com/company_info/privacy.html" TARGET="_top">privacy policy</A> | 
+<A HREF="http://www.sgi.com/cgi-bin/feedback/">contact us</A> | 
+Copyright &copy; 1993-2004 Silicon Graphics, Inc. All rights reserved. | 
+<A HREF="http://www.sgi.com/company_info/trademarks/" TARGET="_top">trademark information</A>
+</font>
+
+<hr>
+
+<a name="comment">
+<FORM ACTION="/library/tpl/cgi-bin/comment.cgi" method="POST">
+<font face="helvetica,arial"><b></b></font>
+<table border="0" cellpadding="7">
+<tr valign="top">
+<td><font face="helvetica,arial" size="-1">
+Please rate this page:<br>
+<input type="radio" name="rating" value="1 (Excellent)"> Excellent
+<br>
+<input type="radio" name="rating" value="2 (Above Average)"> Above Average
+<br>
+<input type="radio" name="rating" value="3 (Average)"> Average
+<br>
+<input type="radio" name="rating" value="4 (Below Average)"> Below Average
+<br>
+<input type="radio" name="rating" value="5 (Poor)"> Poor
+</font>
+</td>
+<td>&nbsp;</td>
+<td>
+<font face="helvetica,arial" size="-1">
+What would make this page or web site better?<br>
+<textarea name="comments" rows="2" cols="45"></textarea>
+<br>
+<input type="submit" name="Submit" value="Submit">
+</font>
+</td>
+</tr></table>
+</FORM>
+
+</center>
+</P>
+
+</BODY>
+</HTML>
+

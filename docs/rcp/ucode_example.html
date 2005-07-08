@@ -1,0 +1,763 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head><title>DEXTROSE FORUM - A REAL MICROCODE EXAMPLE (FULL SOURCE)</title>
+<meta http-equiv="MSThemeCompatible" content="Yes">
+<style type="text/css">
+BODY {
+	SCROLLBAR-BASE-COLOR: #10617B;
+	SCROLLBAR-ARROW-COLOR: #FFFFFF;
+}
+SELECT {
+	FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif;
+	FONT-SIZE: 11px;
+	COLOR: #000000;
+	BACKGROUND-COLOR: #CFCFCF
+}
+TEXTAREA, .bginput {
+	FONT-SIZE: 12px;
+	FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif;
+	COLOR: #000000;
+	BACKGROUND-COLOR: #CFCFCF
+}
+A:link, A:visited, A:active {
+	COLOR: #000020;
+}
+A:hover {
+	COLOR: #FF4400;
+}
+#cat A:link, #cat A:visited, #cat A:active {
+	COLOR: #FFFFFF;
+	TEXT-DECORATION: none;
+}
+#cat A:hover {
+	COLOR: #FFFFFF;
+	TEXT-DECORATION: underline;
+}
+#ltlink A:link, #ltlink A:visited, #ltlink A:active {
+	COLOR: #000020;
+	TEXT-DECORATION: none;
+}
+#ltlink A:hover {
+	COLOR: #FF4400;
+	TEXT-DECORATION: underline;
+}
+.thtcolor {
+	COLOR: #EEEEFF;
+}
+</style>
+
+
+<script language="javascript" type="text/javascript">
+<!--
+function aimwindow(aimid) {
+	window.open("member.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=aimmessage&aim="+aimid,"_blank","toolbar=no,location=no,menubar=no,scrollbars=no,width=175,height=275,resizeable=yes,status=no")
+
+
+}
+// -->
+</script>
+</head>
+<body bgcolor="#217D9C" text="#000000" id="all" leftmargin="10" topmargin="10" marginwidth="10" marginheight="10" link="#000020" vlink="#000020" alink="#000020">
+<!-- start lik-sang.com banner code v1.01 -->
+<a href="http://www.lik-sang.com/affiliate.php?cre=3&lsaid=34435"><img border=0 src="http://affiliate.lik-sang.com/img.php?lsaid=34435&cre=3&img=468x60/lsi_banner_gc.gif" alt="Top-Notch GameCube Accessories and Games" width="468" height="60"></a>
+<!-- end lik-sang.com banner code -->
+
+<!-- logo and buttons -->
+<center>
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+<tr>
+  <td valign="top" align="left" background="images/menu_background.gif"><a href="index.php?s=31de21636d7611dc5c234ea5c24cd0b8"><img src="images/dxforum.gif" border="0" alt="DEXTROSE FORUM"></a></td>
+  <td valign="bottom" align="right" nowrap background="images/menu_background.gif">
+   <!-- toplinks -->
+   <a href="usercp.php?s=31de21636d7611dc5c234ea5c24cd0b8"><img src="images/top_profile.gif" alt="Here you can view your subscribed threads, work with private messages and edit your profile and preferences" border="0"></a>
+   <a href="register.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=signup"><img src="images/top_register.gif" alt="Registration is free!" border="0"></a>
+   <a href="calendar.php?s=31de21636d7611dc5c234ea5c24cd0b8"><img src="images/top_calendar.gif" alt="Calendar" border="0"></a>
+   <a href="memberlist.php?s=31de21636d7611dc5c234ea5c24cd0b8"><img src="images/top_members.gif" alt="Find other members" border="0"></a>
+   <a href="misc.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=faq"><img src="images/top_faq.gif" alt="Frequently Asked Questions" border="0"></a>
+   <a href="search.php?s=31de21636d7611dc5c234ea5c24cd0b8"><img src="images/top_search.gif" alt="Search" border="0"></a>
+   <a href="index.php?s=31de21636d7611dc5c234ea5c24cd0b8"><img src="images/top_home.gif" alt="Home" border="0"></a>
+   <!-- <a href="member.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=logout"><img src="images/top_logout.gif" alt="Logout" border="0"></a>  -->
+   &nbsp;
+   <!-- /toplinks -->
+  </td>
+</tr>
+</table>
+<!-- /logo and buttons -->
+
+<!-- content table -->
+<table bgcolor="#106D8C" width="100%" cellpadding="10" cellspacing="0" border="0">
+<tr>
+  <td>
+
+
+<!-- breadcrumb, nav links -->
+<table cellpadding="2" cellspacing="0" border="0" width="100%"  align="center">
+<tr>
+	<td><img src="images/vb_bullet.gif" border="0" align="middle" alt="DEXTROSE FORUM : Powered by vBulletin version 2.2.8">
+<font face="verdana, arial, helvetica" size="2" ><b><a href="index.php?s=31de21636d7611dc5c234ea5c24cd0b8">DEXTROSE FORUM</a> &gt; <a href="forumdisplay.php?s=31de21636d7611dc5c234ea5c24cd0b8&forumid=1">NINTENDO 64 SECTION</a> &gt; <a href="forumdisplay.php?s=31de21636d7611dc5c234ea5c24cd0b8&forumid=6">Technical Matters</a> &gt; <a href="forumdisplay.php?s=31de21636d7611dc5c234ea5c24cd0b8&forumid=13">Coders Heaven</a> &gt; A REAL MICROCODE EXAMPLE (FULL SOURCE)</b></font></td>
+	
+</tr>
+</table>
+<!-- /breadcrumb, nav links -->
+
+<a name="posttop"></a>
+
+<!-- End content area table (CREATED IN HEADER!!) -->   
+	</td>
+</tr>
+</table>
+
+<!-- spacer -->
+<table bgcolor="#106D8C" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td width="10"><img width="10" height="1" src="images/space.gif" alt=""></td><td width="100%">
+<!-- /spacer -->
+
+
+
+<!-- first unread and next/prev -->
+<table cellpadding="2" cellspacing="0" border="0" width="100%"  align="center">
+<tr>
+	<td><font face="verdana,arial,helvetica" size="1" > &nbsp;</font></td>
+	<td align="right"><font face="verdana,arial,helvetica" size="1" >
+	<img src="images/prev.gif" alt="" border="0">
+	<a href="showthread.php?s=31de21636d7611dc5c234ea5c24cd0b8&threadid=2808&goto=nextoldest">Last Thread</a>
+	&nbsp;
+	<a href="showthread.php?s=31de21636d7611dc5c234ea5c24cd0b8&threadid=2808&goto=nextnewest">Next Thread</a>
+	<img src="images/next.gif" alt="" border="0">
+	</font></td>
+</tr>
+</table>
+<!-- first unread and next/prev -->
+
+<table cellpadding="0" cellspacing="0" border="0" bgcolor="#000000"  width="100%" align="center"><tr><td>
+<table cellpadding="4" cellspacing="1" border="0"  width="100%">
+<tr>
+	<td bgcolor="#004963" width="175" nowrap><font face="verdana,arial,helvetica" size="1"  color="#EEEEFF" class="thtcolor"><b>Author</b></font></td>
+	<td bgcolor="#004963" width="100%">
+	<!-- Thread nav and post images -->
+	<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="100%"><font face="verdana,arial,helvetica" size="1"  color="#EEEEFF" class="thtcolor"><b>Thread</b></font></td>
+		<td><a href="newthread.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=newthread&forumid=13"><img src="images/newthread.gif" border="0" alt="Post New Thread"></a></td>
+		<td><font face="verdana, arial, helvetica" size="2" >&nbsp;&nbsp;</font></td>
+		<td><a href="newreply.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=newreply&threadid=2808"><img src="images/reply.gif" border="0" alt="Post A Reply"></a></td>
+	</tr>
+	</table>
+	<!-- /Thread nav and post images -->
+	</td>
+</tr>
+</table>
+</td></tr></table>
+
+<!-- /spacer -->
+</td><td width="10"><img width="10" height="1" src="images/space.gif" alt=""></td></tr></table>
+<!-- /spacer -->
+
+<table bgcolor="#106D8C" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="10"><img width="10" height="1" src="images/space.gif" alt=""></td><td width="100%"><!-- spacer -->
+
+<table cellpadding="0" cellspacing="0" border="0" bgcolor="#000000"  width="100%" align="center"><tr><td>
+<table cellpadding="4" cellspacing="1" border="0"  width="100%">
+<tr>
+	<td bgcolor="#DFDFDF" width="175" valign="top" nowrap>
+	<a name="post18904"></a>
+	
+	<font face="verdana, arial, helvetica" size="2" ><b>Retard Jay</b></font><br>
+	<font face="verdana,arial,helvetica" size="1" >Junior Member</font><br>
+	<p>
+	<font face="verdana,arial,helvetica" size="1" >Registered: Dec 1998<br>
+	Location: <br>
+	Posts: 28</font></td>
+	
+	<td bgcolor="#DFDFDF" width="100%" valign="top">
+	<font face="verdana,arial,helvetica" size="1" > <b>A REAL MICROCODE EXAMPLE (FULL SOURCE)</b></font>
+	<p><font face="verdana, arial, helvetica" size="2" >from an old gamasutra article about Resident Evil 2 and it's revolutionary FMV compression, a full microcode source was posted as an appendix to the article, which was used to convert YCrCb colors to RGB. I am posting it in it's entirety to any developers who want to see it:<br />
+<br />
+</font><blockquote><pre><font face="verdana,arial,helvetica" size="1" >code:</font><hr>
+
+/ **************************************************
+***************************
+* Procedure: YCbCr_to_Frame_Buffer *
+* Purpose : YCbCr-&amp;gt;24bpp RGB-&amp;gt;32bpp RGB-&amp;gt;Frame Buffer *
+* *
+* Author : Todd Meynink *
+* Last Edit: June 1 99 @ 13:30 *
+ **************************************************
+***************************/
+#include &amp;lt;rsp.h&amp;gt;
+#include &amp;lt;rcp.h&amp;gt;
+#include &amp;lt;regs.s&amp;gt; 
+
+/* DMEM organisation (12-bit offsets)*/
+#define DMEM_LUMINANCE             0x0000
+#define DMEM_CB                    0x0200
+#define DMEM_CR                    0x0280
+#define DMEM_RGB                   0x0300
+#define DMEM_SCRATCH               0x0F80
+
+#define EXIT                       beq      zero, zero, Done \
+                                   nop 
+.text
+
+.name   nPitch,                 $20
+.name   pLuminance,             $21 /* arguments */
+.name   pCb,                    $22
+.name   pCr,                    $23
+.name   pDestination,           $24
+.name   nMovieWidth,            $25
+.name   nMovieHeight,           $26
+.name   nRowsPerDMEM,           $27
+.name   nDMEMPerFrame,          $28
+.name   nLengthSkipCount,       $29
+.name   nScreenDMAIncrement,    $30 /* screen ptr increment per DMA of data */
+
+.name   pWkLuminanceA,          $12 /* variables */
+.name   pWkLuminanceB,          $13
+.name   pWkCb,                  $14
+.name   pWkCr,                  $15
+.name   pWkRGB_A,               $16
+.name   pWkRGB_B,               $17
+.name   nXCounter,              $18
+.name   nDMEMCounter,           $19
+
+.name   vZero,                  $v0 /* constants */
+.name   vMultipliers,           $v1
+.name   vConstants,             $v2
+
+.name   vCr_R,                  $v3 /* variables */
+.name   vCr_G,                  $v4
+.name   vCb_G,                  $v5
+.name   vCb_B,                  $v6
+.name   vLumDataA,              $v7
+.name   vLumDataB,              $v8
+.name   vRedA,                  $v9
+.name   vRedB,                  $v10
+.name   vGreenA,                $v11
+.name   vGreenB,                $v12
+.name   vBlueA,                 $v13
+.name   vBlueB,                 $v14
+.name   temp,                   $v15
+
+
+     /* copy arguments in DMEM to registers */
+     lw     pLuminance,                       ARG0(zero)
+     lw     pCb,                              ARG1(zero)
+     lw     pCr,                              ARG2(zero)
+     lw     pDestination,                     ARG3(zero)
+     lw     nMovieWidth,                      ARG4(zero)
+     lw     nMovieHeight,                     ARG5(zero)
+     lw     nRowsPerDMEM,                     ARG6(zero)
+     lw     nDMEMPerFrame,                    ARG7(zero)
+     lw     nLengthSkipCount,                 ARG8(zero)
+     lw     nScreenDMAIncrement,              ARG9(zero) 
+
+     vsub vZero, vZero, vZero
+     lqv    vMultipliers[0], CONST0(zero) 
+     lqv    vConstants[0], CONST1(zero)
+
+
+GetDMASemaphore:
+     mfc0   $11, SP_RESERVED
+     bne    $11, zero, GetDMASemaphore
+     sll    nPitch, nMovieWidth, 2
+
+     /* clear RGB DMEM */
+     addi   $8, zero, DMEM_RGB
+     addi   $9, zero, DMEM_RGB+2048-64
+ClearDMEM:
+     sqv    vZero[0], 0($8)
+     sqv    vZero[0], 16($8)
+     sqv    vZero[0], 32($8)
+     sqv    vZero[0], 48($8)
+     bne    $8, $9, ClearDMEM
+     addi   $8, $8, 64
+
+yLoop: 
+     add nDMEMCounter, zero, nRowsPerDMEM
+
+     /* setup Wk pointers (in DMEM) */
+     addi   pWkLuminanceA, zero, DMEM_LUMINANCE
+     addi   pWkRGB_A, zero, DMEM_RGB
+     addi   pWkCb, zero, DMEM_CB
+     addi   pWkCr, zero, DMEM_CR 
+     add    pWkLuminanceB, pWkLuminanceA, nMovieWidth
+     add    pWkRGB_B, pWkRGB_A, nPitch /* sizeof(long) x width */
+
+     /* DMA luminance/chrominance data into DMEM to work on */
+     addi   $10, zero, DMEM_LUMINANCE      /* DMEM addr */
+     add    $9, zero, pLuminance           /* DRAM addr */
+     sll    $8, nMovieWidth, 1             /*addi $8, zero, DMEM_LUM_SIZE-1 /* length - 1 */
+     bgezal $10, DMA_Read                  /* relative branch and link */
+     addi   $8, $8, -1
+
+     addi   $10, zero, DMEM_CB             /* DMEM addr */
+     add    $9, zero, pCb                  /* DRAM addr */
+     bgezal $10, DMA_Read                  /* relative branch and link */
+     addi   $8, nMovieWidth, -1
+
+     addi   $10, zero, DMEM_CR             /* DMEM addr */
+     bgezal $10, DMA_Read                  /* relative branch and link */
+     add    $9, zero, pCr                  /* DRAM addr */
+
+     DMEM_Loop:
+               add nXCounter, zero, nMovieWidth
+.align 8 
+               xLoop: 
+                     /* load chrominance info into vectors */
+                     luv     vCr_R[0], 0(pWkCr)
+                     addi    pWkCr, pWkCr, 8
+                     luv     vCb_G[0], 0(pWkCb)
+                     addi    pWkCb, pWkCb, 8
+
+                     /* convert chrominance */
+                     vsub    vCr_R, vCr_R, vConstants[0] /*vSubCrCb*/
+                     vsub    vCb_G, vCb_G, vConstants[0] /*vSubCrCb*/
+
+                     vadd    vCr_G, vZero, vCr_R
+                     vadd    vCb_B, vZero, vCb_G
+
+                     /* load luminance data for 8*2 = 16 pixels */
+                     lhv     vLumDataA[0], 0(pWkLuminanceA)
+                     lhv     vLumDataB[0], 0(pWkLuminanceB)
+
+                     vmudm   vCr_R, vCr_R, vMultipliers[0] /*vMultCr_R*/
+                     vmudm   vCr_G, vCr_G, vMultipliers[1] /*vMultCr_G*/
+                     vmudm   vCb_G, vCb_G, vMultipliers[2] /*vMultCb_G*/
+                     vmudm   vCb_B, vCb_B, vMultipliers[3] /*vMultCb_B*/
+
+                     /* convert luminance */
+                     vmudm   vLumDataA, vLumDataA, vMultipliers[4] /*vMultLum*/
+                     vmudm   vLumDataB, vLumDataB, vMultipliers[4] /*vMultLum*/
+
+                     /* calculate RGB */
+                     addi    pWkLuminanceA, pWkLuminanceA, 1
+                     vadd    vRedA, vLumDataA, vCr_R
+                     addi    pWkLuminanceB, pWkLuminanceB, 1 /* &amp;lt;-- shift to odd address */
+                     vsub    vGreenA, vLumDataA, vCr_G
+                     addi    nXCounter, nXCounter, -16
+                     vsub    vGreenB, vLumDataB, vCr_G
+                     vadd    vBlueA, vLumDataA, vCb_B
+
+                     vadd    vRedB, vLumDataB, vCr_R
+                     vadd    vBlueB, vLumDataB, vCb_B
+                     vsub    vGreenA, vGreenA, vCb_G
+                     vsub    vGreenB, vGreenB, vCb_G
+
+                     /* clamping */
+                     vge     vRedA, vRedA, vZero
+                     vlt     vRedA, vRedA, vConstants[3]
+                     vge     vRedB, vRedB, vZero
+                     vlt     vRedB, vRedB, vConstants[3]
+                     vge     vGreenA, vGreenA, vZero
+                     vlt     vGreenA, vGreenA, vConstants[3]
+                     vge     vGreenB, vGreenB, vZero
+                     vlt     vGreenB, vGreenB, vConstants[3] 
+                     vge     vBlueA, vBlueA, vZero
+                     vlt     vBlueA, vBlueA, vConstants[3] 
+                     vge     vBlueB, vBlueB, vZero
+                     vlt     vBlueB, vBlueB, vConstants[3]
+
+                     /* load luminance data for 8*2 = 16 pixels */
+                     lhv     vLumDataA[0], 0(pWkLuminanceA)
+                     lhv     vLumDataB[0], 0(pWkLuminanceB)
+
+                     .name   pScratch, $11
+                     addi    pScratch, zero, DMEM_SCRATCH
+                     shv     vRedA[0], 0(pScratch)
+                     shv     vRedB[0], 64(pScratch)
+                     shv     vGreenA[0], 16(pScratch)
+                     shv     vGreenB[0], 80(pScratch)
+                     shv     vBlueA[0], 32(pScratch)
+                     shv     vBlueB[0], 96(pScratch)
+
+                     /**************************/
+                     /* repeat with odd pixels */
+                     /**************************/
+                     /* convert luminance */
+                     vmudm   vLumDataA, vLumDataA, vMultipliers[4] /*vMultLum*/
+                     vmudm   vLumDataB, vLumDataB, vMultipliers[4]
+
+
+                     /* calculate RGB */
+                     addi    pScratch, pScratch, 1
+                     vadd    vRedA, vLumDataA, vCr_R
+                     addi    pWkLuminanceA, pWkLuminanceA, 15 /* increment source ptrs */
+                     vsub    vGreenA, vLumDataA, vCr_G
+                     addi    pWkLuminanceB, pWkLuminanceB, 15
+                     vsub    vGreenB, vLumDataB, vCr_G
+                     vadd    vBlueA, vLumDataA, vCb_B
+
+                     vadd    vRedB, vLumDataB, vCr_R
+                     vadd    vBlueB, vLumDataB, vCb_B
+                     vsub    vGreenA, vGreenA, vCb_G
+                     vsub    vGreenB, vGreenB, vCb_G
+
+                     /* clamping */
+                     vge     vRedA, vRedA, vZero
+                     vlt     vRedA, vRedA, vConstants[3]
+                     vge     vRedB, vRedB, vZero
+                     vlt     vRedB, vRedB, vConstants[3]
+                     vge     vGreenA, vGreenA, vZero
+                     vlt     vGreenA, vGreenA, vConstants[3]
+                     vge     vGreenB, vGreenB, vZero
+                     vlt     vGreenB, vGreenB, vConstants[3]
+                     vge     vBlueA, vBlueA, vZero
+                     vlt     vBlueA, vBlueA, vConstants[3]
+                     vge     vBlueB, vBlueB, vZero
+                     vlt     vBlueB, vBlueB, vConstants[3]
+
+                     shv     vRedA[0], 0(pScratch)
+                     shv     vRedB[0], 64(pScratch)
+                     shv     vGreenA[0], 16(pScratch)
+                     shv     vGreenB[0], 80(pScratch)
+                     shv     vBlueA[0], 32(pScratch)
+                     shv     vBlueB[0], 96(pScratch)
+
+                     /* copy to RGB buffer in DMEM */
+                     addi    pScratch, zero, DMEM_SCRATCH
+                     luv     vRedA[0], 0(pScratch)
+                     addi    $9, pWkRGB_A, 1
+                     luv     vRedB[0], 8(pScratch)
+                     addi    $10, pWkRGB_A, 2
+                     luv     vGreenA[0], 16(pScratch)
+                     luv     vGreenB[0], 24(pScratch)
+                     luv     vBlueA[0], 32(pScratch)
+                     luv     vBlueB[0], 40(pScratch)
+
+                     sfv     vRedA[0], 0(pWkRGB_A)
+                     sfv     vGreenA[0], 0($9)
+                     sfv     vBlueA[0], 0($10)
+
+                     sfv     vRedB[0], 32(pWkRGB_A)
+                     sfv     vGreenB[0], 32($9)
+                     sfv     vBlueB[0], 32($10)
+
+                     sfv     vRedA[8], 16(pWkRGB_A)
+                     sfv     vGreenA[8], 16($9)
+                     sfv     vBlueA[8], 16($10)
+
+                     sfv     vRedB[8], 48(pWkRGB_A)
+                     sfv     vGreenB[8], 48($9)
+                     sfv     vBlueB[8], 48($10)
+
+                     addi    $9, pWkRGB_B, 1
+                     luv     vRedA[0], 64(pScratch)
+                     addi    $10, pWkRGB_B, 2
+                     luv     vRedB[0], 72(pScratch)
+                     luv     vGreenA[0], 80(pScratch)
+                     luv     vGreenB[0], 88(pScratch)
+                     luv     vBlueA[0], 96(pScratch)
+                     luv     vBlueB[0], 104(pScratch)
+
+                     addi    pWkRGB_A, pWkRGB_A, 64 /* increment destination ptrs */
+                     sqv     vZero[0], 0(pWkRGB_B)
+                     sqv     vZero[0], 16(pWkRGB_B)
+                     sqv     vZero[0], 32(pWkRGB_B)
+                     sqv     vZero[0], 48(pWkRGB_B)
+
+                     sfv     vRedA[0], 0(pWkRGB_B)
+                     sfv     vGreenA[0], 0($9)
+                     sfv     vBlueA[0], 0($10)
+
+                     sfv     vRedB[0], 32(pWkRGB_B)
+                     sfv     vGreenB[0], 32($9)
+                     sfv     vBlueB[0], 32($10)
+
+                     sfv     vRedA[8], 16(pWkRGB_B)
+                     sfv     vGreenA[8], 16($9)
+                     sfv     vBlueA[8], 16($10)
+
+                     sfv     vRedB[8], 48(pWkRGB_B)
+                     sfv     vGreenB[8], 48($9)
+                     sfv     vBlueB[8], 48($10)
+
+                     /* handle loop counters */
+                     bgtz    nXCounter, xLoop /* end xLoop */
+                     addi    pWkRGB_B, pWkRGB_B, 64
+
+            /* handle loop counters */
+            addi nDMEMCounter, nDMEMCounter, -1
+
+            /* handle ptrs */
+            add pWkLuminanceA, pWkLuminanceA, nMovieWidth
+            add pWkLuminanceB, pWkLuminanceB, nMovieWidth
+            add pWkRGB_A, pWkRGB_A, nPitch
+
+            bgtz nDMEMCounter, DMEM_Loop /* end DMEM_Loop */
+            add pWkRGB_B, pWkRGB_B, nPitch
+
+       /* DMA DMEM back out */
+       add        $9, zero, pDestination /* DRAM addr */
+       addi       $10, zero, DMEM_RGB /* DMEM addr */
+       bgezal     $10, DMA_Write /* relative branch and link */
+       add        $8, zero, nLengthSkipCount
+
+       /* handle ptrs */
+       add        pDestination, pDestination, nScreenDMAIncrement
+       sll        $8, nMovieWidth, 1 /*2 /*addi pLuminance, pLuminance, DMEM_LUM_SIZE*/
+       add        pLuminance, pLuminance, $8
+       srl        $8, $8, 2
+       add        pCr, pCr, $8 /*addi pCr, pCr, DMEM_CR_SIZE*/
+
+       /* handle loop counter */
+       addi       nDMEMPerFrame, nDMEMPerFrame, -1
+       bgtz nDMEMPerFrame, yLoop /* end yLoop */
+       add pCb, pCb, $8 /*addi pCb, pCb, DMEM_CB_SIZE*/
+
+
+Done:  /* all done -- ready for next RSP task *
+       * relinquish DMA and RSP to CPU */
+       mtc0 zero, SP_RESERVED
+       ori $1, zero, SP_SET_TASKDONE
+       mtc0 $1, SP_STATUS
+       break
+       nop
+
+#include &amp;lt;dma_ucode.s&amp;gt;
+<hr></pre></blockquote><font face="verdana, arial, helvetica" size="2" ></font></p>
+	
+	<p><p><font face="verdana, arial, helvetica" size="2" >__________________<br>
+"I don't give a fxck, bxtch. I will kill you!" <br />
+</font></p></p>
+	<p></p>
+	<p align="right"><font face="verdana,arial,helvetica" size="1" ><a href="report.php?s=31de21636d7611dc5c234ea5c24cd0b8&postid=18904">Report this post to a moderator</a> | IP: <a href="postings.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=getip&postid=18904">Logged</a></font></p>
+	</td>
+</tr>
+<tr>
+	<td bgcolor="#DFDFDF" width="175" height="16" nowrap><font face="verdana,arial,helvetica" size="1" ><img src="images/posticon.gif" border="0" alt="Old Post">
+	10-22-2000 <font color="#666686">09:33 PM</font></font></td>
+	
+	<td bgcolor="#DFDFDF" width="100%" valign="middle" height="16">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+		<tr valign="bottom">
+			<td><font face="verdana,arial,helvetica" size="1" ><img src="images/off.gif" border="0" alt="Retard Jay is offline" align="absmiddle">
+			<a href="member.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=getinfo&userid=288" target="_blank"><img src="images/profile.gif" border="0" alt="Click Here to See the Profile for Retard Jay"></a> <a href="private.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=newmessage&userid=288"><img src="images/sendpm.gif" border="0" alt="Click here to Send Retard Jay a Private Message"></a>   <a href="search.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=finduser&userid=288"><img src="images/find.gif" border="0" alt="Find more posts by Retard Jay"></a> <a href="member2.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=addlist&userlist=buddy&userid=288"><img src="images/buddy.gif" border="0" alt="Add Retard Jay to your buddy list"></a>
+			<!-- $ post[icqicon] --> <!-- $ post[aimicon] --> <!-- $ post[yahooicon] --> 
+			</font></td>
+			<td align="right" nowrap><font face="verdana,arial,helvetica" size="1" >
+			<a href="editpost.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=editpost&postid=18904"><img src="images/edit.gif" border="0" alt="Edit/Delete Message"></a>
+			<a href="newreply.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=newreply&postid=18904"><img src="images/quote.gif" border="0" alt="Reply w/Quote"></a>
+			</font></td>
+		</tr>
+		</table>
+	</td>
+</tr>
+</table>
+</td></tr></table>
+
+<!-- spacer --></td><td width="10"><img width="10" height="1" src="images/space.gif" alt=""></td></tr></table>
+<table bgcolor="#106D8C" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="10"><img width="10" height="1" src="images/space.gif" alt=""></td><td width="100%"><!-- spacer -->
+
+<table cellpadding="0" cellspacing="0" border="0" bgcolor="#000000"  width="100%" align="center"><tr><td>
+<table cellpadding="4" cellspacing="1" border="0"  width="100%">
+<tr>
+	<td bgcolor="#F1F1F1" width="175" valign="top" nowrap>
+	<a name="post18905"></a>
+	
+	<font face="verdana, arial, helvetica" size="2" ><b>CarlosRE3</b></font><br>
+	<font face="verdana,arial,helvetica" size="1" >Member</font><br>
+	<p>
+	<font face="verdana,arial,helvetica" size="1" >Registered: Apr 2000<br>
+	Location: <br>
+	Posts: 71</font></td>
+	
+	<td bgcolor="#F1F1F1" width="100%" valign="top">
+	<font face="verdana,arial,helvetica" size="1" > <b></b></font>
+	<p><font face="verdana, arial, helvetica" size="2" >O M G an thanx alot! i have been looking for something like this for a while!</font></p>
+	
+	<p></p>
+	<p></p>
+	<p align="right"><font face="verdana,arial,helvetica" size="1" ><a href="report.php?s=31de21636d7611dc5c234ea5c24cd0b8&postid=18905">Report this post to a moderator</a> | IP: <a href="postings.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=getip&postid=18905">Logged</a></font></p>
+	</td>
+</tr>
+<tr>
+	<td bgcolor="#F1F1F1" width="175" height="16" nowrap><font face="verdana,arial,helvetica" size="1" ><img src="images/posticon.gif" border="0" alt="Old Post">
+	10-24-2000 <font color="#666686">03:32 AM</font></font></td>
+	
+	<td bgcolor="#F1F1F1" width="100%" valign="middle" height="16">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+		<tr valign="bottom">
+			<td><font face="verdana,arial,helvetica" size="1" ><img src="images/off.gif" border="0" alt="CarlosRE3 is offline" align="absmiddle">
+			<a href="member.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=getinfo&userid=1985" target="_blank"><img src="images/profile.gif" border="0" alt="Click Here to See the Profile for CarlosRE3"></a> <a href="private.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=newmessage&userid=1985"><img src="images/sendpm.gif" border="0" alt="Click here to Send CarlosRE3 a Private Message"></a>   <a href="search.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=finduser&userid=1985"><img src="images/find.gif" border="0" alt="Find more posts by CarlosRE3"></a> <a href="member2.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=addlist&userlist=buddy&userid=1985"><img src="images/buddy.gif" border="0" alt="Add CarlosRE3 to your buddy list"></a>
+			<!-- $ post[icqicon] --> <!-- $ post[aimicon] --> <!-- $ post[yahooicon] --> 
+			</font></td>
+			<td align="right" nowrap><font face="verdana,arial,helvetica" size="1" >
+			<a href="editpost.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=editpost&postid=18905"><img src="images/edit.gif" border="0" alt="Edit/Delete Message"></a>
+			<a href="newreply.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=newreply&postid=18905"><img src="images/quote.gif" border="0" alt="Reply w/Quote"></a>
+			</font></td>
+		</tr>
+		</table>
+	</td>
+</tr>
+</table>
+</td></tr></table>
+
+<!-- spacer --></td><td width="10"><img width="10" height="1" src="images/space.gif" alt=""></td></tr></table>
+
+
+<!-- spacer -->
+<table bgcolor="#106D8C" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td width="10"><img width="10" height="1" src="images/space.gif" alt=""></td><td width="100%">
+<!-- spacer -->
+
+<table cellpadding="0" cellspacing="0" border="0" bgcolor="#000000"  width="100%" align="center"><tr><td>
+<table cellpadding="4" cellspacing="1" border="0"  width="100%">
+<tr>
+	<td bgcolor="#004963" width="100%">
+	<!-- time zone and post buttons -->
+	<table border="0" cellspacing="0" cellpadding="0" bgcolor="#004963">
+	<tr>
+		<td width="100%"><font face="verdana,arial,helvetica" size="1"  color="#EEEEFF"><b>All times are GMT. The time now is 08:16 AM.</b></font></td>
+		<td><a href="newthread.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=newthread&forumid=13"><img src="images/newthread.gif" border="0" alt="Post New Thread"></a></td>
+		<td><font face="verdana, arial, helvetica" size="2" >&nbsp;&nbsp;</font></td>
+		<td><a href="newreply.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=newreply&threadid=2808"><img src="images/reply.gif" border="0" alt="Post A Reply"></a></td>
+	</tr>
+	</table>
+	<!-- /time zone and post buttons -->
+	</td>
+</tr>
+</table>
+</td></tr></table>
+
+<!-- first unread and next/prev -->
+<table cellpadding="2" cellspacing="0" border="0" width="100%"  align="center">
+<tr>
+	<td><font face="verdana,arial,helvetica" size="1" >&nbsp;</font></td>
+	<td align="right"><font face="verdana,arial,helvetica" size="1" >
+	<img src="images/prev.gif" alt="" border="0">
+	<a href="showthread.php?s=31de21636d7611dc5c234ea5c24cd0b8&threadid=2808&goto=nextoldest">Last Thread</a>
+	&nbsp;
+	<a href="showthread.php?s=31de21636d7611dc5c234ea5c24cd0b8&threadid=2808&goto=nextnewest">Next Thread</a>
+	<img src="images/next.gif" alt="" border="0">
+	</font></td>
+</tr>
+</table>
+<!-- first unread and next/prev -->
+
+<!-- /spacer -->
+</td><td width="10"><img width="10" height="1" src="images/space.gif" alt=""></td></tr></table>
+<!-- /spacer -->
+
+<!-- restart content table from header -->
+<table cellpadding="10" cellspacing="0" border="0" width="100%" bgcolor="#106D8C" align="center">
+<tr>
+    <td>
+
+<!-- thread options links -->
+<table cellpadding="0" cellspacing="0" border="0" bgcolor="#000000"   align="center"><tr><td>
+<table cellpadding="4" cellspacing="1" border="0"  width="100%">
+<tr>
+	<td bgcolor="#F1F1F1" align="center"><font face="verdana,arial,helvetica" size="1" >
+	<img src="images/printer.gif" alt="" border="0" align="absmiddle">
+	<a href="printthread.php?s=31de21636d7611dc5c234ea5c24cd0b8&threadid=2808">Show Printable Version</a> |
+	<img src="images/sendtofriend.gif" alt="" border="0" align="absmiddle">
+	<a href="sendtofriend.php?s=31de21636d7611dc5c234ea5c24cd0b8&threadid=2808">Email this Page</a> |
+	<img src="images/subscribe.gif" alt="" border="0" align="absmiddle">
+	<a href="member2.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=addsubscription&threadid=2808">Subscribe to this Thread</a>
+	</font></td>
+</tr>
+</table>
+</td></tr></table>
+<!-- /thread options links -->
+	
+<br>
+
+<!-- forum jump and rate thread -->
+<table cellpadding="2" cellspacing="0" border="0" width="100%"  align="center">
+<tr>
+	<td><table cellpadding="0" cellspacing="0" border="0">
+<form action="forumdisplay.php" method="get"><tr><td>
+	<font face="verdana,arial,helvetica" size="1" >
+	<input type="hidden" name="s" value="31de21636d7611dc5c234ea5c24cd0b8">
+	<input type="hidden" name="daysprune" value="">
+	<b>Forum Jump:</b><br>
+	<select name="forumid"
+	onchange="window.location=('forumdisplay.php?s=31de21636d7611dc5c234ea5c24cd0b8&daysprune=&forumid='+this.options[this.selectedIndex].value)">
+		<option value="-1" >Please select one:</option>
+		<option value="-1">--------------------</option>
+		<option value="pm" >Private Messages</option>
+		<option value="cp" >User Control Panel</option>
+		<option value="wol" >Who's Online</option>
+		<option value="search" >Search Forums</option>
+		<option value="home" >Forums Home</option>
+		<option value="-1">--------------------</option>
+		<option value="46" > DEXTROSE SECTION</option><option value="47" >-- General</option><option value="49" >---- Mailbag</option><option value="20" >---- Offtopic</option><option value="84" >---- The Welcome Mat</option><option value="93" >---- Buy, Sell, Trade</option><option value="28" > XBOX SECTION</option><option value="32" >-- Software Talk</option><option value="50" >---- XBOX News</option><option value="33" >---- Games Games Games</option><option value="34" >---- Tools, Linux & Homebrewn Stuff on XBOX</option><option value="35" >---- Tools on PC / Unix / Mac</option><option value="36" >---- Biosmania</option><option value="37" >-- Developers Hideout</option><option value="43" >---- XDK Developing</option><option value="44" >---- NON XDK Developing</option><option value="45" >---- Reverse-Engineering</option><option value="29" >-- Hardware Matters</option><option value="30" >---- Modchips</option><option value="31" >---- Inside the Hardware</option><option value="75" > PLAYSTATION 2 SECTION</option><option value="90" >-- Everything besides Modchips</option><option value="83" >---- General Discussion</option><option value="89" >-- Modchips</option><option value="78" >---- Mod Chip Talk</option><option value="85" >---- Installation Help</option><option value="77" >---- Mod Chip Comparison Charts</option><option value="79" >---- Identification Page</option><option value="38" > GAMECUBE SECTION</option><option value="39" >-- General</option><option value="51" >---- GAMECUBE News</option><option value="68" >---- GAMECUBE Scene</option><option value="40" >---- Games on the Cube</option><option value="91" >---- Tech Support & Newbies</option><option value="71" >-- Homedev</option><option value="72" >---- Coding the GAMECUBE</option><option value="73" >---- Hardware Modding</option><option value="1" > NINTENDO 64 SECTION</option><option value="3" >-- Featured Topics</option><option value="52" >---- Nintendo 64 News</option><option value="10" >---- Your Comments about Dextrose</option><option value="11" >---- Retail Therapy</option><option value="4" >-- Nintendo Scene</option><option value="17" >---- Nintendo 64 Scene NEWS Service</option><option value="12" >---- Nintendo 64 Scene</option><option value="5" >-- Game Scene</option><option value="18" >---- Inside the Games</option><option value="19" >---- Game Playing Hints</option><option value="6" >-- Technical Matters</option><option value="13" selected>---- Coders Heaven</option><option value="14" >---- Bios Mania</option><option value="15" >---- Tech Support & Newbies</option><option value="86" > Other Consoles</option><option value="95" >-- Portables</option><option value="92" >---- Nintendo DS</option><option value="82" >---- Gameboy Advance</option>
+	</select><!-- go button -->
+<input type="image" src="images/go.gif" border="0" 
+align="absbottom">
+	</font>
+</td></tr></form>
+</table></td>
+	<td align="right"><table cellpadding="0" cellspacing="0" border="0">
+<form action="threadrate.php" method="get"><tr><td>
+	<font face="verdana,arial,helvetica" size="1" >
+	<input type="hidden" name="s" value="31de21636d7611dc5c234ea5c24cd0b8">
+	<input type="hidden" name="threadid" value="2808">
+	<b>Rate This Thread:</b><br>
+	<select name="vote">
+		<option value="-1" selected>Select a rating...</option>
+		<option value="5">5 .. Best</option>
+		<option value="4">4</option>
+		<option value="3">3 .. Average</option>
+		<option value="2">2</option>
+		<option value="1">1 .. Worst</option>
+	</select><!-- go button -->
+<input type="image" src="images/go.gif" border="0" 
+align="absbottom">
+	</font>
+</td></tr></form>
+</table></td>
+</tr>
+</table>
+<!-- /Rate this thread -->
+
+<br>
+
+<!-- forum rules and admin links -->
+<table cellpadding="2" cellspacing="0" border="0" width="100%"  align="center">
+<tr valign="bottom">
+	<td><font face="verdana,arial,helvetica" size="1" ><b>Forum Rules:</b><table cellpadding="0" cellspacing="0" border="0" bgcolor="#000000"><tr><td>
+<table cellpadding="4" cellspacing="1" border="0">
+<tr>
+	<td bgcolor="#F1F1F1"><font face="verdana,arial,helvetica" size="1" >
+		You <b>may not</b> post new threads<br>
+		You <b>may not</b> post replies<br>
+		You <b>may not</b> post attachments<br>
+		You <b>may not</b> edit your posts
+	</font></td>
+	<td bgcolor="#F1F1F1"><font face="verdana,arial,helvetica" size="1" >
+		HTML code is <b>OFF</b><br>
+		<a href="misc.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=bbcode" target="_blank">vB code</a> is <b>ON</b><br>
+		<a href="misc.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=showsmilies" target="_blank">Smilies</a> are <b>ON</b><br>
+		<a href="misc.php?s=31de21636d7611dc5c234ea5c24cd0b8&action=bbcode#imgcode" target="_blank">[IMG]</a> code is <b>ON</b>
+	</font></td>
+</tr>
+</table>
+</td></tr></table></font></td>
+	<td align="right">
+	&nbsp;
+	</td>
+</tr>
+</table>
+<!-- /forum rules and admin links -->
+
+  </td>
+</tr>
+</table>
+<!-- /content area table -->
+</center>
+
+<p align="center">
+  <font face="verdana, arial, helvetica" size="2" ><b>&lt; <a href="mailto:hartec@dextrose.com">Contact Us</a> - <a href="http://dextrose.com/">DEXTROSE.COM</a>
+  <!-- - <a href="">Privacy Statement</a> --> &gt;</b></font>
+</p>
+
+<p align="center"><font face="verdana,arial,helvetica" size="1" >
+<!-- Do not remove this copyright notice -->
+  Powered by: vBulletin Version 2.2.8<br>
+  Copyright &copy;2000 - 2002, Jelsoft Enterprises Limited.<br>
+<!-- Do not remove this copyright notice -->
+
+</font></p>
+
+</body>
+</html>

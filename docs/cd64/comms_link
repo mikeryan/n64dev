@@ -1,0 +1,19 @@
+SD0-SD7
+AEN
+SA1-SA9
+IOR
+IOW
+IRQ3,4,5,6,7,9 (NC)
+
+74LS373 are actually 74LS374.
+
+When AEN is low and a correct address is decoded (0x3[0-3][02])
+for status port, then ff (busy) or fe (idle) is driven on data lines, depending
+if PCX is high or low.  For data port, if AEN low and address decoded, then
+when IOR driven low, latched data is placed on data lines; when IOW driven low,
+data lines are latched.
+
+When DATAWR is asserted from target, (STATUS_REG D0) line is lowered.
+This lowers busy flag (... and asserts IRQ.  How is IRQ cleared?)
+
+capacitors? resistors?

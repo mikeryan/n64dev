@@ -1,0 +1,369 @@
+Dexux: DexDrive software for Linux
+Developer Notes
+
+William Ono <wmono@users.sourceforge.net>
+All trademarks mentioned here are properties of their respective owners.
+
+
+*** Please read README-0.0.0.d3 first. ***
+
+
+The contents of this archive:
+
+dexux.c			- Current version of the code
+dex-off			- Small shell script to power-down the DexDrive
+COPYING			- The GNU General Public License
+DEVELOPER-NOTES		- The author's scratchpad and the project's history
+dex-connect.log		- Portmon log of DexPlorer starting up
+dex-connect-card.log	- Portmon log of DexPlorer starting up, with a card
+dex-connect-card-2.log	- Portmon log of DexPlorer starting up, with a card
+dex-no-card-idle.log	- Portmon log of DexPlorer idling with no card inserted
+dex-insert-card.log	- Portmon log of a card (1) being inserted *
+dex-insert-card-2.log	- Portmon log of a card (1) being inserted
+dex-insert-card-3.log	- Portmon log of a card (2) being inserted
+dex-insert-card-4.log	- Portmon log of a card (2) being inserted
+dex-insert-card-5.log	- Portmon log of a card (3) being inserted
+dex-insert-card-6.log	- Portmon log of a card (3) being inserted
+dex-with-card-idle.log	- Portmon log of DexPlorer idling with a card inserted
+dex-copy-from-card.log	- Portmon log of data being copied from a card
+dex-copy-to-card.log	- Portmon log of data being copied back to a card *
+dex-copy-to-card-2.log	- Portmon log of some data being copied to a card
+dex-copy-to-card-3.log	- Portmon log of some data being copied to a card
+dex-format-card.log	- Portmon log of a card being erased
+dex-remove-card.log	- Portmon log of a card being removed
+dex-disconnect.log	- Portmon log of DexPlorer shutting down
+
+
+* - Log file is probably incomplete
+
+(1) - Gran Turismo 2, Konami Arcade Classics, and one Final Fantasy 8 game
+(2) - Twelve or so Final Fantasy 8 games
+(3) - Blank, just formatted
+
+
+
+April 17, 2000:
+
+This code is very rough.  I don't claim to be a coder, but I didn't have any
+choice but to cobble this together.  I couldn't find anything that can use
+the DexDrive under Linux, so it was either write something or suffer the
+horrible fate of rebooting into the other operating system.  Obviously, I
+made the only reasonable choice.
+
+Although I have no idea why you're reading this if you don't already know
+what a DexDrive is, here's a quick blurb about it anyway: The DexDrive, by
+InterAct Accessories <URL:http://www.interact-acc.com/>, is a hardware device
+that connects to a PC's serial port that can read and write PlayStation
+memory cards.  A PlayStation is a device by Sony that causes temporal
+distortions, resulting in time passing much quicker than it should.
+
+Now, a few words about the protcol.
+
+I haven't done much thinking about the protocol used by the DexDrive, but
+some really simple things have appeared just by eyeballing what's being sent
+and received during initialization and shutdown.
+
+First, the RTS/DTS on/off/on sequence is of dubious importance.  I saw it
+in the portmon logs, so I put it in, but everything seems to work even without
+it being there.  That's really good news, since I don't think that code is
+even working at all.
+
+The actual wake-up sequence appears to be the 32 Xs sent immediately after
+the line flipping.  It's certainly the oddball message, since every other
+message begins with IAI.  (InterAct, Incorporated?)  The DexDrive replies to
+the 32 Xs with: IAI!
+
+After this, the computer sends a long, apparently constant, string:
+
+49 41 49 00 10 29 34 BE 84 E1 6C D6 AE 52 90 49 F1 F1 BB E9 EB
+
+And the DexDrive replies:
+
+49 41 49 40 1B 50 53 58 46
+
+Another odd sequence follows.  The computer sends 49 41 49 27 (IAI') ten
+times, without expecting anything in response.  The DexDrive sends back IAI!
+after each IAI', but DexPlorer just ignores this.
+
+The computer sends:
+
+49 41 49 01   (IAI.)
+
+The DexDrive replies:
+
+49 41 49 22   (IAI")
+
+Then the computer sends the sequence which turns on the LED:
+
+49 41 49 07 01
+
+The DexDrive replies:
+
+49 41 49 22   (IAI")
+
+This appears to be the end of the initialization phase.  The DexDrive is
+now ready to go.  Now, a little bit of protocol analysis:
+
+The computer appears to poll the DexDrive for the presence of a memory card
+by issuing the sequence: 49 41 49 01.  This may be the "idle" command in
+this protocol.
+
+The DexDrive replies with 49 41 49 22 if there is no card, and 49 41 49 23 10
+if there is.  These appear to be the "OK" responses, which is sent in response
+to any command that doesn't fetch data.
+
+The computer's command 49 41 49 07 xx appears to be the power-up/power-down
+command.  If xx is 01, the DexDrive's LED turns on.  If xx is 00, it turns off,
+and presumably goes into some kind of sleep mode.  DexPlorer sends xx=00
+just before quitting, and nothing else, so after sending this is probably
+a safe long-term idle state for the DexDrive.
+
+This is based on a guess from a quick glance through the portmon logs, but
+apparently 49 41 49 02 xx xx is the "get" command.  This is evidenced by
+a series of 41 49 49 02 xx xx commands in the insert-card logs, as well as
+41 49 49 02 00 00 on starting up.
+
+I haven't studied the logs long enough to say much more about the protocol.
+I also don't know if the data is encapsulated somehow, or if it's just the
+raw data off the memory card.  There's lots more to do here.
+
+
+
+April 18, 2000:
+
+I currently don't have access to my DexDrive, but I've been going through
+the portmon logs again.  I think I figured out most of the protocol now.
+It's very simple, as might be expected: there isn't a whole lot that the
+software should have to do aside from shovelling the data to and from the
+hardware.  The hardware has the hard job of actually dealing with the
+memory card, after all.
+
+The memory card appears to be 128KB in size, with 16 8KB blocks.  The
+card's layout is:
+
+00 00   Block 0 (metadata)
+00 40   Block 1
+00 80   Block 2
+00 C0   Block 3
+01 00   Block 4
+01 40   Block 5
+01 80   Block 6
+01 C0   Block 7
+02 00   Block 8
+02 40   Block 9
+02 80   Block A
+02 C0   Block B
+03 00   Block C
+03 40   Block D
+03 80   Block E
+03 C0   Block F
+
+where the first column is the starting address of that block.  The portmon
+logs seem to indicate that the addresses are given in byte-reversed
+order.  I'm not sure whether this is an artifact of portmon, or if it's
+really retrieved that way: if it's a portmon error, then the discrepancies
+I saw between the dexux-log.open_card.1 output dump and the
+dex-insert-card.log file are explained.  We'll see what dexux sees from
+the port, which is what I'm concerned with, when I regain access to my
+DexDrive.
+
+Back to the protocol.  I've pretty much confirmed that IAI 02 xx xx is
+the retrieve data command.  I also see that IAI 04 00 xx xx is the send
+data command.  On receipt, the DexDrive responds with IAI 29.
+
+Portmon reports 137 bytes sent per transmission in dex-to-card.log
+before DexPlorer waits for the IAI 29 acknowledgement.  I think this is
+how the burst looks:
+
+49 41 49 04 00 xx yy ...128 bytes of data... aa bb
+
+where xx yy is the address, and aa bb are some unknown quantities,
+probably a checksum.  I don't even know if the last two bytes are
+non-constant, though, since the portmon logs terminate after 21 bytes.
+
+I think that's pretty much it, for protocol.
+
+The organisation of Block 0 is interesting.  Being 8KB in size like
+the rest of the blocks, and having to manage 15(+1) blocks, if each
+block gets a fair share of Block 0 space then that's 512 bytes of
+extra space per block.  Most of that is probably going to be eaten
+up by the icon accompanying each stored block.
+
+If we assume 512 bytes per block, that allows for a maximum 22x22 icon
+at 8bpp plus 28 more bytes.  One of my memory blocks is titled
+"Konami Arcade Classics", which is 22 characters long.  The memory
+blocks used by Gran Turismo 2 have an "animated" (palette-rotated)
+icon.  Perhaps it can be enabled by providing the start and end colour
+numbers.  All of this fits, for the moment, with 4 bytes left over.
+(I'm making a large number of assumptions, of course, such as that
+the icon is a square bitmap, that Block 0 contains fixed-location
+fields, and that all of this information is stored in Block 0 in
+the first place.)
+
+I'm not sure what to call Block 0.  Block Allocation Block? ..Table?
+Icon Storage Block? ..Table?  I wonder if Sony has an official, public
+name for it.
+
+
+April 19, 2000:
+
+I figured out the mysterious byte-swapping problem.  When I used od to
+read the output file, I didn't realise that -it- swapped the bytes.
+Using ``od -t x1 file'' instead fixed everything.
+
+April 20, 2000:
+
+Apparently 49 41 49 21 means "bad data" -- that's what I get when I
+try to write arbitrary stuff to the card right now.
+
+April 28, 2000:
+
+I finally managed to write a get_chunk() that didn't cause a segfault.
+At this point, the code takes and dumps Block 0 to dexux-log.dump_card.1
+before shutting down.  Apparently Block 0 is mostly empty.  I'll have to
+look through the open-card logs again to see where the metadata is kept.
+
+May 24, 2000:
+
+Well, that was a long hiatus for sure.  I should have time to start working
+on this project some more now.  The next step is writing a "dex emulator"
+so that I can capture the whole 130+ bytes of the "write" operation and try
+to figure out the checksum mechanism used.  Without this, I can read all
+the chunks I want from the memory card, but I can't do much with this data
+because there's no way to put it back on the card.
+
+I did some cleaning up of the code today by writing the get_block()
+function, which handles the recursion on get_chunk() necessary to pull
+in a whole memory block.  I rewrote dump_toc() to use get_block() instead
+of 64 calls to get_chunk().  That's much better!
+
+May 27, 2000:
+
+I just discovered that PortMon has a "Output bytes" limiter.  I cranked that
+up, and it looks like I'm able to get the full list of bytes sent to the
+DexDrive during a write operation.  I've added some new log files:
+
+dex-connect-card-2.log
+dex-copy-to-card-2.log
+dex-copy-to-card-3.log
+dex-format-card.log
+
+Apparently 49 41 49 23 00 and 49 41 49 23 10 indicate "card inserted" with
+some kind of status information.  My guess for the moment is that 00 means
+"same card as last operation" and 10 means "card changed", though that's
+purely from observation and makes little sense.
+
+After a very careful and altogether too thorough examination of the write-
+to-card PortMon logs, I have discovered the great secret of the write data
+command.  Here it is:
+
+[Command: 49 41 49 04]
+[Address: Byte1 Byte2]   (Note: This is -not- byte-swapped, as for reading)
+[Address check: BinaryReverse(Byte1) BinaryReverse(Byte2)]
+[ - 128 bytes of data - ]
+[Check byte: XOR everything above except the Command section]
+
+where BinaryReverse(Byte) is the binary representation of Byte, eight
+binary digits long, read backwards.
+
+I wonder what on Earth the InterAct engineers were thinking when they
+designed this portion of the protocol.  Good grief!
+
+So, with that information, I wrote write_chunk() and associated functions.
+Lots of progress made today.  Finally, dexux is able to write data to a memory
+card!  I'm going to clean up the code just a little bit, then I'm going to
+wrap up another development snapshot.  Of course since everything is disabled
+for safety (it wouldn't be too nice to write a bunch of zeros to a tester's
+prized save game) I'll need to write a little README file explaining how
+everything works.
+
+May 28, 2000:
+
+Two web sites that have been very valuable in doing what I managed to do
+today are
+
+<URL:http://www.execpc.com/~halkun/PSX/index.html>
+<URL:http://cns-web.bu.edu/pub/djohnson/web_files/i18n/japanese.html>
+
+The first is the Playstation Documentation Project's home page, an unofficial
+collection of the finest details of the Playstation hardware.  On it I found
+a description of the memory card's contents, including a byte-by-byte
+analysis of the contents of each block.  It also contained the very bad
+news that the title of each block is encoded in Shift-JIS.
+
+The second contains a brief description of what range of bytes is valid
+in Shift-JIS.  I made a text file containing large blocks of valid Shift-JIS
+characters and opened it in a program capable of reading Shift-JIS, then
+using what I saw there I wrote toascii(), a function that converts a char
+array of Shift-JIS characters into an array of ASCII characters.  Obviously
+the vast majority of Shift-JIS characters are unprintable, but I got the
+Roman letters (upper- and lower-case), Arabic numbers, and a few
+of the ASCII-printable symbols.  If I encounter saved games with titles
+containing other symbols, I'll be sure to add them in.
+
+
+June 14, 2000:
+
+I received mail from Ben Galliart a while ago indicating his desire to
+help with dexux development.  I'm very glad of his efforts; so far, he has
+managed to provide me with the encoding scheme for the palette data and
+information on how multi-block linking works!
+
+The decision has been made to split dexux into a library and a client.
+The library will be called libdexux and will be maintained mostly by me,
+and Ben says he will have the first test version of a client ready in
+a short while.  Finally, the dexux project may become actually usable..
+
+Here's the information Ben sent me regarding the palette:
+
+
+They are at offset 60-7F in the first/title frame.  The following
+table should allow for the convertion of a palette entry to standard 8bit
+true color entries:
+
+Grn Grn Grn Red | Red Red Red Red | Nul Blu Blu Blu | Blu Blu Grn Grn
+ 32  16  8  128 |  64  32  16  8  |     128  64  32 |  16  8  128  64
+
+ The numbers are given in decimal.  So, if the first palette entries bits
+ are  1100 0110 0001 1000  Then that is the same as Red=48, Green=48,
+ Blue=48.  The way that they layed out the bits for Green seems kinda odd
+ tho.  Oh well.
+
+ Each of the icon frames are simply references to the palette in a paint by
+ numbers sort of fashion.  This unforantly means that animated icons are
+ also limited to only 16 unique colors for the entire animation.
+
+
+And here's the information Ben sent me regarding multi-block linking:
+
+
+Block 0 Frames 0-15
+  Offset 00     Block status
+                51  First block
+                52  Middle block
+                53  Last block
+  Offset 01-03  00 00 00
+  Offset 04-07  Use bytes (length of save game)
+                00 20 00  1 block     00 20 01   9 blocks
+                00 40 00  2 blocks    00 40 01  10 blocks
+                00 60 00  3 blocks    00 60 01  11 blocks
+                00 80 00  4 blocks    00 80 01  12 blocks
+                00 A0 00  5 blocks    00 A0 01  13 blocks
+                00 C0 00  6 blocks    00 C0 01  14 blocks
+                00 E0 00  7 blocks    00 E0 01  15 blocks
+                00 00 01  8 blocks
+                The length is only given in the first block (0x51),
+                All other blocks (status 0x52 & 0x53) have a length
+                of  00 20 00  regardless of the number of block left.
+  Offset 08-09  Link order block
+                Next block in multi-block save (Numbered from 0)
+                A value of  01 00  refers to block at 0x4000 
+                A value of  07 00  refers to block at 0x10000
+                A value of  0E 00  refers to the last block (0x1E000)
+  Offset 0A-0B  Country Code (BI, BA, BE)
+  Offset 0C-15  Product Code (SAAA-00000)
+  Offset 16-1D  Identifier
+  Offset 1E-7E  Unused
+  Offset 7F     XOR
+
+

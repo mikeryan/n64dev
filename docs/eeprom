@@ -1,0 +1,38 @@
+As everybody knows (?) the standard 512 bytes EEPROM has 2
+commands,allowing read and write of the data:
+
+user -> 0x04 <page>
+eeprom -> <8 bytes>
+
+which reads 8 bytes from the page <page>.
+
+user -> 0x05 <page> <8 bytes>
+eeprom -> <status>
+
+which writes 8 bytes to the page <page>.
+
+Now, with the 512bytes eeprom, the page ranges from 0 to 63;
+technically the <page> allows for up to 256 pages which would mean
+2048 bytes -- the size of the "larger" eeprom... Is this the case?
+That is a 2K eeprom behaves like the 512Bytes, with more pages or it
+has a different command set?
+
+The eeprom also responds to the 0x00 command with the 
+status 0x00 0x80 0x00. The 2k eeprom does the same?
+
+You just need a scope and some patience, if you have a logic analyzer
+is even easier (I don't have that...). The EEPROM protocol is very
+simple and not very fast, so it's easy to follow (being a synchronous
+protocol you also have the triggering clocks...)
+
+The EEPROM is accessed thru the <pif> memory like the controller pads,
+but I have never understood how you address the eeprom (the joypads
+are addressed by the offset inside the pif memory)...
+
+
+Well, the PIF memory is located at 1FC007C0. To find the instructions which write this, you can search for LUI reg,1FC0, which is coded as 3Cxx1FC0 in hex. I will point out that that particular sequence (3Cxx1FC0) appears 6 times in Mario64 and 5 times in Pod Racer, so it should not be hard to locate the relevent sections of code and disassemble it to see how it works.
+
+--
+yes that means u can write a max of 2048 bytes. but i think most eeproms are 1024 or 512. not sure about that. But these larger chips return a status of 00c0000 instead of 008000.
+As for mempack eeprom, contact me on efnet and i'll try to explain it. 
+-LaC-

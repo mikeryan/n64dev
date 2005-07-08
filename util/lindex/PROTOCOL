@@ -1,0 +1,267 @@
+# --------------------------------------------------------------------------
+#
+# LinDex - DexDrive Utilities For Linux
+# Copyright (C) 2001 Dan Page [http://www.phoo.org]
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+#
+# --------------------------------------------------------------------------
+
+THE DISCOVERY COMMAND
+---------------------
+
+THE DISCOVERY CHALLENGE
+
+ ??   
+|__|
+ AA
+
+where
+
+AA            8bit x32     random data
+
+THE DISCOVERY RESPONSE
+
+ 49 41 49 ??  
+|________|__|
+ AA AA AA BB
+
+where
+
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x21 = error
+                                                ]
+
+
+THE INITIALISATION COMMAND
+--------------------------
+
+THE ID CHALLENGE
+
+ 49 41 49 ?? ?? ?? 
+|________|__|__|__|
+ AA AA AA BB CC DD 
+
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x00 = send arbitrary data
+                                                ]
+CC            8bit         data length    
+DD            128bit       random data
+
+THE ID RESPONSE
+
+ 49 41 49 ?? ?? ?? ?? ?? ?? 
+|________|__|__|________|__|
+ AA AA AA BB CC DD DD DD EE
+
+AA AA AA      24bit        packet header
+BB            8bit         packet operator      [
+                                                  0x21 = error
+                                                  0x40 = identification
+                                                ]
+CC            8bit         unknown data
+DD DD DD      24bit        device type          [
+                                                  PSX = PlayStation
+                                                  N64 = Nintendo64
+                                                ]
+EE            8bit         unknown data
+
+THE FLUSH CHALLENGE x10
+
+ 49 41 49 27
+|________|__|
+ AA AA AA BB
+
+where
+
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x27 = flush
+                                                ]
+
+THE FLUSH RESPONSE
+
+ 49 41 49 ??  
+|________|__|
+ AA AA AA BB
+
+where
+
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x21 = error
+                                                ]
+
+NB. The actual data sent in the ID challenge doesn't seem to matter although
+    it does effect the CC data in the response.  This may indicate that the
+    CC field in the response is either a status word or some sort of checksum.
+    All that matters is that you send 128bits of data to the DexDrive otherwise
+    you get an error response.  It doesn't even matter if you get the data
+    length field wrong as long as you send the right amount of data.
+
+
+THE CARD STATUS COMMAND
+-----------------------
+
+THE CARD STATUS CHALLENGE
+
+ 49 41 49 ?? 
+|________|__|
+ AA AA AA BB 
+ 
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x01 = get card status
+                                                ]
+
+THE CARD STATUS RESPONSE
+
+ 49 41 49 ?? ?? 
+|________|__|__|
+ AA AA AA BB CC
+
+where
+
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x21 = error
+                                                  0x22 = card not present/valid
+                                                  0x23 = card present/same
+                                                ]
+CC            8bit         card size in blocks
+
+NB. The card size is only written if the card is present so for the error case,
+    there are only 32bits of response.
+
+
+THE POWER STATUS COMMAND
+------------------------
+
+THE POWER STATUS CHALLENGE
+
+ 49 41 49 ?? ?? 
+|________|__|__|
+ AA AA AA BB CC 
+ 
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x07 = change power status
+                                                ]
+CC            8bit         power status         [
+                                                  0x00 = off
+                                                  0x01 = on
+                                                ]
+
+THE POWER STATUS RESPONSE 
+
+ 49 41 49 ??  
+|________|__|
+ AA AA AA BB
+
+where
+
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator
+
+NB. The packet operator of the response should match the packet operator of 
+    the last command issued.  So if the last command was a card status command
+    and the resultant packet operator was "card not present", then the packet
+    operator of the power status command will be "card not present" as well.
+    If the last command was a get frame command and response was "data valid",
+    then the packet operator of the power status command will be the same.
+
+
+THE GET FRAME COMMAND
+---------------------
+
+THE GET FRAME CHALLENGE
+
+ 49 41 49 ?? ?? ??
+|________|__|__|__|
+ AA AA AA BB CC DD
+ 
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x02 = get frame
+                                                ]
+CC            8bit         frame address LSB
+DD            8bit         frame address MSB
+
+THE GET FRAME RESPONSE
+
+ 49 41 49 ?? ?? ?? 
+|________|__|__|__|
+ AA AA AA BB CC DD
+
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x41 = data valid
+                                                ]
+CC            8bit x128    frame data
+DD            8bit         unknown data      
+
+NB.  The DexDrive seems to stall sometimes when reading frames from it.  The
+     stall happens as it is meant to be sending the frame data ie. you usually
+     get the packet header fine.  I don't know how to stop this happening but
+     you would think it would either be the fault of the DexDrive or a mistake
+     in my serial programming.  To get around it, you can flush the input and
+     output buffers and try again -- things seem to work eventually.
+
+
+THE PUT FRAME COMMAND
+---------------------
+
+THE PUT FRAME CHALLENGE
+
+ 49 41 49 ?? ?? ?? ?? ?? ?? ??
+|________|__|__|__|__|__|__|__|
+ AA AA AA BB CC DD EE FF GG HH
+ 
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x04 = get frame
+                                                ]
+CC            8bit         frame address MSB
+DD            8bit         frame address LSB
+
+EE            8bit         bit reversed frame address MSB
+FF            8bit         bit reversed frame address LSB
+
+GG            8bit x128    frame data
+HH            8bit         xor checksum
+
+
+THE PUT FRAME RESPONSE
+
+ 49 41 49 ?? ?? ?? 
+|________|__|__|__|
+ AA AA AA BB CC DD
+
+AA AA AA      24bit        packet header        
+BB            8bit         packet operator      [
+                                                  0x21 = error
+                                                  0x29 = data valid
+                                                ]
+
+NB. Whoever invented the this part of the protocol was on drugs -- the bit
+    reverse address section is just plain mad.  Also, I got an error at frame
+    offset 0x000D in the data written to/read from the card as a write test to
+    frame 0x003F so I a bit dubeous about the response values.  Maybe my card
+    is knackered :-(
+
+
+

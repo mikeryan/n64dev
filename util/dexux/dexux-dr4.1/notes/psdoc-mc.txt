@@ -1,0 +1,145 @@
+Memory cards
+
+Memory Card Format
+
+
+The memory card for the PSX is 128 kilobytes of non-volatile
+RAM. This is split into 16 blocks each containing 8 kilobytes each.
+The very first block is is a header block used as a directory and file
+allocation table leaving 15 blocks left over for data storage. 
+
+The data blocks contains the program data file name, block name,
+icon, and other critical information. The PSX accesses the data via
+a "frame" method. Each block is split into 64 frames, each 128
+bytes. The first frame (frame 0) is the file name, frames 1 to 3
+contain the icon, (each frame of animation taking up one frame)
+leaving the rest of the frames for save data.
+
+
+Terms and Data Format
+
+This is the format of the various objects within the memory card.
+
+
+File Name
+
+Country code(2 bytes)+Product number(10 bytes)+identifier(8
+bytes) An example of a product number is SCPS-0000. The
+identifier is a variation on the name of the game, for example FF8
+will be FF0800, FF0801. The format if the product is 4 characters,
+a hyphen, and then 5 characters. The actula characters don't really
+matter. With a PocketStation program, the product ID is a
+monochrome icon, a hyphen and the later part containing a "P" 
+
+
+Country Code
+
+In Japan the code is BI, Europe is BE, and America is BA. An
+American PSX and use memory saves with the BI country code. 
+
+
+Title
+
+The title is in Shift-JIS format with a max if 32 characters. ASCII
+can be used as ASCII is a subset of Shift-JIS.
+
+
+
+XOR Code
+
+This is a checksum. Each byte is XORed one by one and the result
+is stored. Complies with the checksum protocol.
+
+
+Link
+
+This is a sequence of 3 bytes to link blocks togeather to form one
+continuous data block. 
+
+
+Data Size
+Total Memory:  128KB = 131,072 bytes = 0x20000 bytes
+1 Block:         8KB =   8,192 bytes = 0x2000 bytes
+1 Frame:       128bytes = 0x80 bytes
+
+*******************************************************************************
+*******************************************************************************
+
+Header Frame
++0x00       'M' (0x4D)
++0x01       'C' (0x43)
++0x02-0x7E  Unused (0x00)
++0x7F       XOR code (usually 0x0E)
+
+*******************************************************************************
+*******************************************************************************
+
+Directory Frame
++0x00       Available blocks
+            Upper 4 bits
+                A - Available
+                5 - Partially Used
+                F - Usuable
+            Lower 4 bits
+                1 - There is no link, but one will be here later
+                2 - mid link block
+                3 - terminiting link block
+                F - unusable
+            Example:
+                A0 - Open block
+                51 - In use, there will be a link in the next block
+                52 - In use, this is in a link and will link to another
+                53 - In use, this is the last in the link
+                FF - Unusable
++0x01-0x03  00 00 00 (When it's reserved it's FF FF FF)
++0x04-0x07  Use Byte
+            00 00 00 - Open block middle link block, or end link block
+            Block * 0x2000 - No link but will be a link
+            00 20 00 - one blocks will be used
+            00 40 00 - two blocks will be used
+            00 0E 01 - 15 blocks will be used
++0x08-0x09  Link order
+            If the block isn't in a link or if it's the last link in the
+            line, it's 0xFFFF
++0x0A-0x0B  Country Code (BI, BA, BE)
++0x0C-0x15  Product Code (AAAA-00000)
+            Japan   SLPS, SCPS (from SCEI)
+            America SLUS, SCUS (from SCEA)
+            Europe  SLES, SCES (from SCEE)
++0x16-0x1D  Identifier
+            This number is created unique to the current game played.
+            Meaning the first time a game is saved on the card, every
+            subsequent save has the same identifier, but it a new game
+            is started from the beginning, that will have a different
+            identifier.
++0x1E-0x7E  Unused
++0x7F       XOR
+
+THE FOLLOWING DATA REPEATS FOR THE NEXT 15 BLOCKS, THEN BLOCK 1 STARTS
+
+*******************************************************************************
+*******************************************************************************
+
+Block Structure
+Frame 0 (Title Frame)
++0x00       'S' (0x53)
++0x01       'C' (0x43)
++0x02       Icon Display Flag
+            00 - No icon
+            11 - Icon has 1 frame of animation (static)
+            12 - Icon has 2 frames
+            13 - Icon has 3 frames
++0x03       Block number (1-15)
++0x04-0x43  This is the title in Shift-JIS format
+            It allows for 32 characters to be written
++0x44-0x5F  Reserved (00h)
+            This is used for the Pocketstation
++0x60-0x7F  Icon 16 Color Palette Data
+
+Frame 1-3 (Icon Frame)
++0x00-0x7F  Icon Bitmap
+            1 Frame of animation == 1 Frame of data
+            If there is no icon for this block, it's data instead.
+
+Frame 4 (Data Frame)
++0x00-0x7F  Save data

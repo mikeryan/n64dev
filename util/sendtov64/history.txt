@@ -1,0 +1,25 @@
+================================================================================
+SendToV64 by Christopher Field                                        05/10/1998
+================================================================================
+
+History:
+~~~~~~~~
+05 OCT 98 - Source Released
+	Due to lack of time, motivation and support. The source code has been
+	released, and development has STOPPED. Please, no emails on the subject.
+	Thank you.
+
+15 AUG 98 - v1.1a
+        Added support for the extensions added to v1.90 > BIOS from Bung.
+        IE. .GB .NES .SFC .GG .MD .NEO .PCE .EMU .MP3
+
+03 AUG 98 - v1.1
+        Disabled "Send" button while sending.
+        Added .V64, .Z64, .ROM, .PAL, .JAP and .USA file associations
+                to Config screen.
+
+01 AUG 98 - v1.0
+        Released
+
+
+Please refer to Readme64.txt for me details.

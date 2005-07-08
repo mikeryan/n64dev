@@ -1,0 +1,103 @@
+Aug 2000 -- Developer Release 4 
+
+  Well, this package should still be considered PRE-BETA quality software
+but I believe it has progressed out of the pre-alpha stage!  :)  If you
+wish to help modify or redistribute this package, please read the file
+"COPYING" carefully first for the licensing conditions.  If this file is
+missing or is corrupt, the text of the license should be available at:
+http://www.fsf.org/copyleft/gpl.html  (Btw, if your an employee of Corel
+Corp. then please read this license no less than hundred times and then
+contact me before including this package in any of your products.)
+
+  Some things that you probably already know but I feel a need to state
+anyways:
+
+     This project is NOT endorsed, supported or affilated with InterAct
+     Accessories, Inc.
+
+     This project is NOT endorsed, supported or affilated with Sony
+
+  My bugs are my own and I have no desire for any lack of quality in
+this package to reflect badly on either of these two companies.
+
+  This release is lacking greatly in documentation.  There is no man page
+written yet but if you do:  ./dex -h  then it should provide hints as to
+how to use it.  There are additional developer notes in the directory
+called "notes"  This directory also has a file called "magic" which is
+intended to be used with the file(1) command.
+
+  The package is split into two major parts:
+    libdexux  (in the libdexux directory)
+      - This is a bunch of low level functions for communicating with the
+        DexDrive which is available as a library and can be used in other
+        GPL projects which are intended to function with the DexDrive
+        Note that the API/header file is not finalized yet!
+
+    Dex client (in the main directory)
+      - Consider this a reference implimentation on using libdexux.  This
+        will eventually be a method in which an end user can use the
+        DexDrive via command line.
+
+  To make the package type:   make
+
+  To install the package, copy the "dex" and "dex-off" into an approbate
+  bin directory.  If you want to use libdexux in another project then copy
+  the library and header file to an approbate location.
+
+To Do (short term) --
+
+WTFM (Write The Fine Manual)
+  This package badly needs documentation.  Both C comments and external
+  documentation such as man pages.  Every function should have a
+  description of purpose and descriptions on both the variables passed
+  to it and the variables used internally.
+
+Bang out the bugs
+  This *appears* to work.  But, honestly, there is probably still some
+  pritty gross bugs in there.  Hopefully with detailed bug descriptions
+  these will get ironed out.
+
+To Do (long term) --
+
+KDE or GNOME interface
+  The Dex Client provided makes a great interface for those of us that
+have taken a liking to the power of the command line.  However, this form
+of computer/human interaction is not for everyone.  If a KDE or GNOME
+programmer (or someone interested in a project to learn Gtk or Qt
+programming) want to GUI the software, I would be happy to assist as much
+as I can.  Their is a great DexDrive software package called PSXGameEdit
+for Windows from http://moberg-dybdal.dk/psxge/ which might provide a
+better idea of how a GUI based package should work.
+
+Non-Playstation Storage
+  The price of memory cards have come down greatly and the 132K of storage
+provides some interesting possiblities.  For one, it is undersirable to
+leave GNU Privacy Guard (GPG) or SSL/TLS private certificates sitting on a
+hard drive.  While these private key are usually encrypted with a
+passphrase, it is not beyond possiblity that these passphrase will be
+discovered by someone else.  Despite this, convience has usually won out
+in this area and the private keys are left in a 24x7 accessable area.
+
+  The floppy drive is the other common storage place.  But if the floppy
+is left sitting in the drive even when their is not a legitimate need for
+the private key to be accessable then we might as well have left it on the
+hard drive.  Confirming that a floppy diskette has been removed is not
+always trival and some methods require that the software run with root
+privilages.  Combine this with the fact that floppy diskettes to not hold
+up well to abuse (being tossed in a college student's book bag for
+example), it is clear this isn't a desirable solution.
+
+  Playstation memory cards are designed to survive more abuse than other
+forms of computer storage.  The DexDrive protocol also provides for
+confirming that a card has been inserted or removed.  Hence, it is easier
+for a programmer to prompt the user to remove the card and confirm that
+the key is no longer available.
+
+  Lastly, the 132K card may lend itself to some "embedded Linux" style
+applications.  It may be possible to create a "smart" bootable CDROM which
+reads configuration information off the memory card rather than requiring
+a floppy or hard disk for configuration storage.
+
+
+Good luck,
+B. Galliart <bgallia@users.sourceforge.net>
