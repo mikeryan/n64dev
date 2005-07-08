@@ -1,0 +1,14 @@
+CC=cl.exe
+CFLAGS=/nologo /I../include /W3 /O2
+
+default: ultra64_host.lib
+
+u64cartinfo.obj: u64cartinfo.c
+	$(CC) $(CFLAGS) $** /Fo$@ /c
+
+ultra64_host.lib: u64cartinfo.obj
+	lib.exe /NOLOGO $** /OUT:$@
+
+clean:
+	del *.obj
+	del *.lib

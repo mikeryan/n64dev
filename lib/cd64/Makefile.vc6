@@ -1,0 +1,62 @@
+CC=cl.exe
+
+!ifdef DEBUG
+CFLAGS=/nologo /I../include /Zi /Oi /GZ /W3 /DDEBUG
+!else
+CFLAGS=/nologo /I../include /W3 /O2
+!endif
+
+DEFAULT_BUILD=1
+
+# If the user passed anything, we are not a default build.
+
+!ifdef LIBIEEE1284
+DEFAULT_BUILD=0
+!else
+!ifdef RAWIO
+DEFAULT_BUILD=0
+!endif
+!endif
+
+!if $(DEFAULT_BUILD)==1
+# Put default build options here
+
+RAWIO=1
+
+!endif # DEFAULT_BUILD = 1
+
+# Now for backend-specific defs
+
+!ifdef LIBIEEE1284
+CFLAGS=$(CFLAGS) /DCD64_USE_LIBIEEE1284
+LIBS=$(LIBS) ieee1284.lib
+!endif
+
+!ifdef RAWIO
+CFLAGS=$(CFLAGS) /DCD64_USE_RAWIO
+!endif
+
+default: all
+
+all:	cd64.lib cd64.dll
+
+# libcd64 stuff
+
+cd64io.obj: cd64io.c
+	$(CC) $(CFLAGS) $** /c /Fo$@
+
+cd64lib.obj: cd64lib.c
+	$(CC) $(CFLAGS) $** /c /Fo$@
+
+cd64.lib: cd64lib.obj cd64io.obj
+	lib.exe /NOLOGO $** $(LIBS) /OUT:$@
+
+cd64.dll: cd64lib.obj cd64io.obj
+	link.exe /NOLOGO /DLL $** $(LIBS) /DEF:cd64.def /IMPLIB:cd64dll.lib /OUT:$@
+
+clean:
+	del *.obj
+	del *.exp
+	del *.lib
+	del *.dll
+	del *.pdb

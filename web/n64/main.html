@@ -1,0 +1,335 @@
+<html>
+<title>elitendo.com - main</title>
+
+<script language="javascript">
+
+<!--
+
+// cell functions
+
+function mover(cell)
+
+{
+
+   if (!cell.contains(event.fromElement))
+
+   {
+
+      cell.style.cursor = 'hand';
+
+      cell.bgColor = '#BBBBBB';
+
+   }
+
+}
+
+
+
+function mover2(cell)
+
+{
+
+   if (!cell.contains(event.fromElement))
+
+   {
+
+      cell.style.cursor = 'default';
+
+      cell.bgColor = '#90E0F0';
+
+   }
+
+}
+
+
+
+function mout(cell)
+
+{
+
+   if (!cell.contains(event.toElement))
+
+   {
+
+      cell.style.cursor = 'default';
+
+      cell.bgColor = '#DDDDDD';
+
+   }
+
+}
+
+
+
+function mclick(cell)
+
+{
+
+   if(event.srcElement.tagName=='TD')
+
+   {
+
+      cell.children.tags('A')[0].click();
+
+   }
+
+}
+
+//-->
+
+</script>
+
+
+<body class="tab" link=#000000 vlink=#000000 alink=#000000 text=#000000 bgcolor=#FFFFFF background="images/n64bg.jpg">
+<center>
+<table border=0 width=95%>
+
+<tr>
+
+<td valign=bottom width=150>
+</td>
+
+<td valign=top align=left>
+<font size=+3 face="arial" color=#888888><b>ELITENDO.COM</b></font>
+<hr>
+</td>
+
+</tr>
+
+<!---SIDE MENU START---//-->
+<tr>
+
+<td align=center valign=top>
+
+<table border=0 width=150>
+<tr><td align=center><font face="arial" color=black><b>Sections</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+
+<table cellpadding=5 cellspacing=1 width=100% border=0>
+
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="main.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='News';return true;"><font size=-1 face="arial"><b>News</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD><font size=-1 face="arial"><b>Release List</b></font></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="complete_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Complete Release List';return true;"><font size=-1 face="arial">Complete</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='USA Release List';return true;"><font size=-1 face="arial">USA</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="japan_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Japan Release List';return true;"><font size=-1 face="arial">Japan</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="europe_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Europe Release List';return true;"><font size=-1 face="arial">Europe</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_boot_save_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Boot/Save List';return true;"><font size=-1 face="arial"><b>Boot/Save List</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_boot_save_faq.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='FAQ';return true;"><font size=-1 face="arial"><b>Boot/Save FAQ</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="saves.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Saves';return true;"><font size=-1 face="arial"><b>Saves</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="mailto:fab@elitendo.com" class="tab" onmouseout="self.status=''" onmouseover="window.status='Contact';return true;"><font size=-1 face="arial"><b>Contact</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+<br>
+
+<table border=0 width=100%>
+<tr><td align=center><font face="arial" color=black><b>Links</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+<table width=100% border=0 cellpadding=5 cellspacing=1>
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://www.dextrose.com/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to Dextrose';return true;"><font size=-1 face="arial"><b>Dextrose</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://64scener.parodius.com/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to 64scener';return true;"><font size=-1 face="arial"><b>64scener</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://tcsr.cjb.net/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to The Cart Scan Repository';return true;"><font size=-1 face="arial"><b>TCSR</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://www.disorder.org/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to N64 Box Art Archive';return true;"><font size=-1 face="arial"><b>Disorder</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+
+<!---SIDE MENU END---//-->
+
+<br>
+
+<!-- Start of TheCounter.com Code -->
+
+<SCRIPT TYPE="text/javascript" LANGUAGE="javascript">
+s="na";c="na";j="na";f=""+escape(document.referrer)
+</SCRIPT>
+<SCRIPT TYPE="text/javascript" LANGUAGE="javascript1.2">
+s=screen.width;v=navigator.appName
+if (v != "Netscape") {c=screen.colorDepth}
+else {c=screen.pixelDepth}
+j=navigator.javaEnabled()
+</SCRIPT>
+<SCRIPT TYPE="text/javascript" LANGUAGE="javascript">
+function pr(n) {document.write(n,"\n");}
+NS2Ch=0
+if (navigator.appName == "Netscape" &&
+navigator.appVersion.charAt(0) == "2") {NS2Ch=1}
+if (NS2Ch == 0) {
+r="&size="+s+"&colors="+c+"&referer="+f+"&java="+j+""
+pr("<IMG"+
+" BORDER=0 SRC=\"http://c2.thecounter.com/id=1108237"+r+"\"><\/A>")}
+</SCRIPT>
+<NOSCRIPT><IMG
+SRC="http://c2.thecounter.com/id=1108237" ALT="TC" BORDER=0></A>
+</NOSCRIPT>
+
+<!-- End of TheCounter.com Code -->
+
+</td>
+
+<td valign=top>
+
+<table cellspacing=2 border=0 width=100%>
+<tr><td align=center><font face="arial" color=#000000><b>News</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+<table cellpadding=12 cellspacing=1 width=100% border=0>
+<tr><td align=left bgcolor=#DDDDDD>
+
+<!----News Item Start----!>
+<font size=-1 face="arial">
+<b>May 17, 2001</b>
+<br>
+FAQ has been updated with boot and save information for Dr. Mario 64 and Mario Party 3.
+<br>
+<!----News Item End----!>
+<br>
+<!----News Item Start----!>
+<font size=-1 face="arial">
+<b>April 1, 2001</b>
+<br>
+FAQ has been updated with boot and save information for Paper Mario, Pokémon Stadium 2, and Aidyn Chronicles: The First Mage.
+<br>
+<!----News Item End----!>
+<br>
+<!----News Item Start----!>
+<font size=-1 face="arial">
+<b>February 4, 2001</b>
+<br>
+FAQ has been updated with boot and save information for Conker's Bad Fur Day.
+<br>
+<!----News Item End----!>
+<br>
+<!----News Item Start----!>
+<font size=-1 face="arial">
+<b>January 21, 2001</b>
+<br>
+Added back USA Boot/Save List.  FAQ has been updated with save information for Mega Man 64 and Super Bowling.
+<br>
+<!----News Item End----!>
+
+
+
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</td>
+
+</tr>
+
+
+</table>
+</center>
+</body>
+</html>

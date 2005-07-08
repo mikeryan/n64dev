@@ -1,0 +1,15 @@
+- support 2x/4x linear memory cards
+- apply IPS/APS patch (w/wo RLE compression) while sending rom
+- load dexdrive format mempak saves 
+	if (!strncmp("123-456-STD", dexsig, 11)) {
+		fseek(fp, 4160, SEEK_SET);
+		length -= 4160;
+	}
+- mingw compile for libieee1284
+- test comms link (/dev/port, rawio)
+- hook up irq line to PPA to avoid status polling? -- need TSOP inverter
+- overclock n64 - how does this affect cd64 timing?
+- cd/link support in neon64 to demand load roms, or load to N64 RAM
+  before starting.
+
+I've done a lot of work with the CD64.i.e changing the MODES so that I can make a program that will display a list of the V64 files. then you can use the controller pak to decide which v64 file you want to run and then the pc sends it.

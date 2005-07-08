@@ -1,0 +1,1660 @@
+<html>
+<title>elitendo.com - faq</title>
+
+<script language="javascript">
+
+<!--
+
+// cell functions
+
+function mover(cell)
+
+{
+
+   if (!cell.contains(event.fromElement))
+
+   {
+
+      cell.style.cursor = 'hand';
+
+      cell.bgColor = '#BBBBBB';
+
+   }
+
+}
+
+
+
+function mover2(cell)
+
+{
+
+   if (!cell.contains(event.fromElement))
+
+   {
+
+      cell.style.cursor = 'default';
+
+      cell.bgColor = '#90E0F0';
+
+   }
+
+}
+
+
+
+function mout(cell)
+
+{
+
+   if (!cell.contains(event.toElement))
+
+   {
+
+      cell.style.cursor = 'default';
+
+      cell.bgColor = '#DDDDDD';
+
+   }
+
+}
+
+
+
+function mclick(cell)
+
+{
+
+   if(event.srcElement.tagName=='TD')
+
+   {
+
+      cell.children.tags('A')[0].click();
+
+   }
+
+}
+
+function MM_openBrWindow(theURL, winName, features) { //v1.2
+	window.open(theURL, winName, features);
+}
+
+//-->
+
+</script>
+
+<body link=#000000 vlink=#000000 alink=#000000 text=#000000 bgcolor=#FFFFFF background="images/n64bg.jpg">
+<center>
+<table border=0 width=95%>
+
+<tr>
+
+<td valign=bottom width=150>
+</td>
+<td valign=top align=left>
+<font size=+3 face="arial" color=#888888><b>ELITENDO.COM</b></font>
+<hr>
+</td>
+
+</tr>
+
+<!---SIDE MENU START---//-->
+<tr>
+
+<td align=center valign=top>
+
+<table border=0 width=150>
+<tr><td align=center><font face="arial" color=black><b>Sections</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+
+<table cellpadding=5 cellspacing=1 width=100% border=0>
+
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="main.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='News';return true;"><font size=-1 face="arial"><b>News</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD><font size=-1 face="arial"><b>Release List</b></font></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="complete_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Complete Release List';return true;"><font size=-1 face="arial">Complete</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='USA Release List';return true;"><font size=-1 face="arial">USA</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="japan_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Japan Release List';return true;"><font size=-1 face="arial">Japan</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="europe_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Europe Release List';return true;"><font size=-1 face="arial">Europe</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_boot_save_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Boot/Save List';return true;"><font size=-1 face="arial"><b>Boot/Save List</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_boot_save_faq.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='FAQ';return true;"><font size=-1 face="arial"><b>Boot/Save FAQ</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="saves.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Saves';return true;"><font size=-1 face="arial"><b>Saves</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="mailto:fab@elitendo.com" class="tab" onmouseout="self.status=''" onmouseover="window.status='Contact';return true;"><font size=-1 face="arial"><b>Contact</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+<br>
+
+<table border=0 width=100%>
+<tr><td align=center><font face="arial" color=black><b>Links</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+<table width=100% border=0 cellpadding=5 cellspacing=1>
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://www.dextrose.com/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to Dextrose';return true;"><font size=-1 face="arial"><b>Dextrose</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://64scener.parodius.com/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to 64scener';return true;"><font size=-1 face="arial"><b>64scener</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://tcsr.cjb.net/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to The Cart Scan Repository';return true;"><font size=-1 face="arial"><b>TCSR</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://www.disorder.org/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to N64 Box Art Archive';return true;"><font size=-1 face="arial"><b>Disorder</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+
+<!---SIDE MENU END---//-->
+
+</td>
+
+<td valign=top>
+
+<table cellspacing=2 border=0 width=100%>
+<tr><td align=center><font face="arial" color=#000000><b>FAQ</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+<table cellpadding=12 cellspacing=1 width=100% border=0>
+<tr><td align=left bgcolor=#DDDDDD>
+
+<!----FAQ Start----!>
+<center>
+<table width=100% border=1>
+<tr><td align=center><b><font face="arial" size=+2>USA Boot/Save FAQ</font>
+<br>
+<font face="arial">Last Updated 17-May-2001</b></font></td></tr>
+</table>
+<br>
+<table border=0>
+<tr><td align=center>
+<font face="arial" size=-1>
+This FAQ would not have been possible without the help of the following people (in alphabetical order):<br>
+<b>
+CrowTRobo, jb0395, _kid, LaC, Neouni, Qcoder, RedboX, Titanik and WT_Riker<br>
+</b>
+Everyone's help, both directly and indirectly, has been invaluable.
+</font>
+</td>
+</tr>
+</table>
+</center>
+<br><br>
+<font face="arial">
+<table border=0>
+<tr><td colspan=2><b><font size=+1>General Questions</font></b></td></tr>
+<tr>
+<td valign=top>Q.</td>
+<td>
+<a href="#g1">Why do you only list USA games?
+</a>
+</td>
+</tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#g2">
+Why do you only have information pertaining to the V64 and the V64jr?  What about the
+Z64 and CD64?
+</a></td></tr>
+<tr>
+<td valign=top>Q.</td>
+<td>
+<a href="#g3">What makes you an authority on this subject?
+</a>
+</td>
+</tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#g4">
+Your lists and/or FAQs indicate that [insert game here] uses [insert boot-cic here]/
+[insert save-type here], but that is not correct, why not?
+</a></td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#g5">
+What is an emulation adapter?
+</a></td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#g6">
+What is a DS-1?
+</a></td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#g7">
+What is the Protected Cart Decoder (PCD)?
+</a></td></tr>
+
+</table>
+
+<br><br>
+
+<table border=0>
+<tr><td colspan=2><b><font size=+1>Boot Related Questions</font></b></td></tr>
+<tr>
+<td valign=top>Q.</td>
+<td>
+<a href="#b1">What is a Boot CIC?</a>
+</td>
+</tr>
+<tr>
+<td valign=top>Q.</td>
+<td>
+<a href="#b2">What is a Boot CIC used for?</a>
+</td>
+</tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b3">
+What different Boot CIC chips are there?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b4">
+What carts use the CIC-NUS-6101 boot chip?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b5">
+What carts use the CIC-NUS-6102 boot chip?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b6">
+What carts use the CIC-NUS-6103 boot chip?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b7">
+What carts use the CIC-NUS-6105 boot chip?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b8">
+What carts use the CIC-NUS-6106 boot chip?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b9">
+What are the CIC-NUS-7101, CIC-NUS-7102, CIC-NUS-7103, CIC-NUS-7105 and CIC-NUS-7106 boot chips for?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b10">
+Hey!  CIC-NUS-6102 is the standard Mario boot chip?  I always thought it was CIC-NUS-6101. What gives?</a>
+</td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b10b">
+What is a 610x Host Card?</a>
+</td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b11">
+What is a boot emulator?
+</a>
+</td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b12">
+What boot emulators exist?
+</a>
+</td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#b13">
+How do I use a boot emulator?
+</a>
+</td></tr>
+<tr><td valign=top>Q.</td>
+<td>
+<a href="#b100">What are the best carts to own for booting and saving the majority of games?</a>
+</td></tr>
+
+</table>
+
+<table border=0>
+<tr><td colspan=2><b><font size=+1>Game Specific Questions</font></b></td></tr>
+<tr>
+<td valign=top>Q.</td>
+<td>
+<a href="#jfg1">I can get Jet Force Gemini to boot using a boot emulator, but I cannot run or shoot when playing the game, what am I doing wrong?</a>
+</td>
+</tr>
+<tr>
+<td valign=top>Q.</td>
+<td>
+<a href="#btooie1">I cannot get Banjo-Tooie to boot even using a boot emulator, what am I doing wrong?</a>
+</td>
+</tr>
+
+
+</table>
+
+<br><br>
+
+<table border=0>
+<tr><td colspan=2><b><font size=+1>Saving Related Questions</font></b></td></tr>
+<tr>
+<td valign=top>Q.</td>
+<td>
+<a href="#s1">What different save methods are there?</a>
+</td>
+</tr>
+<tr>
+<td valign=top>Q.</td>
+<td>
+<a href="#s2">What carts use the Controller Pak for saving?</a>
+</td>
+</tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#s3">
+What carts use 4 Kilobit EEPROM for saving?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#s4">
+What carts use 16 Kilobit EEPROM for saving?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#s5">
+What carts use SRAM for saving?
+</a></td></tr>
+<tr><td valign=top>Q.</td>
+<td><a href="#s6">
+What carts use FlashRAM for saving?
+</a></td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#s7">
+Why can't I save FlashRAM saves on my V64 even though I have a FlashRAM capable host card in my emulation adapter?
+</a></td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#s8">
+Is there any way to save FlashRAM data using a V64?
+</a></td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#s9">
+How do I modify my FlashRAM cart to allow proper saving on my V64?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#s9a">
+What is a 4Kbit EEPROM Host Card?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#s9b">
+What is a 16Kbit EEPROM Host Card?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#s9c">
+What is a SRAM Host Card?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td><a href="#s9d">
+What is a FlashRAM Host Card?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td>
+<a href="#s10">Is it possible to save more than one game on using any save type?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td>
+<a href="#s11">How can I backup/restore 4kbit EEPROM saves?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td>
+<a href="#s12">How can I backup/restore 16kbit EEPROM saves?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td>
+<a href="#s13">How can I backup/restore SRAM saves?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td>
+<a href="#s14">How can I backup/restore FlashRAM saves?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td>
+<a href="#s14">How can I backup/restore Controller Pak saves?</a>
+</td></tr>
+
+<tr><td valign=top>Q.</td>
+<td>
+<a href="#b100">What are the best carts to own for booting and saving the majority of games?</a>
+</td></tr>
+
+</table>
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+
+
+
+
+
+
+<table border=0>
+<tr><td colspan=2><b><font size=+1>General Questions & Answers</font></b></td></tr>
+</table>
+<br>
+<a name="g1">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>Why do you only list USA games?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>These are really the only games I have the time and interest to catalog for now.  Eventually,
+I may provide information for all territories, but that isn't likely to happen in the foreseeable
+future.</td>
+</tr>
+</table>
+
+<br>
+
+<a name="g2">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>Why do you only have information pertaining to the V64
+and the V64jr?  What about the Z64 and CD64?
+</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>Unfortunately I only have a V64 and a V64jr to test with.  I hesitate putting information
+   in this FAQ regarding the Z64 or the CD64 since I have no way to test and verify that
+   information.
+</td>
+</tr>
+</table>
+
+<br>
+
+<a name="g3">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What makes you an authority on this subject?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>Personal use and verification.  Any information here is garnered through personal evaluation and
+   verification.  If there is any information here that I have not verified myself, I will try and
+   make sure I indicate it as such.
+</td>
+</tr>
+</table>
+
+<br>
+
+<a name="g4">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>Your lists and/or FAQs indicate that [insert game here] uses [insert boot-cic here]/
+   [insert save-type here], but that is not correct, why?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>Nobody is perfect.  I try to keep this information as accurate as possible, if you have corrections,
+   please send them to me at <a href="mailto:fab@elitendo.com">fab@elitendo.com</a>.  If you are going to tell me something is wrong,
+   please tell me what you feel is correct and how you verified it if possible.  It is not very helpful
+   to tell me that I am wrong, but not tell me what is correct.
+</td>
+</tr>
+</table>
+
+<br>
+
+<a name="g5">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is an emulation adapter?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The emulation adapter is a cart that sits between the N64 and an actual game cart.  This allows
+   the boot-CIC and the save chip of the actual game cart to be used by the ROM in the V64's memory.
+   Without the emulation adapter, the ROM from the actual cart would be read by the N64 instead of
+   the ROM in the V64's memory.
+</td>
+</tr>
+
+</table>
+
+<br>
+
+<a name="g6">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a DS-1?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The DS-1 is an accessory by Bung that serves as an SRAM save cart.  It provides 256 Kilobytes of
+   SRAM data for games to save with.  With the use of the DS-1 Manager software for the N64 you
+   can use the DS-1 to backup up to 6 different SRAM saves at a time.  The DS-1 is cart by Bung
+   that sits between the N64 and an actual game cart.  This allows the boot-CIC of the actual
+   game cart to be used by the ROM in the V64's memory.  The DS-1 also serves as a replacement
+   for the emulation adapter.
+</td>
+</tr>
+</table>
+
+<br>
+
+<a name="g7">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is the Protected Cart Decoder (PCD)?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The PCD is an accessory by UFO company that allows you to mix and match boot chips and save types.
+   It plugs into the backup unit and has two cartridge connectors, one for the boot chip and one for
+   the save type.  This allows you to employ two different carts for booting and saving purposes.
+   For Example:  In the boot connector you have Jet Force Gemini which has a 6105 boot chip.  In
+   the save connector you have Yoshi's Story.  This gives you the ability to natively
+   boot a game expecting to find a 6105 boot chip and save a game expecting to save to 16Kbit EEPROM.
+   You can mix and match any combination of boot and save types making this a very handy device.
+</td>
+</tr>
+</table>
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+
+<table border=0>
+<tr><td colspan=2><b><font size=+1>Boot Related Questions & Answers</font></b></td></tr>
+</table>
+<br>
+<a name="b1">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a Boot CIC?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The Boot CIC is a security chip that exists in Nintendo64 cartridges that the ROM uses to boot.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="b2">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a Boot CIC used for?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>In short, copy protection.</td>
+</tr>
+</table>
+
+<br>
+<a name="b3">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What different Boot CIC chips are there?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>CIC-NUS-6101, CIC-NUS-6102, CIC-NUS-6103, CIC-NUS-6105, CIC-NUS-6106, CIC-NUS-7101,
+   CIC-NUS-7103, CIC-NUS-7105, and presumably CIC-NUS-7106, and probably CIC-NUS-7102</td>
+</tr>
+</table>
+
+<br>
+<a name="b4">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use the CIC-NUS-6101 boot chip?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>There is currently only one USA game that uses this boot chip: Star Fox 64.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="b5">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use the CIC-NUS-6102 boot chip?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The CIC-NUS-6102 is considered the Standard Boot Chip.  It was first seen in Super Mario 64 and
+   is still used in the majority of N64 games produced today.  All 3rd Party games released so far
+   use this boot chip.  Most newer first party (Nintendo Published) games use a security chip other
+   than CIC-NUS-6102, presumably for copy protection.  More than 90% of all USA Nintendo64 games
+   released so far use the CIC-NUS-6102 Boot Chip so there are too many to list here. All carts not
+   mentioned in this FAQ as having a 6101, 6103, 6105, or 6106 boot chip use the 6102 boot chip.
+</td>
+</tr>
+</table>
+
+
+<br>
+<a name="b6">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use the CIC-NUS-6103 boot chip?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The CIC-NUS-6103 boot chip first appeared in Diddy Kong Racing USA.  It is used in the following
+   USA games:<br><br>
+
+   1080º Snowboarding<br>
+   Banjo Kazooie<br>
+   Diddy Kong Racing<br>
+   Excitebike 64 Kiosk<br>
+   Excitebike 64<br>
+   Ken Griffey Jr's Slugfest<br>
+   Kirby 64: The Crystal Shards<br>
+   Kobe Bryant in NBA Courtside<br>
+   Major League Baseball featuring Ken Griffey Jr.<br>
+   Paper Mario<br>
+   Pokémon Snap<br>
+   Pokémon Stadium<br>
+   Pokémon Stadium 2<br>
+   Super Smash Bros.<br>
+
+</td>
+</tr>
+</table>
+
+<br><br>
+<a name="b7">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use the CIC-NUS-6105 boot chip?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The CIC-NUS-6105 boot chip first appeared in The Legend of Zelda: Ocarina of Time USA.  It is used in the
+   following USA games:<br><br>
+
+   Banjo-Tooie<br>
+   Conker's Bad Fur Day<br>
+   Donkey Kong 64<br>
+   Jet Force Gemini Kiosk<br>
+   Jet Force Gemini<br>
+   Legend of Zelda: Majora's Mask, The<br>
+   Legend of Zelda: Ocarina of Time, The<br>
+   Mickey's Speedway USA<br>
+   Perfect Dark<br>
+
+
+</td>
+</tr>
+</table>
+
+<br><br>
+<a name="b8">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use the CIC-NUS-6106 boot chip?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The CIC-NUS-6106 boot chip first appeared in Yoshi's Story JAP.  It is used in the following
+   USA games:<br><br>
+
+   Cruis'n World<br>
+   F-Zero X<br>
+   Yoshi's Story<br>
+
+
+</td>
+</tr>
+</table>
+
+<br><br>
+<a name="b9">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What are the CIC-NUS-7101, CIC-NUS-7102, CIC-NUS-7103, CIC-NUS-7105, and CIC-NUS-7106 boot chips
+   for?
+</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>These are the PAL equivalent of the USA boot chips, with the following exceptions: CIC-NUS-7101
+   seems to be the PAL standard "Mario" boot chip, where CIC-NUS-6102 is the USA standard "Mario"
+   boot chip.  It may be that the CIC-NUS-7102 is used for PAL Star Fox 64, but I have no way
+   of verifying this so far.  The rest of the CIC-NUS-710x boot chips seem to correspond to their USA
+   610x counterparts.
+
+</td>
+</tr>
+</table>
+
+<br>
+<a name="b10">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>Hey!  CIC-NUS-6102 is the standard Mario boot chip?  I always thought it was CIC-NUS-6101.
+   What gives?
+</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>It is/was a common misconception that the standard Mario boot chip was CIC-NUS-6101 and
+   that Star Fox 64 was CIC-NUS-6102, but thanks to <a href="http://tcsr.n64zone.com/">The Cart Scan Repository</a>, we now know
+   that it is the other way around.
+
+</td>
+</tr>
+</table>
+
+<br>
+<a name="b10b">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a 610x Host Card?
+</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+
+A 610x Host Card, where x=1, 2, 3, 5 or 6 is a host card that contains an actual CIC-NUS-6101,
+CIC-NUS-6102, CIC-NUS-6103, CIC-NUS-6105 or CIC-NUS-6106 boot chip.  Using an actual 610x Host
+Card is useful to avoid boot emulators, and is required to play at lease one game (Banjo-Tooie).
+
+</td>
+</tr>
+</table>
+
+<br>
+<a name="b11">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a boot emulator?
+</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>A boot emulator is a tool that allows you to boot a non-6102 game on a backup unit with a host card
+   that has a CIC-NUS-6102 boot chip.
+
+</td>
+</tr>
+</table>
+
+<br>
+<a name="b12">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What boot emulators exist?
+</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>There are currently four boot emulators available: 6106 Boot Emulator by Jovis AKA Yoshi Boot Emu,
+   6103 Boot Emulator by Jovis AKA Diddy Boot Emu, 6105 Boot Emulator by Titanik of CZN AKA Zelda
+   Boot Emu and the recently released Universal Boot Emulator by LaC of Dextrose.
+
+</td>
+</tr>
+</table>
+
+<br>
+<a name="b13">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>How do I use a boot emulator?
+</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>Generally speaking, you send the appropriate boot emulator for the type of chip the game that you want to
+   play is expecting to find, then you turn on the N64 and then send the unmodified ROM.  When the
+   send is complete, the game should boot.  With the Universal Boot Emulator by LaC, when the send is
+   complete, you press START on the controller to boot the game.  The Jovis 6103 and 6106 boot emulators will not work for
+   all respective 6103 and 6106 games.  The Titanik 6105 boot emulator seems to work for all 6105 games
+   released so far, including Perfect Dark (except for proper detection of the Expansion Pak).  The
+   Universal Boot Emulator by LaC works for booting every USA 6103, 6105, and 6106 game available so
+   far.  The Universal Boot Emulator by LaC supersedes all previous boot emulators.
+
+</td>
+</tr>
+</table>
+
+<br>
+<a name="b100">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What are the best carts to own for booting and saving the majority of games?
+</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The rule of thumb is have one CIC-NUS-6102 cart for each kind of save method.  The
+   reason for this is because boot emulators and cracks are created for the host cart
+   being CIC-NUS-6102.  Here are my recommendations:
+<br><br>
+   <b>4 Kilobit EEPROM:</b> Super Mario 64<br>
+   <b>16 Kilobit EEPROM:</b> Star Wars Episode 1 Racer<br>
+   <b>32 Kilobyte SRAM:</b> DS-1 or Mario Golf (Modification required for V64)<br>
+   <b>1 Megabit FlashRAM:</b> Command & Conquer (<a href="#s9">Modification required for V64</a>)<br>
+</td>
+</tr>
+</table>
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+
+<table border=0>
+<tr><td colspan=2><b><font size=+1>Game Specific Questions & Answers</font></b></td></tr>
+</table>
+<br>
+<a name="jfg1">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>I can get Jet Force Gemini to boot using a boot emulator, but I cannot run or shoot when playing the game, what am I doing wrong?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+You are doing nothing wrong, this happens to everyone, on every backup unit.  It is believed that
+the problem is due to further copy protection in software that the boot emulator is unable to
+bypass.  LaC of Dextrose has since released a crack for Jet Force Gemini that allows it to boot and play properly.
+</td>
+</tr>
+<tr><td colspan=2><b><font size=+1>Game Specific Questions & Answers</font></b></td></tr>
+</table>
+<br>
+<a name="btooie1">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>I cannot get Banjo-Tooie to boot even using a boot emulator, what am I doing wrong?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+You are doing nothing wrong, this happens to everyone, on every backup unit.
+The situation is the same as Jet Force Gemini, there is copy protection beyond the usual type
+that does a check for the presence of an actual 6105 boot chip after booting.  If the game fails
+to find the chip, it refuses to run.  Beyond needing an actual 6105 boot chip, Banjo-Tooie also
+requires a 16kbit EEPROM or it will refuse to detect a controller.  There is no crack available
+yet for this game, so an actual CIC-NUS-6105 host card with 16Kbit EEPROM is necessary to enjoy
+this game.
+</td>
+</tr>
+</table>
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+
+
+<table border=0>
+<tr><td colspan=2><b><font size=+1>Saving Related Questions & Answers</font></b></td></tr>
+</table>
+<br>
+<a name="s1">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What different save methods are there?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>There are currently 5 different save methods that the Nintendo64 uses:
+<br><br>
+   Controller Pak<br>
+   4 Kilobits (512 bytes) EEPROM<br>
+   16 Kilobits (2048 bytes) EEPROM<br>
+   32 Kilobytes (32,768 bytes) SRAM<br>
+   128 Kilobytes (131,072 bytes) FlashRAM<br><br>
+
+   EEPROM, SRAM and FlashRAM saving are all transparent to the normal end user of a N64.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s2">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use the Controller Pak for saving?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>The majority of 3rd party games use the Controller
+   Pak for saving.  Very few first party (Nintendo published) games use the Controller Pak any
+   more.  The following USA games use the Controller Pak for saving:
+<br><br>
+<table border=0 width=100%>
+<tr>
+<td nowrap valign=top width=33%>
+<font size=1>
+Aero Gauge<br>
+Aidyn Chronicles: The First Mage<br>
+All-Star Baseball 2000<br>
+All-Star Baseball 2001<br>
+All-Star Baseball '99<br>
+Armorines: Project S.W.A.R.M.<br>
+Army Men: Air Combat<br>
+Army Men: Sarge's Heroes<br>
+Army Men: Sarge's Heroes 2<br>
+Asteroids Hyper 64<br>
+Automobili Lamborghini<br>
+Bassmaster 2000<br>
+Battle Tanx<br>
+Battle Tanx: Global Assault<br>
+Battlezone: Rise of the Black Dogs<br>
+Beetle Adventure Racing<br>
+Big Mountain 2000<br>
+Bio F.R.E.A.K.S.<br>
+Blast Corps<br>
+Blues Brothers 2000<br>
+Bomberman 64<br>
+Bottom of the 9th<br>
+Brunswick Circuit Pro Bowling<br>
+Buck Bumble<br>
+Bug's Life, A<br>
+Bust-A-Move 2: Arcade Edition<br>
+Bust-A-Move '99<br>
+California Speed<br>
+Carmageddon 64<br>
+Castlevania<br>
+Castlevania: Legacy of Darkness<br>
+Chameleon Twist 2<br>
+Cruis'n USA<br>
+CyberTiger<br>
+Deadly Arts<br>
+Destruction Derby<br>
+Diddy Kong Racing<br>
+Doom 64<br>
+Dual Heroes<br>
+Duke Nukem 64<br>
+Duke Nukem: Zero Hour<br>
+ECW: Hardcore Revolution<br>
+Excitebike 64<br>
+Excitebike 64 Kiosk<br>
+Extreme-G<br>
+Extreme-G 2<br>
+F1 Pole Position 64<br>
+FIFA '99<br>
+FIFA Soccer 64<br>
+FIFA: Road to World Cup 98<br>
+Fighters Destiny<br>
+Fighters Destiny 2<br>
+Fighting Force 64<br>
+Flying Dragon<br>
+Forsaken 64<br>
+Fox Sports College Hoops '99<br>
+Gauntlet Legends<br>
+Gex 3: Deep Cover Gecko<br>
+Gex 64: Enter the Gecko<br>
+Goemon's Great Adventure<br>
+Golden Nugget 64<br>
+GT64 Championship Edition<br>
+Hercules: The Legendary Journeys<br>
+Hexen<br>
+</font>
+</td>
+
+<td nowrap valign=top width=33%>
+<font size=1>
+Hot Wheels Turbo Racing<br>
+Hybrid Heaven<br>
+Hydro Thunder<br>
+Iggy's Reckin' Balls<br>
+International Superstar Soccer 64<br>
+International Superstar Soccer '98<br>
+International Superstar Soccer 2000<br>
+International Track & Field 2000<br>
+Jeremy McGrath Supercross 2000<br>
+Killer Instinct Gold<br>
+Knockout Kings 2000<br>
+Kobe Bryant in NBA Courtside<br>
+Lego Racers<br>
+Madden 2000<br>
+Madden 2001<br>
+Madden 64<br>
+Madden '99<br>
+Mario Kart 64<br>
+Mia Hamm Soccer 64<br>
+Micro Machines 64 Turbo<br>
+Midway's Greatest Arcade Hits Volume 1<br>
+Mike Piazza's Strike Zone<br>
+Milo's Astro Lanes<br>
+Monaco Grand Prix<br>
+Mortal Kombat 4<br>
+Mortal Kombat Mythologies: Sub-Zero<br>
+Ms. Pac-Man Maze Madness<br>
+Multi-Racing Championship<br>
+Mystical Ninja Starring Goemon<br>
+Nagano Winter Olympics '98<br>
+Namco Museum 64<br>
+Nascar 2000<br>
+Nascar '99<br>
+NBA Hang Time<br>
+NBA In the Zone 2000<br>
+NBA In the Zone '98<br>
+NBA In the Zone '99<br>
+NBA Jam 2000<br>
+NBA Jam '99<br>
+NBA Live 2000<br>
+NBA Live '99<br>
+NBA Show Time: NBA on NBC<br>
+New Tetris, The<br>
+NFL Blitz<br>
+NFL Blitz 2000<br>
+NFL Blitz 2001<br>
+NFL Quarterback Club 2000<br>
+NFL Quarterback Club 2001<br>
+NFL Quarterback Club '98<br>
+NFL Quarterback Club '99<br>
+NHL '99<br>
+NHL Blades of Steel '99<br>
+NHL Breakaway Hockey '98<br>
+NHL Breakaway Hockey '99<br>
+Nightmare Creatures<br>
+Nuclear Strike 64<br>
+Off Road Challenge<br>
+Olympic Hockey '98<br>
+Paperboy<br>
+Penny Racers<br>
+Perfect Dark<br>
+Polaris Snocross<br>
+Power Rangers: Lightspeed Rescue<br>
+Quake<br>
+</font>
+</td>
+
+<td nowrap valign=top width=33%>
+<font size=1>
+Quake II<br>
+Quest 64<br>
+Rainbow Six<br>
+Rally Challenge 2000<br>
+Rampage 2: Universal Tour<br>
+Rampage: World Tour<br>
+Rat Attack<br>
+Rayman 2: The Great Escape<br>
+Ready 2 Rumble Boxing<br>
+Ready 2 Rumble Boxing Round 2<br>
+Re-Volt<br>
+Road Rash 64<br>
+Roadsters<br>
+Robotron 64<br>
+Rugrats in Paris: The Movie<br>
+Rush 2: Extreme Racing USA<br>
+S.C.A.R.S.<br>
+San Francisco Rush: 2049<br>
+San Francisco Rush: Extreme Racing<br>
+Scooby-Doo: Classic Creep Capers<br>
+Shadow Man<br>
+Shadowgate 64: Trials of the Four Towers<br>
+Snowboard Kids<br>
+South Park<br>
+South Park Rally<br>
+Space Invaders<br>
+Spider-Man<br>
+Stunt Racer 64<br>
+Supercross 2000<br>
+Superman<br>
+Tarzan<br>
+The World Is Not Enough<br>
+Tonic Trouble<br>
+Tony Hawk's Pro Skater<br>
+Top Gear Hyper Bike<br>
+Top Gear Rally<br>
+Top Gear Rally 2<br>
+Toy Story 2<br>
+Triple Play 2000<br>
+Turok: Dinosaur Hunter<br>
+Turok 2: Seeds of Evil<br>
+Turok 3: Shadow of Oblivion<br>
+Turok: Rage Wars<br>
+Twisted Edge Extreme Snowboarding<br>
+Vigilante 8<br>
+Vigilante 8: 2nd Offense<br>
+Virtual Chess 64<br>
+Virtual Pool 64<br>
+Wave Race 64<br>
+Wayne Gretzky's 3D Hockey<br>
+Wayne Gretzky's 3D Hockey '98<br>
+WCW Backstage Assault<br>
+WCW Mayhem<br>
+WCW Nitro<br>
+WCW vs. NWO: World Tour<br>
+Wetrix<br>
+WinBack: Covert Operations<br>
+Wipeout 64<br>
+World Cup '98<br>
+World Driver Championship<br>
+Wrestlemania 2000<br>
+WWF: Attitude<br>
+WWF: Warzone<br>
+Xena: Talisman of Fate<br>
+</font>
+</td>
+</tr>
+</table>
+<br><br>
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s3">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use 4 Kilobit EEPROM for saving?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>Super Mario 64 JAP was the first cart to use 4 Kbit EEPROM for saving.  The following USA games
+   use 4 Kbit EEPROM for saving:
+<br><br>
+<table border=0 width=100%>
+<tr>
+<td nowrap valign=top width=33%>
+<font size=1>
+AeroFighters Assault<br>
+All-Star Tennis '99<br>
+Banjo-Kazooie<br>
+Bass Hunter 64<br>
+Big Mountain 2000<br>
+Blast Corps<br>
+Body Harvest<br>
+Bomberman 64<br>
+Bomberman 64: Second Attack<br>
+Bomberman Hero<br>
+Chameleon Twist<br>
+Chopper Attack<br>
+Cruis'n Exotica<br>
+Cruis'n USA<br>
+Diddy Kong Racing<br>
+Donald Duck: Goin' Quackers<br>
+Dr. Mario 64<br>
+Earthworm Jim 3D<br>
+F-1 World Grand Prix<br>
+Fighters Destiny<br>
+</font>
+</td>
+<td nowrap valign=top width=33%>
+<font size=1>
+Glover<br>
+GoldenEye 007<br>
+GT64 Championship Edition<br>
+Hey you, Pikachu!<br>
+Indiana Jones and the Infernal Machine<br>
+Indy Racing 2000<br>
+Killer Instinct Gold<br>
+Kirby 64: The Crystal Shards<br>
+Lode Runner 3D<br>
+Loony Toons: Duck Dodgers<br>
+Mario Kart 64<br>
+Mario Party<br>
+Mario Party 2<br>
+Mickey's Speedway USA<br>
+Mischief Makers<br>
+Mission: Impossible<br>
+Monopoly<br>
+Multi-Racing Championship<br>
+Penny Racers<br>
+</font>
+</td>
+<td nowrap valign=top width=33%>
+<font size=1>
+PGA European Tour<br>
+Pilotwings 64<br>
+Rocket: Robot on Wheels<br>
+Snowboard Kids 2<br>
+Space Station Silicon Valley<br>
+Star Fox 64<br>
+Star Soldier: Vanishing Earth<br>
+Star Wars Episode 1: Battle for Naboo<br>
+Star Wars: Rogue Squadron<br>
+Star Wars: Shadows of the Empire<br>
+Starshot Space Circus<br>
+Super Mario 64<br>
+Tetrisphere<br>
+Tom & Jerry in Fists of Furry<br>
+Top Gear Overdrive<br>
+V-Rally Edition '99<br>
+Waialae Country Club: True Golf Classics<br>
+Wave Race 64<br>
+Worms Armageddon<br>
+</font>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<br>
+<br>
+<br>
+<a name="s4">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use 16 Kilobit EEPROM for saving?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>Yoshi's Story JAP was the first cart to use 16 Kbit EEPROM for saving.  The following USA games
+   use 16 Kbit EEPROM for saving:<br><br>
+
+   Banjo-Tooie<br>
+   Conker's Bad Fur Day<br>
+   Cruis'n World<br>
+   Donkey Kong 64<br>
+   Excitebike 64<br>
+   Kobe Bryant in NBA Courtside<br>
+   Mario Party 3<br>
+   Mario Tennis<br>
+   Perfect Dark<br>
+   Ridge Racer 64<br>
+   Star Wars Episode 1 Racer<br>
+   Yoshi's Story<br>
+
+</td>
+</tr>
+</table>
+
+<br><br>
+<a name="s5">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use SRAM for saving?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>Virtual Pro Wrestling JAP was the first cart to use 32 Kilobyte SRAM for saving.  The following
+   USA games use 32 Kilobyte SRAM for saving:<br><br>
+
+   1080º Snowboarding<br>
+   F-Zero X<br>
+   Harvest Moon 64<br>
+   Legend of Zelda: Ocarina of Time, The<br>
+   Major League Baseball featuring Ken Griffey Jr.<br>
+   Mario Golf<br>
+   New Tetris, The<br>
+   Ogre Battle 64: Person of Lordly Caliber<br>
+   Resident Evil 2<br>
+   Super Smash Bros.<br>
+   WCW/NWO Revenge<br>
+   WWF: Wrestlemania 2000<br>
+
+</td>
+</tr>
+</table>
+
+
+<br><br>
+<a name="s6">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What carts use FlashRAM for saving?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>Pokémon Stadium 2 JAP was the first cart to use FlashRAM for saving.  The following USA games
+   use 1 Megabit FlashRAM for saving:<br><br>
+
+   Command & Conquer<br>
+   Jet Force Gemini Kiosk<br>
+   Jet Force Gemini<br>
+   Ken Griffey Jr's Slugfest<br>
+   Legend of Zelda: Majora's Mask, The<br>
+   Megaman 64<br>
+   NBA Courtside 2 featuring Kobe Bryant<br>
+   Paper Mario<br>
+   Pokémon Puzzle League<br>
+   Pokémon Snap<br>
+   Pokémon Stadium<br>
+   Pokémon Stadium 2<br>
+   Starcraft 64<br>
+   Tigger's Honey Hunt<br>
+   WWF: No Mercy<br>
+
+
+</td>
+</tr>
+</table>
+
+<br><br>
+<a name="s7">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>Why can't I save FlashRAM saves on my V64 even though I have a FlashRAM capable host card in
+   my emulation adapter?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+The emulation adapter prevents the ability to save FlashRAM data to a FlashRAM host card.  Since
+   the V64 relies on a cart being plugged into the top of the N64, the emulation adapter is required, or
+   the N64 will boot the ROM on the actual cartridge.  The emulation adapter prevents the N64 from seeing
+   the ROM and unfortunately it also prevents the ability to read and write to the FlashRAM chip in the
+   host card.  This is also true for SRAM saves, but the DS-1 adapter negates the need for an SRAM host
+   card on a V64.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s8">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>Is there any way to save FlashRAM data using a V64?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+Yes.  You can modify an actual FlashRAM save cart so that the ROM is not seen by the N64 and therefore
+   not boot by the N64.  By preventing the ROM from being seen by the N64, an emulation adapter is not needed
+   and FlashRAM saving is possible.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s9">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>How do I modify my FlashRAM cart to allow proper saving on my V64?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+The easiest way, in my opinion, is to cut pins 7 and 20 of the ROM.  Others have reported that removing the ROM completely works as well.  <a href="#" onClick="MM_openBrWindow('cc_mod/index.html','CCMOD','width=495,height=280')">Click here to see a picture of what to cut.</a>
+
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s9a">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a 4Kbit EEPROM Host Card?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+A 4Kbit EEPROM Host Card is just an actual card that has 4Kbit EEPROM save capabilities.
+  Typically you want your host cards to have a CIC-NUS-6102 boot chip.  The preferred 4Kbit EEPROM
+host card for all backup units is Super Mario 64.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s9b">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a 16Kbit EEPROM Host Card?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+A 16Kbit EEPROM Host Card is just an actual card that has 16Kbit EEPROM save capabilities.
+  Typically you want your host cards to have a CIC-NUS-6102 boot chip.  The preferred 16Kbit EEPROM
+host card for all backup units is Star Wars Episode 1 Racer.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s9c">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a SRAM Host Card?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+A SRAM Host Card is just an actual card that has SRAM save capabilities.
+  Typically you want your host cards to have a CIC-NUS-6102 boot chip.  The preferred SRAM
+host card for the V64jr and CD64 is Mario Golf 64.  If at all possible, it is strongly
+recommended that a DS-1 be used in place of a SRAM host card on the V64, V64jr and CD64.
+  The Z64 does not require any SRAM host card as it has built-in SRAM capabilities.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s9d">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>What is a FlashRAM Host Card?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+A FlashRAM Host Card is just an actual card that has FlashRAM save capabilities.
+  Typically you want your host cards to have a CIC-NUS-6102 boot chip.  The preferred FlashRAM
+host card for all backup units is Command & Conquer.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s10">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>Is it possible to save more than one game on using any save type?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+While there are conflicting reports concerning FlashRAM, it can be safely stated that only one
+save for any game can be saved using any save type.  To clarify: if you save your game in
+Super Mario 64, and load another game that requires 4Kbit EEPROM to save, your saved game
+for Super Mario 64 will be lost.  This holds true for ALL save types.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s11">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>How can I backup/restore 4kbit EEPROM saves?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+4Kbit EEPROM is the first save type introduced on the N64 and as such has many tools available.
+If you have a V64 there is no easy way to backup EEPROM data to the PC, but <a href="tools/makesave.zip">this</a>
+archive gives a good explanation on how to accomplish this.  Luckily, there is a tool
+that allows you to backup 4Kbit EEPROM saves to a Controller Pak.  The tool is SRAM Manager.
+Don't let the name fool you, it is indeed designed strictly for 4Kbit EEPROM, it was only
+called SRAM manager because true SRAM wasn't around yet, and previous save types for console
+systems used SRAM.  It has also been reported that it was originally assumed that the save
+type was SRAM, not EEPROM.   SRAM Manager comes in two flavors: <a href="tools/sram10b.zip">v1.0 Beta by R.Bubba</a> and <a href="tools/bb-sram2.zip">v2.0 by BlackBag</a>.
+  SRAM Manager is useful for all backup units.  For the V64jr, the recommended tool for backing up
+and restoring saves to and from the PC is <a href="tools/obs-eve2.zip">Evek II by WT_Riker</a>.
+For the CD64, the recommended tool for backing up and restoring saves to and from the PC is <a href="tools/obs-gmcl.zip">Ghemor by CrowTRobo</a>.
+And finally, for the Z64, 4Kbit EEPROM saving capabilities are built in, and as long as you have
+a 4Kbit EEPROM Host Card in the Z64 passthrough slot, the Z64 will prompt you to save the 4Kbit EEPROM data to the Zip Diskette
+when turning of your N64.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s12">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>How can I backup/restore 16kbit EEPROM saves?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+16Kbit EEPROM is not as prevalent as 4Kbit EEPROM.  The only backup units currently available
+that have tools that allow the backup and restoration of 16Kbit EEPROM saves are the V64jr and the CD64.
+<a href="tools/obs-eve2.zip">Evek II by WT_Riker</a> for the V64jr and <a href="tools/obs-gmcl.zip">Ghemor by CrowTRobo</a> for the CD64 are the only tools available at this time.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s13">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>How can I backup/restore SRAM saves?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+There is currently no facility that allows the backup or restoration of SRAM saves to or from the V64 without additional hardware.
+The DS-1 by Bung exists as a hardware solution for backing up and restoring SRAM data and is the recommended solution for the V64.
+Tools exist for both the V64jr and CD64 for backing up and restoring SRAM save data to and from a PC.
+<a href="tools/obs-eve2.zip">Evek II by WT_Riker</a> for the V64jr and <a href="tools/obs-gmcl.zip">Ghemor by CrowTRobo</a> for the CD64 are the only tools available at this time.
+For the Z64, SRAM saving is built in and the Z64 will prompt you to save the SRAM data to the Zip Diskette
+when turning of your N64.
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s14">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>How can I backup/restore FlashRAM saves?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+There are currently no tools available for ANY backup unit that will allow the restoration of
+FlashRAM saves.  There are tools for both the V64jr and CD64 that allow tha ability to ONLY BACKUP
+FlashRAM data to the PC.
+  <a href="tools/obs-eve2.zip">Evek II by WT_Riker</a> for the V64jr and <a href="tools/obs-gmcl.zip">Ghemor by CrowTRobo</a> for the CD64 are the only tools available at this time.
+
+</td>
+</tr>
+</table>
+
+<br>
+<a name="s15">
+<table border=0>
+<tr>
+<td valign=top>Q.</td><td><b>How can I backup/restore Controller Pak saves?</b></td>
+</tr>
+<tr>
+<td valign=top>A.</td><td>
+There are no tools for the V64 for backing up Controller Pak saves.  There are tools for the
+V64jr and CD64 that allow backing up and restoring Controller Pak saves to and from the PC:
+  <a href="tools/obs-eve2.zip">Evek II by WT_Riker</a> for the V64jr and <a href="tools/obs-gmcl.zip">Ghemor by CrowTRobo</a> for the CD64 are the only tools available at this time.
+The Z64 has the built in capability of backing up and restoring Controller Pak saves.
+The DexDrive is also available and is a hardware solution that allows backing up and restoring Controller Pak data to and from the PC.
+</td>
+</tr>
+</table>
+
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+</font>
+<!----FAQ End----!>
+
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</td>
+
+</tr>
+
+
+</table>
+</center>
+</body>
+</html>

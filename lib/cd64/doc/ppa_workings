@@ -1,0 +1,61 @@
+flipflop2: ~Q1 is connected to reset Q2
+
+when NINIT or NSELECT are high, latch is powered on, flipflop1 powered on, busy is set
+when STROBE is high, latch is powered on, flipflop1 powered on, and flipflop2->clock2, busy is set
+
+NINIT, NSELECT, STROBE low => latch off, flipflip1 off
+
+AUTOFD => flipflop2->reset1, makes busy go high (disable)
+
+BUSY <= flipflop2->q1
+
+DATAWR from CD64 side enables latch, flipflop2->clock1
+
+DATARD from CD64 side:
+  enables flipflop1, flipflop2, flipflop2->set2,set1, flipflop2->data2,data1
+
+PCX from CD64:
+  tied to flipflop2->q2
+
+Flipflop2 always on
+
+0x04: Init (set), Select high:  Latch power on, flipflop1 power on
+
+---------------
+
+Data transfer cycle:
+
+Check to make sure not busy from a previous read. (would mean that PCWR never got asserted)
+
+0x04 -> 0x26: Select high, Init High (set), autofeed low (set),  and strobe High (17, 16, 14, 1):
+  Set reverse mode (CD64 writes to data)
+  Reset Q1 on flipflop2:
+  	busy goes low (0x80 is on - busy) until PCWR is asserted (and a high is then clocked in)
+	Resets Q2 with Low:  if PCRD is high, PCX goes low
+
+Guessing here that CD64 sees PCX low, places data to write on pins and asserts PCWR
+
+PCWR from CD64:
+  Clock latch, CD64 data goes onto pins
+  Clock Q1 on flipflop2:  Set busy high (meaning 0x80 is off - not busy)
+
+PC would read the data here
+
+0x26 -> 0x04:
+  Set normal mode (PC writes to data)
+  Set Q1 on flipflop2 back to high for edge trigger
+
+0x04 -> 0x05:  (strobe goes low)
+  flipflop1->cl, flipflop2->cl2 go low
+  
+0x05 -> 0x04:  (strobe goes back high)
+  clocks flipflop1 making PC Data available to cd64
+  flipflop2->clock2,  sets PCX high
+
+Guessing that CD64 sees PCX high, deasserts PCWR and reads the byte
+
+-----------------
+
+Power on:
+  DATARD high
+  LCDRS high

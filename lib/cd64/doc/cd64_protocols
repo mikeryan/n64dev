@@ -1,0 +1,263 @@
+CD64 BIOS protocol
+
+A handshake is required to get the host and cd64 in sync.
+The Host sends 'W', then 'B', then sends 'B' twice while
+reading the two incoming bytes as well.  If the two incoming bytes
+are 'R' and 'W' respectively, then the host and cd64 bios are 
+in sync.  The host should then issue a command byte.  The
+possible command bytes for BIOS 1.30 are:
+
+-'G': grab from PI (cart, CD64 DRAM, SRAM, etc)
+-'D': dump from N64 RAM.  To dump a mempack, go to Memory Manager and
+	it will set up a buffer at 0x80300000 which can then be
+	downloaded.
+-'T': transfer to PI
+-'X': transfer to PI and immediately start program in CD64 DRAM
+-'B': transfer to N64 RAM.  Afterwards, if transferring at Pro Comms
+	Link menu option, 0x80300000 is immediately executed as a bootemu.
+	If at Memory Manager menu, 0x80300000 is treated as a mempak buffer and
+	written to the mempak.
+	
+	Sending arbitrary data to N64 RAM:  Just send the address and data to be
+	put in RAM as usual, and send a wrong checksum.  The memory card will
+	be untouched (desirable since 0x80300000 might be garbage), and your
+	data will stay in RAM at whatever address it was put.
+
+After the command byte, the host sends a 32-bit word with the
+MSB first, corresponding to the n64-side memory address that is
+to be the target of the operation.  The host then sends another
+32-bit word with the MSB first, corresponding to the length of
+the payload (which must have the two least significant bits set
+to zero, i.e. a multiple of 4).
+
+Note: at this point, if doing a receive command, you need to receive
+a dummy byte.
+
+While the transfer is in progress, a running checksum is counted.
+Each byte received or sent is added to a total.  When the operation
+is finished, AND the total with 0xfff.
+
+If sending, then send the two bytes of this checksum MSB first.  Then
+read a dummy byte, then write two zeroes while reading the incoming
+bytes.  If the received bytes are 'O' and 'K' respectively, the send
+was successful.
+
+If receiving, simply write two zeroes and receive the corresponding
+bytes.  Assemble the bytes into a 16-bit word, MSB first, and AND
+the value with 0xfff.  Compare the received checksum with the host-side
+checksum to determine if everything was OK.
+
+-----------------------------------------------------------------
+Ghemor protocol - Thanks to CrowTRobo of Obsidian
+
+Ghemor is compatible with the 'T' and 'X' commands of the CD64
+BIOS, so the original cd64comm can send to the CD64 DRAM through
+Ghemor.  (Ghemor tries harder than the CD64 BIOS not to drop sends.)
+Ghemor has the same handshake as the CD64 BIOS.
+
+In addition to the send commands, it specifies the following
+Ghemor-specific commands (integers, not characters):
+
+-1: restore controller pack
+-2: restore eeprom
+-3: restore sram
+4: restore flashram
+-5: transfer and execute bootemu
+-6: transfer program
+-7: dump cart
+-8: dump controller pack
+-9: dump eeprom
+-10: dump sram
+-11: dump flash
+-12: run program in cd64 dram
+-13: run cart
+
+Here is how to handle each command from the cd64 side:
+
+For commands 1-11, before proceeding, receive another byte.
+If it is non-zero, it is a flag for the operation to proceed in 
+"slow" mode.  slow mode is intended to compensate for errors when
+sending data from the cd64 to the host.
+
+1: Restore Controller Pack
+Receive another byte.  If this byte is 0xff, find the first controller
+port with a mempack plugged in and use it, otherwise use the number
+sent as the mempack to restore to.  If no pack was found or the given
+pack was not found, write back 0 and return.  Otherwise write back 1.
+Receive a 32-bit word MSB first.  That is the length of the payload.
+Then receive the payload, adding each byte to a running checksum and 
+ANDing it with 0xfff each time.  After the payload, receive two bytes
+which is a 16-bit checksum MSB first.  Verify that the checksums
+match.  If so, write the received payload to the mempack.
+
+2: Restore EEPROM
+Verify the existence of an EEPROM.  If it does not exist, write 0 and
+return.  Otherwise, write back 1.  Receive a 32-bit length MSB first.
+Then receive the payload, adding each byte to a checksum, and verifying
+as before.  Verify that the length of the payload is equivalent to the
+physical size of the EEPROM.  If it is, write it to the EEPROM.
+
+3: Restore SRAM
+Write back 1.  Receive 32-bit length.  Receive payload.  Verify
+payload length is equal to size of SRAM.  Verify checksum. Go to
+cart mode.  Write SRAM data to the cart.  Go back to bios mode.
+
+4: Restore FlashRAM
+FIXME
+
+5: Transfer Boot Emulator
+Write back 1.  Receive a long.  Get 1st 4 bytes.  If not rom header
+magic number, byteswap incoming data.  Add 1st 4 bytes to checksum.
+Continue receiving the rest of the payload adding to a checksum.
+After payload, receive 16-bit checksum MSB first.  If checksum ok,
+copy bootemu (omitting header/bootcode) to low RAM, put CD64 in DRAM
+mode, and jump to the bootemu.
+
+'T': Transfer Rom
+'X': Transfer Rom and execute
+6: Transfer Rom /* not implemented */
+Same as above except after the payload the following occurs.
+If checksum is bad, write B and then C back, otherwise write O and then
+K back.  Write DRAM size to 0xb4000018 and length of rom to 0xb400001c.
+Detect the boot chip by using a checksum of first 4096-0x40 bytes of a
+ROM using that boot code, and country of rom and write appropriate values
+to CIC and TV locations. If command was X, put cd64 into DRAM mode and perform
+reset.
+
+7: Dump Cart
+Write 1.  Write 32-bit length MSB first.  If slow, receive a 32-bit length,
+compare, and if not equal, write 0 and retry write/read cycle, else write 1.
+For the length of the payload, write each byte; if slow, after writing each
+byte, write 2 and simultaneously read, then if the read does not match, write 0
+and retry the write/read, else write 1.  Write the two checksum bytes in 
+the same manner, if slow verify and retry.
+
+8: Dump Controller Pak
+Receive another byte.  If this byte is 0xff, find the first controller
+port with a mempack plugged in and use it, otherwise use the number
+sent as the mempack to restore to.  If no pack was found or the given
+pack was not found, write back 0 and return.  Otherwise write back 1.
+Read controller pak into a buffer.  Send 32-bit length, send payload
+send 16-bit checksum MSB first.  In slow mode do like above.
+
+9: Dump EEPROM
+Check for existence of EEPROM.  If no, write 0 and return.  Else write 1.
+Read EEPROM into buffer.  Send 32-bit length.  Send payload.  Send 16-bit
+checksum.  If slow, obey above semantics.
+
+10: Dump SRAM
+Go to cart mode.  Read SRAM into a buffer.  Go to BIOS mode.  Write 1.
+Write 32-bit length.  Write payload.  Write 16-bit checksum.  If slow,
+obey above semantics.
+
+11: Dump FlashRAM
+Go to cart mode.  Read FlashRAM into a buffer.  Go to BIOS mode.  Write 1.
+Write 32-bit length.  Write payload.  Write 16-bit checksum.  If slow,
+obey above semantics.
+
+12: Run DRAM Program
+Just set cd64 to DRAM mode and reset.
+
+13: Run Cart
+Just set cd64 to cart mode and reset.
+
+--------------------------------------------------------------------
+
+CD64 Hardware Protocol
+
+PPA:
+cd64 side:
+
+
+host side:
+
+Comms link:
+cd64 side:
+
+
+host side:
+
+---------------------------------------------------------------------
+
+CD64's memory map:
+
+N64 ADDRESS     MODE 0(BIOS)	MODE 5(PLAY)	MODE 7(PLAY)
+$B7XXXXXX	SROM.I/O & REG	DRAM		CARTRIDGE
+$B6XXXXXX	RESERVED	DRAM		CARTRIDGE
+$B5XXXXXX	DRAM		DRAM		CARTRIDGE
+$B4XXXXXX	DRAM		DRAM		CARTRIDGE
+$B3XXXXXX	CARTRIDGE	DRAM		CARTRIDGE
+$B2XXXXXX	CARTRIDGE	DRAM		CARTRIDGE
+$B1XXXXXX	RESERVED	DRAM		CARTRIDGE
+$B0XXXXXX	BIOS		DRAM		CARTRIDGE
+
+
+CD64 I/O AND REGISTER
+N64
+ADDRESS	¡@	BYTE 0 D23-D24	BYTE 1 D23-D16	BYTE 2 D15-D8	BYTE 3 D7-D0	
+$B78XXX84	DATAWR LCDOUT)	¡@	¡@	¡@	COMM DB7-DB0	
+$B78XXX80	DATARD (KEYRD )	¡@	¡@	¡@	COMM DB7-DB0	
+$B78XXX40	STATUS		¡@	¡@	¡@	D7-CDIRQ,D6-PCX	
+$B78XXX20	CDIO & COMMIO	¡@	¡@	¡@	D7-(=0), D6-KCDRS,D5-LCDE, D4-/CDS1,
+							D3-/CDS0, D2-CDA2,
+							D1-CDA1, D0-CDA0
+$B78XXX18	CDDATA(32BIT)	DD15-DD8(EVEN)	DD7-DD0(EVEN)	DD15-DD8(ODD)	DD7-DD0 ( ODD)	
+
+$B78XXX10	CDDATA(16BIT)	¡@	¡@	DD15-DD8	DD7-DD0	
+
+The following registers set the mode:
+$B78XXX0C	MODE REG1	¡@	¡@	¡@	$0A ( ENABLE)
+$B78XXX00	MODE REG0	¡@	¡@	¡@	D2-D0 ( MODE)
+
+To change the CD64 mode:
+
+First write 0x0a to 0xb780000c to enable writing to the registers.
+Then write the mode you want (0,5,7) to 0xb7800000, then write 0 to 0xb7800000
+to protect the registers.  Your program can enable the registers at any time.
+(In play modes, writing to the cart area has no effect besides possibly
+affecting CD64 registers.)
+
+Note:  In DRAM (and trivially, Cart) mode, the boot cart's bootcode is mapped
+into CD64 DRAM at 0xb4000040-0xb40000ff.  It is unclear whether the boot cart's
+bootcode is mapped in BIOS mode, though it is likely.  This can be tested by
+inserting a cart with a 6102 boot chip, but no ROM connected.  If the CD64
+still boots, then the bootcode is _not_ mapped (into the BIOS program) in BIOS
+mode.  We still need then to explain how the bootcode is put into the BIOS
+when a new BIOS is loaded, since the BIOS upgrade itself contains no bootcode,
+probably for copyright reasons.  It has to exist within the programmed BIOS if
+the CD64 runs with only a boot chip and no ROM.  If the CD64 does not run with
+a boot chip only, then we can only conclude that it is mapped in at boot time
+just like all other modes.
+
+also - dump the physical EPROMS containing the BIOS.  See if the boot code was
+burned in.  If not, then the cart boot code has to be mapped.  Otherwise, it is
+possible that the BIOS boot code is used instead. ???
+
+CD64's I/O port:
+
+Shown corresponding to pins on a female DB25 parallel port, but there
+is no real correspondence. (You can't hook the CD64 I/O port to a parallel
+port without an adapter.)
+
+PCX - Pin 1 - nStrobe -  $B78XXX40 mask 01000000
+DB0 - Pin 2 - Data 1 -  read at $B78XXX80 write at $B78XXX84
+DB1 - Pin 3 - Data 2 -  read at $B78XXX80 write at $B78XXX84
+DB2 - Pin 4 - Data 3 -  read at $B78XXX80 write at $B78XXX84
+DB3 - Pin 5 - Data 4 -  read at $B78XXX80 write at $B78XXX84
+DB4 - Pin 6 - Data 5 -  read at $B78XXX80 write at $B78XXX84
+DB5 - Pin 7 - Data 6 -  read at $B78XXX80 write at $B78XXX84
+DB6 - Pin 8 - Data 7 -  read at $B78XXX80 write at $B78XXX84
+DB7 - Pin 9 - Data 8 -  read at $B78XXX80 write at $B78XXX84
+KEYRD/DATARD - Pin 10 - nAck - read at $B78XXX80
+LCDOUT/DATAWR - Pin 11 - Busy - read at $B78XXX80
+LCDE - Pin 12 - Paper Empty - $B78XXX20 mask 00100000
+LCDRS - Pin 13 - Select - $B78XXX20 mask 01000000
+
+Pin 15 - nError - pulled up and coupled to GND
+Pin 18-25 - GND
+All others N/C
+
+
+CD64 BIOS Bugs:
+1) Send a 96Mbit ROM - CD64 BIOS reports 64Mbit and saves 0x800000
+to 0xb400001c

@@ -1,0 +1,31 @@
+CC=cl.exe
+CFLAGS=/nologo /I../include /W3 /O2
+LIBS=../libcd64/cd64.lib ../libultra64/ultra64_host.lib
+
+default: all
+
+all:	cd64ftp.exe
+
+# cd64ftp stuff
+
+cd64ftp.obj:	cd64ftp.c
+	$(CC) $(CFLAGS) cd64ftp.c /c /Focd64ftp.obj
+
+cd64ftp.exe:	cd64ftp.obj ../libcd64/cd64.lib ../libultra64/ultra64_host.lib
+	link.exe /NOLOGO cd64ftp.obj $(LIBS) /OUT:cd64ftp.exe
+
+clean:
+	del *.obj
+	del cd64ftp.exe
+	del *.flash
+	del *.sram
+	del *.eeprom
+	del *.mem
+	del *.rom
+	del *.ram
+
+test:	cd64ftp.exe
+# Setting PATH is only necessary when cd64ftp is linked to the DLL version of
+#  libcd64 (and libcd64 isn't already in your PATH).
+	set PATH=..\libcd64;%%PATH%%
+	.\cd64ftp.exe

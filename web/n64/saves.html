@@ -1,0 +1,472 @@
+<html>
+<title>elitendo.com - saves</title>
+<SCRIPT LANGUAGE="Javascript">
+
+<!--
+
+// cell functions
+
+function mover(cell)
+
+{
+
+   if (!cell.contains(event.fromElement))
+
+   {
+
+      cell.style.cursor = 'hand';
+
+      cell.bgColor = '#BBBBBB';
+
+   }
+
+}
+
+
+
+function mover2(cell)
+
+{
+
+   if (!cell.contains(event.fromElement))
+
+   {
+
+      cell.style.cursor = 'default';
+
+      cell.bgColor = '#90E0F0';
+
+   }
+
+}
+
+
+
+function mout(cell)
+
+{
+
+   if (!cell.contains(event.toElement))
+
+   {
+
+      cell.style.cursor = 'default';
+
+      cell.bgColor = '#DDDDDD';
+
+   }
+
+}
+
+
+
+function mclick(cell)
+
+{
+
+   if(event.srcElement.tagName=='TD')
+
+   {
+
+      cell.children.tags('A')[0].click();
+
+   }
+
+}
+
+//-->
+
+<!-- hide JavaScript from older browsers
+function help(help_string){
+     alert(help_string);
+     return;
+}
+function sub(the_Act) {
+  found=0;
+  for(i=0;i<document.the_form.list_id.options.length;i++) {
+    if(document.the_form.list_id.options[i].selected) {
+      found=1;
+      break;
+    }
+  }
+  if(!found) {
+    alert("You must choose a list.");
+    return;
+  }
+  document.the_form.Act.value = the_Act;
+  document.the_form.submit();
+}
+function sub2(the_Act) {
+  document.the_form.Act.value = the_Act;
+  document.the_form.submit();
+1}
+function update_total() {
+  if(document.the_form.list_id.options.selectedIndex != -1) {
+    document.the_form.total_list_members.value=list_totals[document.the_form.list_id.options[document.the_form.list_id.options.selectedIndex].value];
+  }
+}
+ // end hiding from older browsers -->
+</SCRIPT>
+
+<body link=#000000 vlink=#000000 alink=#000000 text=#000000 bgcolor=#FFFFFF background="images/n64bg.jpg">
+<center>
+<table border=0 width=95%>
+
+<tr>
+
+<td valign=bottom width=150>
+</td>
+<td valign=top align=left>
+<font size=+3 face="arial" color=#888888><b>ELITENDO.COM</b></font>
+<hr>
+</td>
+
+</tr>
+
+<!---SIDE MENU START---//-->
+<tr>
+
+<td align=center valign=top>
+
+<table border=0 width=150>
+<tr><td align=center><font face="arial" color=black><b>Sections</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+
+<table cellpadding=5 cellspacing=1 width=100% border=0>
+
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="main.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='News';return true;"><font size=-1 face="arial"><b>News</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD><font size=-1 face="arial"><b>Release List</b></font></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="complete_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Complete Release List';return true;"><font size=-1 face="arial">Complete</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='USA Release List';return true;"><font size=-1 face="arial">USA</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="japan_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Japan Release List';return true;"><font size=-1 face="arial">Japan</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="europe_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Europe Release List';return true;"><font size=-1 face="arial">Europe</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_boot_save_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Boot/Save List';return true;"><font size=-1 face="arial"><b>Boot/Save List</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_boot_save_faq.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='FAQ';return true;"><font size=-1 face="arial"><b>Boot/Save FAQ</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="saves.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Saves';return true;"><font size=-1 face="arial"><b>Saves</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="mailto:fab@elitendo.com" class="tab" onmouseout="self.status=''" onmouseover="window.status='Contact';return true;"><font size=-1 face="arial"><b>Contact</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+<br>
+
+<table border=0 width=100%>
+<tr><td align=center><font face="arial" color=black><b>Links</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+<table width=100% border=0 cellpadding=5 cellspacing=1>
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://www.dextrose.com/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to Dextrose';return true;"><font size=-1 face="arial"><b>Dextrose</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://64scener.parodius.com/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to 64scener';return true;"><font size=-1 face="arial"><b>64scener</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://tcsr.cjb.net/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to The Cart Scan Repository';return true;"><font size=-1 face="arial"><b>TCSR</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://www.disorder.org/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to N64 Box Art Archive';return true;"><font size=-1 face="arial"><b>Disorder</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+
+<!---SIDE MENU END---//-->
+
+</td>
+
+<td valign=top>
+
+<table cellspacing=2 border=0 width=100%>
+<tr><td align=center><font face="arial" color=black><b>Saves</b></font></td></tr>
+</table>
+
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+
+<tr><td bgcolor=#DDDDDD>
+
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+
+<tr><td bgcolor=#999999>
+
+
+<table cellspacing=1 width=100% border=0>
+
+<tr bgcolor=#DDDDDD>
+<td valign=top align=center>
+
+
+<table border=0 cellspacing=4 width=100%>
+
+<!--------start save descriptor entry---------!>
+
+<tr>
+<td bgcolor=#BBBBBB nowrap><b><font face="arial" size=1>Game Title</font></b></td>
+<td bgcolor=#BBBBBB nowrap><b><font face="arial" size=1>Country</font></b></td>
+<td bgcolor=#BBBBBB nowrap><b><font face="arial" size=1>Type</font></b></td>
+<td bgcolor=#BBBBBB nowrap><b><font face="arial" size=1>Format</font></b></td>
+<td bgcolor=#BBBBBB nowrap><b><font face="arial" size=1>Date</font></b></td>
+<td bgcolor=#BBBBBB nowrap><b><font face="arial" size=1>Creator</font></b></td>
+<td align=center width=1% bgcolor=#BBBBBB nowrap><b><font face="arial" size=1>NFO</font></b></td>
+<td align=center width=1% bgcolor=#BBBBBB nowrap><b><font face="arial" size=1>Link</font></b></td>
+</tr>
+
+<!--------end save descriptor entry---------!>
+
+<!--------start save entry---------!>
+<tr bgcolor=#FFFFFF>
+<td nowrap><font face="arial" size=1>1080º Snowboarding</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>SRAM (256 Kilobits)</font></td>
+<td nowrap><font face="arial" size=1>Raw 32K</font></td>
+<td nowrap><font face="arial" size=1>Jun-2000</font></td>
+<td nowrap><font face="arial" size=1><a href="mailto:fab@elitendo.com">fab</a></font></td>
+<td align=center width=1% nowrap><font face="arial" size=1><A HREF="javascript:help('1080º Snowboarding hacked SRAM save by fab: All match races completed, all tracks open.');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td align=center width=1% nowrap><font face="arial" size=1><a href="saves/sram/1080_snowboarding_usa_sram_save_fab.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!-----------end save entry---------!>
+
+<!--------start save entry---------!>
+<tr bgcolor=#DDDDDD>
+<td nowrap><font face="arial" size=1>Donkey Kong 64</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>EEPROM (16 Kilobits)</font></td>
+<td nowrap><font face="arial" size=1>Raw 2048b</font></td>
+<td nowrap><font face="arial" size=1>Apr-2000</font></td>
+<td nowrap><font face="arial" size=1>Unknown</font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><A HREF="javascript:help('Donkey Kong 64 - 100% Complete (RAREWARE Banana peeled and ready for 101%)');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/eeprom16/donkey_kong_64_usa_16kbit_eeprom_save_a.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!--------end save entry---------!>
+
+<!--------start save entry---------!>
+<tr bgcolor=#FFFFFF>
+<td nowrap><font face="arial" size=1>Hydro Thunder</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>Controller Pak</font></td>
+<td nowrap><font face="arial" size=1>Z64 .MPK</font></td>
+<td nowrap><font face="arial" size=1>May-2000</font></td>
+<td nowrap><font face="arial" size=1><a href="mailto:fab@elitendo.com">fab</a></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><A HREF="javascript:help('Hydro Thunder hacked Controller Pak save by fab: All tracks available and complete.  All boats available.');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/controller_pak/hydro_thunder_usa_controller_pak_save_fab.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!--------end save entry---------!>
+
+<!--------start save entry---------!>
+<tr bgcolor=#DDDDDD>
+<td nowrap><font face="arial" size=1>New Tetris, The</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>SRAM (256 Kilobits)</font></td>
+<td nowrap><font face="arial" size=1>Raw 32K</font></td>
+<td nowrap><font face="arial" size=1>Aug-1999</font></td>
+<td nowrap><font face="arial" size=1>Radish</font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><A HREF="javascript:help('The New Tetris SRAM save by Radish: All Buildings Completed, Finale Open for viewing.');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/sram/the_new_tetris_usa_sram_save_radish.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!--------end save entry---------!>
+
+<!--------Start save entry---------!>
+<tr bgcolor=#FFFFFF>
+<td nowrap><font face="arial" size=1>Pilot Wings 64</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>EEPROM (4 Kilobits)</font></td>
+<td nowrap><font face="arial" size=1>Raw 512b</font></td>
+<td nowrap><font face="arial" size=1>Jun-1997</font></td>
+<td nowrap><font face="arial" size=1>Unknown</font></td>
+<td nowrap align=center width=1%><font face="arial" size=1>
+<A HREF="javascript:help('Pilot Wings 64: All levels complete.');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/eeprom4/super_mario_64_usa_4kbit_eeprom_save_a.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!--------end save entry---------!>
+
+<!----start save entry----!>
+<tr bgcolor=#DDDDDD>
+<td nowrap><font face="arial" size=1>Ready 2 Rumble Boxing</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>Controller Pak</font></td>
+<td nowrap><font face="arial" size=1>Z64 .MPK</font></td>
+<td nowrap><font face="arial" size=1>Sep-2000</font></td>
+<td nowrap><font face="arial" size=1><a href="mailto:fab@elitendo.com">fab</a></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><A HREF="javascript:help('Ready 2 Rumble Boxing hacked Controller Pak save by fab - All boxers and waiting in champ mode with max funds.');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/controller_pak/ready_2_rumble_boxing_usa_controller_pak_save_fab.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!----end save entry----!>
+
+<!----start save entry----!>
+<tr bgcolor=#FFFFFF>
+<td nowrap><font face="arial" size=1>Ridge Racer 64</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>EEPROM (16 Kilobits)</font></td>
+<td nowrap><font face="arial" size=1>Raw 2048b</font></td>
+<td nowrap><font face="arial" size=1>Aug-2000</font></td>
+<td nowrap><font face="arial" size=1><a href="mailto:fab@elitendo.com">fab</a></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><A HREF="javascript:help('Ridge Racer 64 hacked EEPROM save by fab - All cars, tracks and trophies obtained.');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/eeprom16/ridge_racer_64_usa_16kbit_eeprom_save_fab.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!----end save entry----!>
+
+<!----Start save entry----!>
+<tr bgcolor=#DDDDDD>
+<td nowrap><font face="arial" size=1>Super Mario 64</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>EEPROM (4 Kilobits)</font></td>
+<td nowrap><font face="arial" size=1>Raw 512b</font></td>
+<td nowrap><font face="arial" size=1>Jul-1997</font></td>
+<td nowrap><font face="arial" size=1>Unknown</font></td>
+<td nowrap align=center width=1%><font face="arial" size=1>
+<A HREF="javascript:help('Super Mario 64: All 120 stars obtained.  Go visit Yoshi!');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A>
+</font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/eeprom4/super_mario_64_usa_4kbit_eeprom_save_a.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!----end save entry----!>
+
+<!----start save entry----!>
+<tr bgcolor=#FFFFFF>
+<td nowrap><font face="arial" size=1>Tony Hawk's Pro Skater</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>Controller Pak</font></td>
+<td nowrap><font face="arial" size=1>Z64 .MPK</font></td>
+<td nowrap><font face="arial" size=1>May-2000</font></td>
+<td nowrap><font face="arial" size=1><a href="mailto:fab@elitendo.com">fab</a></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1>
+<A HREF="javascript:help('Tony Hawks Pro Skater hacked Controller Pak save by fab: All courses available.');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/controller_pak/tony_hawk_usa_controller_pak_save_fab.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!----end save entry----!>
+
+<!----start save entry----!>
+<tr bgcolor=#DDDDDD>
+<td nowrap><font face="arial" size=1>Zelda: Ocarina of Time</font></td>
+<td nowrap><font face="arial" size=1>USA</font></td>
+<td nowrap><font face="arial" size=1>SRAM (256 Kilobits)</font></td>
+<td nowrap><font face="arial" size=1>Raw 32K</font></td>
+<td nowrap><font face="arial" size=1>Jan-1999</font></td>
+<td nowrap><font face="arial" size=1>Mimik</font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><A HREF="javascript:help('The Legend of Zelda: Ocarina of Time SRAM save by Mimik: All items, all gold skultullas, all hearts, etc.');" onMouseOver="window.status='Read NFO';return true;" onMouseOut="window.status='';return true;"><img border=0 src="images/info.gif"></A></font></td>
+<td nowrap align=center width=1%><font face="arial" size=1><a href="saves/sram/zelda_usa_sram_save_mimik.zip"><img border=0 src="images/download.gif"></a></font></td>
+</tr>
+<!----end save entry----!>
+
+</table>
+</td>
+</tr>
+
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</td></tr>
+</table>
+
+
+
+
+<br>
+
+
+</td>
+
+</tr>
+
+
+</table>
+</center>
+</body>
+</html>

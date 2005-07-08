@@ -1,0 +1,143 @@
+Introduction
+
+libcd64 is a CD64 communication library written by Ryan Underwood. It has been
+ported to FreeBSD, OpenBSD, BeOS, Windows (Cygwin, MinGW and Visual C++ 6) and
+DOS (DJGPP) by Daniel Horchner. libcd64 can use the CD64 BIOS, Ghemor or
+UltraLink to communicate with the CD64.
+
+
+Compiling libcd64
+
+Compiling libcd64 takes no more than running the make utility for the compiler
+you use. libcd64 can be compiled with gcc under GNU/Linux (x86 and AMD64),
+FreeBSD, OpenBSD, BeOS, Windows (Cygwin and MinGW) and DOS (DJGPP). It can also
+be compiled with Visual C++ 6.
+First go the toplevel directory (the directory that contains the file
+Makefile.djgpp).
+For GNU/Linux, BeOS, Cygwin or MinGW type "make" (without the quotes).
+For FreeBSD or OpenBSD type "gmake".
+For DJGPP type "make -f Makefile.djgpp".
+For Visual C++ 6 type "nmake /f Makefile.vc6".
+After make is finished the directory libcd64 contains the library. Except for
+DOS, it contains a shared (dynamic) and a static version of the library. The
+directory cd64ftp contains a simple library client that shows the use of the
+library. The directory libultra64 contains a support library used by cd64ftp. It
+is not necessary for libcd64 clients.
+
+
+Using libcd64
+
+Under Unix and BeOS gcc uses the shared library version of libcd64 (libcd64.so)
+if it is available (linker flag: -lcd64). If you want to use the static library
+(libcd64.a) remove the shared library or use the compiler flag -static. Note
+that if you use -static the entire executable will be static.
+To use the static library version of libcd64 under Windows link to libcd64.a
+(gcc, linker flag: -lcd64) or cd64.lib (Visual C++). To use the dynamic library
+(cd64.dll), link to libcd64dll.a (gcc, linker flag: -lcd64dll) or cd64dll.lib
+(Visual C++).
+
+Under BeOS libcd64 needs the driver ioport. It is available from
+http://www.infernal.currantbun.com.
+
+In order to use any function of libcd64 include the file cd64lib.h. This is the
+only required header file if you want to use libcd64.
+Before calling any function of libcd64 call the function cd64_create(). It takes
+five parameters:
+- a pointer to a cd64_t structure
+- a method_t that indicates what communcation method or interface libcd64 should
+  use
+- a uint16_t that indicates the parallel or serial port
+- a protocol_t that indicates the protocol
+- an integer that indicates whether the CD64 is connected via a parallel port
+  adapter or via a comms link.
+
+Before calling cd64_create() fill the cd64_t structure with zeroes.
+The method_t parameter can take the following values: LIBIEEE1284, PPDEV,
+PORTDEV and RAWIO. Note that PPDEV and PORTDEV work only under GNU/Linux.
+LIBIEEE1284 can work under GNU/Linux, FreeBSD, OpenBSD and Windows (Cygwin,
+MinGW and Visual C++). RAWIO works on all platforms supported by libcd64.
+The uint16_t parameter should be set to the correct port. Its value is
+interpreted depending on the value of the method_t parameter. If the method_t
+parameter is LIBIEEE1284 or PPDEV the port parameter is interpreted as the
+parallel port number. 0 for the first port, 1 for the second and so on. If the
+method_t parameter is PORTDEV or RAWIO the port parameter is interpreted as the
+I/O port base address of the serial or parallel port.
+The protocol parameter can take the following values: CD64BIOS, GHEMOR and
+ULTRALINK. In order to use the protocol GHEMOR you need Ghemor, available from
+http://go.to/obsidian. The protocol ULTRALINK is not yet supported.
+The integer parameter should be set to a non-zero value to indicate that the
+CD64 is connected to the PC via a parallel port. Set it to zero to indicate that
+the CD64 is connected to the PC via a comms link.
+
+After cd64_create() returns you can set a few members of the cd64_t structure
+that influence the behaviour of libcd64.
+Those members are progress_callback(), notice_callback(), notice_callback2(),
+read_callback(), write_callback(), tell_callback(), seek_callback() and
+io_driver_dir.
+
+All the members with a name that ends with _callback{2} are initialised by
+cd64_create() with default values. The value of the member io_driver_dir is not
+altered by cd64_create().
+
+progress_callback() is called by libcd64 to indicate the progress of a transfer.
+It is called after CD64_BUFFER_SIZE (32768) bytes have been transferred. The
+callback takes two parameters: a uint32_t that indicates the total number of
+bytes that have been transferred so far and a uint32_t that indicates the total
+number of bytes that should be transferred in the end.
+
+notice_callback() is called by libcd64 if a problem occurs or to inform the user
+about what it is doing. The default implementation writes its output to the
+standard output stream. notice_callback() has the same signature as the standard
+library function printf.
+
+notice_callback2() is called by libcd64 if an (unrecoverable) error occurs. The
+default implementation writes its output to the standard error stream.
+notice_callback2() has the same signature as the standard library function
+printf.
+
+read_callback(), write_callback(), tell_callback() and seek_callback() can be
+set by applications to make libcd64 read from or write to files that need some
+extra data processing operations. For example ZIP files. They do basically the
+same as the standard library functions fread(), fwrite(), ftell() and fseek(),
+respectively. The default implementations of these callbacks are in fact simple
+wrappers around those functions. The most important difference between the
+callbacks and the standard library functions is that they take a void * instead
+of a FILE *. 
+Note that you can pass a FILE * to these callbacks, but if you install your own
+callbacks you can instead pass some other I/O identification or handle type to
+them.
+If you set read_callback() also set tell_callback() and seek_callback(). If you
+set only write_callback() this is not necessary. Do not set only tell_callback()
+or seek_callback().
+If you set read_callback() then the higher level function cd64_download_cart()
+behaves differently. By default, it will truncate the output file if it detects
+that it created an overdump. If you set read_callback() it will still call
+notice_callback(), but it will not truncate the output file. Note that because
+of the fact that cd64_download_cart() tries to read from the output file it
+created that you have to open the file for reading and writing (use mode "w+b").
+
+The member io_driver_dir is only useful onder Windows NT, Windows 2000 or
+Windows XP, or any Windows version that does not allow user programs to
+communicate directly with the hardware. libcd64 can use two I/O drivers to make
+it possible to communicate with a parallel or serial port:
+- DlPortIO.dll available from http://www.driverlinx.com/DownLoad/DlPortIO.htm
+- io.dll available from http://www.geekhideout.com/iodll.shtml
+
+libcd64 tries to load one of these DLLs from the current directory or the
+directory stored in io_driver_dir. Set io_driver_dir before calling the member
+devopen() of the cd64_t structure created by cd64_create().
+
+
+Transfer speed and reliability
+
+First of all it should be noted that using the CD64 BIOS for communication
+(protocol_t CD64BIOS) often results in dropped transfers. We strongly recommend
+using Ghemor (protocol_t GHEMOR). It is recommended that you use a high quality
+shielded cable to avoid communication problems. Using a switch box in between
+the CD64 and the PC is not recommended as it may interfere with the
+communication.
+If you can choose between a PCI and an ISA parallel port, choose the PCI one.
+Using a PCI parallel port may result in transfer speeds that are nearly twice as
+high as when using an ISA parallel port (150 kB/s versus 85 kB/s).
+The communication method also greatly influences the transfer speed. Raw I/O is
+the fastest method (method_t RAWIO). The other methods are about half as fast.

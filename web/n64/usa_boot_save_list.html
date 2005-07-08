@@ -1,0 +1,603 @@
+<html>
+<title>elitendo.com - usa boot/save list</title>
+<style type="text/css">
+<!--
+.header{background-color:#CCCCCC;text-align:left;font-family:Arial,Arial,Helvetica,sans-serif;font-style:normal;font-size:10pt}
+.data{background-color:#CCCCCC;text-align:left;font-family:Arial,Arial,Helvetica,sans-serif;font-style:normal;font-size:10pt}
+.dataAC{background-color:#EEEEEE;text-align:left;font-family:Arial,Arial,Helvetica,sans-serif;font-style:normal;font-size:10pt}
+-->
+</style>
+
+<SCRIPT LANGUAGE="Javascript">
+
+<!--
+
+// cell functions
+
+function mover(cell)
+
+{
+
+   if (!cell.contains(event.fromElement))
+
+   {
+
+      cell.style.cursor = 'hand';
+
+      cell.bgColor = '#BBBBBB';
+
+   }
+
+}
+
+
+
+function mover2(cell)
+
+{
+
+   if (!cell.contains(event.fromElement))
+
+   {
+
+      cell.style.cursor = 'default';
+
+      cell.bgColor = '#90E0F0';
+
+   }
+
+}
+
+
+
+function mout(cell)
+
+{
+
+   if (!cell.contains(event.toElement))
+
+   {
+
+      cell.style.cursor = 'default';
+
+      cell.bgColor = '#DDDDDD';
+
+   }
+
+}
+
+
+
+function mclick(cell)
+
+{
+
+   if(event.srcElement.tagName=='TD')
+
+   {
+
+      cell.children.tags('A')[0].click();
+
+   }
+
+}
+
+
+function MM_openBrWindow(theURL, winName, features) { //v1.2
+	window.open(theURL, winName, features);
+}
+
+//-->
+
+
+</SCRIPT>
+
+<body link=#000000 vlink=#000000 alink=#000000 text=#000000 bgcolor=#FFFFFF background="images/n64bg.jpg">
+<center>
+<table border=0 width=95%>
+
+<tr>
+
+<td valign=bottom width=150>
+</td>
+<td valign=top align=left>
+<font size=+3 face="arial" color=#888888><b>ELITENDO.COM</b></font>
+<hr>
+</td>
+
+</tr>
+
+<!---SIDE MENU START---//-->
+<tr>
+
+<td align=center valign=top>
+
+<table border=0 width=150>
+<tr><td align=center><font face="arial" color=black><b>Sections</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+
+<table cellpadding=5 cellspacing=1 width=100% border=0>
+
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="main.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='News';return true;"><font size=-1 face="arial"><b>News</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD><font size=-1 face="arial"><b>Release List</b></font></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="complete_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Complete Release List';return true;"><font size=-1 face="arial">Complete</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='USA Release List';return true;"><font size=-1 face="arial">USA</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="japan_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Japan Release List';return true;"><font size=-1 face="arial">Japan</b></font></a></td></tr>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="europe_release_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Europe Release List';return true;"><font size=-1 face="arial">Europe</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_boot_save_list.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Boot/Save List';return true;"><font size=-1 face="arial"><b>Boot/Save List</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="usa_boot_save_faq.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='FAQ';return true;"><font size=-1 face="arial"><b>Boot/Save FAQ</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="saves.html" class="tab" onmouseout="self.status=''" onmouseover="window.status='Saves';return true;"><font size=-1 face="arial"><b>Saves</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+<!-- start menu item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="mailto:fab@elitendo.com" class="tab" onmouseout="self.status=''" onmouseover="window.status='Contact';return true;"><font size=-1 face="arial"><b>Contact</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end menu item //-->
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+<br>
+
+<table border=0 width=100%>
+<tr><td align=center><font face="arial" color=black><b>Links</b></font></td></tr>
+</table>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#DDDDDD>
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+<tr><td bgcolor=#999999>
+<table width=100% border=0 cellpadding=5 cellspacing=1>
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://www.dextrose.com/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to Dextrose';return true;"><font size=-1 face="arial"><b>Dextrose</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://64scener.parodius.com/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to 64scener';return true;"><font size=-1 face="arial"><b>64scener</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://tcsr.cjb.net/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to The Cart Scan Repository';return true;"><font size=-1 face="arial"><b>TCSR</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+<!-- start link item //-->
+<tr>
+<td align=center bgcolor=#DDDDDD>
+<table border=0 width=100%>
+<tr><td align=center width=100% bgcolor=#DDDDDD class="tab" onmouseover="mover(this);" onmouseout="mout(this);" onclick="mclick(this);"><a href="http://www.disorder.org/" target=_new class="tab" onmouseout="self.status=''" onmouseover="window.status='Go to N64 Box Art Archive';return true;"><font size=-1 face="arial"><b>Disorder</b></font></a></td></tr>
+</table>
+</td>
+</tr>
+<!-- end link item //-->
+
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+
+<!---SIDE MENU END---//-->
+
+</td>
+
+<td valign=top>
+
+<table cellspacing=2 border=0 width=100%>
+<tr><td align=center><font face="arial" color=black><b>USA Boot/Save List</b></font></td></tr>
+</table>
+
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+
+<tr><td bgcolor=#DDDDDD>
+
+<table cellpadding=1 cellspacing=1 width=100% border=0>
+
+<tr><td bgcolor=#999999>
+
+
+<table cellspacing=1 width=100% border=0>
+
+<tr bgcolor=#DDDDDD>
+<td valign=top align=center>
+
+
+<table border=0 cellspacing=4 width=100%>
+
+
+
+<!----List Start----!>
+<table cellpadding=3 border=0 width=100%>
+<tr bgcolor=#999999><th><font face=arial size=-1>Title</font></th><th><font face=arial size=-1>Boot CIC</font></th><th><font face=arial size=-1>Primary Save</font></th><th nowrap><font face=arial size=-1>Secondary Save</font></th></tr>
+ <tr><td class=dataAC>1080º Snowboarding</td><td class=dataAC nowrap>CIC-NUS-6103</td><td class=dataAC>SRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Aero Gauge</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>AeroFighters Assault</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>All-Star Baseball 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>All-Star Baseball 2001</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>All-Star Baseball '99</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>All-Star Tennis '99</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Armorines: Project S.W.A.R.M.</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>Army Men: Air Combat</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Army Men: Sarge's Heroes</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Army Men: Sarge's Heroes 2</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Asteroids Hyper 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Automobili Lamborghini</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Banjo-Kazooie</td><td class=data>CIC-NUS-6103</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Banjo-Tooie</td><td class=dataAC>CIC-NUS-6105</td><td class=dataAC nowrap>EEPROM (16 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Bassmaster 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Batman Beyond: Return of the Joker</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Battle Tanx</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Battle Tanx: Global Assault</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Battlezone: Rise of the Black Dogs</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Beast Wars Transmetals</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Beetle Adventure Racing</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Big Mountain 2000</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC nowrap>Controller Pak</td></tr>
+ <tr><td class=data>Bio F.R.E.A.K.S.</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Blast Corps</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>Controller Pak</td></tr>
+ <tr><td class=data>Blues Brothers 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Body Harvest</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Bomberman 64</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Bomberman 64: The Second Attack</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>Controller Pak</td></tr>
+ <tr><td class=data>Bomberman Hero</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Bottom of the 9th</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Brunswick Circuit Pro Bowling</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Buck Bumble</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Bug's Life, A</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Bust-A-Move 2: Arcade Edition</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Bust-A-Move '99</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>California Speed</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Carmageddon 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Castlevania</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Castlevania: Legacy of Darkness</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Chameleon Twist</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Chameleon Twist 2</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Charlie Blasts Territory</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Password</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Chopper Attack</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Clay Fighter 63 1/3</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Clay Fighter: Sculptor's Cut</td><td class=data>CIC-NUS-6102</td><td class=data>None</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Command & Conquer</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>FlashRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Cruis'n Exotica</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Cruis'n USA</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>Controller Pak</td></tr>
+ <tr><td class=data>Cruis'n World</td><td class=data>CIC-NUS-6106</td><td class=data>EEPROM (16 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>CyberTiger</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Daikatana</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Dark Rift</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Deadly Arts</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Destruction Derby 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Diddy Kong Racing</td><td class=data>CIC-NUS-6103</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Donald Duck: Goin' Quackers</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Donkey Kong 64</td><td class=data>CIC-NUS-6105</td><td class=data>EEPROM (16 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Donkey Kong 64 Kiosk</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Doom 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>Dual Heroes</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Duke Nukem 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Duke Nukem: Zero Hour</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Earthworm Jim 3D</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>ECW: Hardcore Revolution</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Elmo's Letter Adventure</td><td class=data>CIC-NUS-6102</td><td class=data>None</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Elmo's Number Journey</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Excitebike 64</td><td class=data>CIC-NUS-6103</td><td class=data>EEPROM (16 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Excitebike 64 Kiosk</td><td class=dataAC>CIC-NUS-6103</td><td class=dataAC>None</td><td class=dataAC>Controller Pak</td></tr>
+ <tr><td class=data>Extreme-G</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>Extreme-G 2</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>Password</td></tr>
+ <tr><td class=data>F1 Pole Position 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>F-1 World Grand Prix</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>FIFA '99</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>FIFA Soccer 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>FIFA: Road to World Cup 98</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Fighter Destiny 2</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Fighters Destiny</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Fighting Force 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Flying Dragon</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Forsaken 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Fox Sports College Hoops '99</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>F-Zero X</td><td class=dataAC>CIC-NUS-6106</td><td class=dataAC>SRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Gauntlet Legends</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Gex 3: Deep Cover Gecko</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Gex 64: Enter the Gecko</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>Glover</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Goemon's Great Adventure</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Golden Nugget 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>GoldenEye 007</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>GT64 Championship Edition</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>Controller Pak</td></tr>
+ <tr><td class=data>Harvest Moon 64</td><td class=data>CIC-NUS-6102</td><td class=data>SRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Hercules: The Legendary Journeys</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Hexen</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Hey You, Pikachu!</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Hot Wheels Turbo Racing</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Hybrid Heaven</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Hydro Thunder</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Iggy's Reckin' Balls</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>In Fisherman Bass Hunter 64</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Indiana Jones and the Infernal Machine</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Indy Racing 2000</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>International Superstar Soccer 2000</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>International Superstar Soccer 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>International Superstar Soccer '98</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>International Track & Field 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Jeopardy!</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Jeremy McGrath Supercross 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Jet Force Gemini</td><td class=dataAC>CIC-NUS-6105</td><td class=dataAC>FlashRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Jet Force Gemini Kiosk</td><td class=data>CIC-NUS-6105</td><td class=data>FlashRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Ken Griffey Jr's Slugfest</td><td class=dataAC>CIC-NUS-6103</td><td class=dataAC>FlashRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Killer Instinct Gold</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Kirby 64: The Crystal Shards</td><td class=dataAC>CIC-NUS-6103</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Knife Edge: Nose Gunner</td><td class=data>CIC-NUS-6102</td><td class=data>None</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Knockout Kings 2000</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Kobe Bryant in NBA Courtside</td><td class=data>CIC-NUS-6103</td><td class=data>EEPROM (16 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Legend of Zelda: Majora's Mask, The</td><td class=dataAC>CIC-NUS-6105</td><td class=dataAC>FlashRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Legend of Zelda: Ocarina of Time, The</td><td class=data>CIC-NUS-6105</td><td class=data>SRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>LEGO Racers</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Lode Runner 3D</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Looney Tunes: Duck Dodgers</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Mace: The Dark Age</td><td class=data>CIC-NUS-6102</td><td class=data>None</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Madden 2000</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Madden 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Madden '99</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Madden NFL 2001</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Magical Tetris Challenge</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data nowrap>Major League Baseball Featuring Ken Griffey Jr.</td><td class=data>CIC-NUS-6103</td><td class=data>SRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Mario Golf</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>SRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Mario Kart 64</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Mario Party</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Mario Party 2</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Mario Tennis</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (16 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Megaman 64</td><td class=data>CIC-NUS-6102</td><td class=data>FlashRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Mia Hamm Soccer 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Mickey's Speedway USA</td><td class=data>CIC-NUS-6105</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Micro Machines 64 Turbo</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Midway's Greatest Arcade Hits Volume 1</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Mike Piazza's Strike Zone</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Milo's Astro Lanes</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Mischief Makers</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Mission: Impossible</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Monaco Grand Prix</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Monopoly</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Monster Truck Madness 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Password</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Mortal Kombat 4</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Mortal Kombat Mythologies: Sub-Zero</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>Password</td></tr>
+ <tr><td class=data>Mortal Kombat Trilogy</td><td class=data>CIC-NUS-6102</td><td class=data>None</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Ms. Pac-Man Maze Madness</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Multi-Racing Championship</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Mystical Ninja Starring Goemon</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Nagano Winter Olympics '98</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Namco Museum 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Nascar 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Nascar '99</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NBA Courtside 2 Featuring Kobe Bryant</td><td class=data>CIC-NUS-6102</td><td class=data>FlashRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NBA Hang Time</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NBA In the Zone 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NBA In the Zone '98</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NBA In the Zone '99</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NBA Jam 2000</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controllre Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NBA Jam '99</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NBA Live 2000</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NBA Live '99</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NBA Show Time: NBA on NBC</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>New Tetris, The</td><td class=data>CIC-NUS-6102</td><td class=data>SRAM</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>NFL Blitz</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NFL Blitz 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NFL Blitz 2001</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NFL Quarterback Club 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NFL Quarterback Club 2001</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NFL Quarterback Club '98</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NFL Quarterback Club '99</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NHL '99</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NHL Blades of Steel '99</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>NHL Breakaway Hockey '98</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>NHL Breakaway Hockey '99</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Nightmare Creatures</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>Nuclear Strike 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Off Road Challenge</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Ogre Battle 64: Person of Lordly Caliber</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>SRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Olympic Hockey '98</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Paperboy</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Penny Racers</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Perfect Dark</td><td class=dataAC>CIC-NUS-6105</td><td class=dataAC>EEPROM (16 Kbits)</td><td class=dataAC>Controller Pak</td></tr>
+ <tr><td class=data>PGA European Tour</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Pilotwings 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Pokémon Puzzle League</td><td class=data>CIC-NUS-6102</td><td class=data>FlashRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Pokémon Snap</td><td class=dataAC>CIC-NUS-6103</td><td class=dataAC>FlashRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Pokémon Stadium</td><td class=data>CIC-NUS-6103</td><td class=data>FlashRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Polaris Snocross</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Power Rangers: Lightspeed Rescue</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Quake</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>Password</td></tr>
+ <tr><td class=data>Quake II</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Quest 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Rainbow Six</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Rally Challenge 2000</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Rampage 2: Universal Tour</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>Rampage: World Tour</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Rat Attack</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Rayman 2: The Great Escape</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Ready 2 Rumble Boxing</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Ready 2 Rumble Boxing Round 2</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Resident Evil 2</td><td class=data>CIC-NUS-6102</td><td class=data>SRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Re-Volt</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Ridge Racer 64</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (16 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Road Rash 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Roadsters</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Robotron 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Rocket: Robot on Wheels</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Rugrats in Paris: The Movie</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Rugrats: Scavenger Hunt</td><td class=data>CIC-NUS-6102</td><td class=data>None</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Rush 2: Extreme Racing USA</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>Password</td></tr>
+ <tr><td class=data>S.C.A.R.S.</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>San Francisco Rush 2049</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>San Francisco Rush: Extreme Racing</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>Scooby-Doo: Classic Creep Capers</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Shadow Man</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Shadowgate 64: Trials of the Four Towers</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Snowboard Kids</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Snowboard Kids 2</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>South Park</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>South Park Rally</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>South Park: Chef's Luv Shack</td><td class=data>CIC-NUS-6102</td><td class=data>None</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Space Invaders</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Space Station Silicon Valley</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Spider-Man</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Star Fox 64</td><td class=data>CIC-NUS-6101</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Star Soldier: Vanishing Earth</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Star Wars Episode 1: Battle for Naboo</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Star Wars Episode 1: Racer</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (16 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Star Wars: Rogue Squadron</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Password</td></tr>
+ <tr><td class=dataAC>Star Wars: Shadows of the Empire</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Starcraft 64</td><td class=data>CIC-NUS-6102</td><td class=data>FlashRAM</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Starshot Space Circus</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Stunt Racer 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Super Bowling</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Super Mario 64</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Super Smash Bros.</td><td class=dataAC>CIC-NUS-6103</td><td class=dataAC>SRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Supercross 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Superman</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Tarzan</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Tetrisphere</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>The World Is Not Enough</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Tigger's Honey Hunt</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>FlashRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Tom & Jerry in Fists of Furry</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Tonic Trouble</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Tony Hawk's Pro Skater</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Top Gear Hyper Bike</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Top Gear Overdrive</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Top Gear Rally</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Top Gear Rally 2</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Toy Story 2</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Triple Play 2000</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Turok 2: Seeds of Evil</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Turok 2: Seeds of Evil Kiosk</td><td class=data>CIC-NUS-6102</td><td class=data>None</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Turok 3: Shadow of Oblivion</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Turok: Dinosaur Hunter</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Turok: Rage Wars</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Twisted Edge Extreme Snowboarding</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Vigilante 8</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>Password</td></tr>
+ <tr><td class=data>Vigilante 8: 2nd Offense</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Virtual Chess 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Virtual Pool 64</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>V-Rally Edition '99</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>EEPROM (4 Kbits)</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Waialae Country Club: True Golf Classics</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>War Gods</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Wave Race 64</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>Controller Pak</td></tr>
+ <tr><td class=dataAC>Wayne Gretzky's 3D Hockey</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Wayne Gretzky's 3D Hockey '98</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>WCW Backstage Assault</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>WCW Mayhem</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>WCW Nitro</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>WCW vs nWo: World Tour</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>WCW/NWO Revenge</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>SRAM</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Wetrix</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Wheel of Fortune</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>None</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>WinBack: Covert Operations</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Wipeout 64</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>World Cup '98</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>World Driver Championship</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Worms Armageddon</td><td class=data>CIC-NUS-6102</td><td class=data>EEPROM (4 Kbits)</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Wrestlemania 2000</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>SRAM</td><td class=dataAC>Controller Pak</td></tr>
+ <tr><td class=data>WWF: Attitude</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>WWF: No Mercy</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>FlashRAM</td><td class=dataAC>Controller Pak</td></tr>
+ <tr><td class=data>WWF: Warzone</td><td class=data>CIC-NUS-6102</td><td class=data>Controller Pak</td><td class=data>&nbsp;</td></tr>
+ <tr><td class=dataAC>Xena: Talisman of Fate</td><td class=dataAC>CIC-NUS-6102</td><td class=dataAC>Controller Pak</td><td class=dataAC>&nbsp;</td></tr>
+ <tr><td class=data>Yoshi's Story</td><td class=data>CIC-NUS-6106</td><td class=data>EEPROM (16 Kbits)</td><td class=data>&nbsp;</td></tr>
+</table>
+<!----List End----!>
+
+</table>
+</td>
+</tr>
+
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</td></tr>
+</table>
+
+
+
+
+<br>
+
+
+</td>
+
+</tr>
+
+
+</table>
+</center>
+</body>
+</html>
