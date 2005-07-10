@@ -1,0 +1,102 @@
+The CVS repository contains various documents, bits of code, and programs useful for N64 development.
+
+docs/
+bootcode_start_addresses - where the first 1MB of code is loaded into RAM by different bootcodes
+eeprom - eeprom interfacing info by LaC
+mipscheck.html - documentation for SGI mipscheck, "Examines binaries for instruction sequences"
+n64.lyx - MIPS Development with the Nintendo 64 by Ryan Underwood (runderwo)
+n64dox.txt - LaC's n64 hardware dox v0.8: low-level VI, AI, and especially PIF information
+n64dox-0.5.txt - LaC's n64 hardware dox v0.5
+n64info.txt - N64 ROM header format and memory map
+n64pifmod.html - import modification (run NTSC or PAL games on either model N64)
+start.html - Starting N64 Coding by JL_Picard
+trainer.txt - How to make a N64 Trainer Documentation by Icarus
+
+docs/cart
+oscill.html - analysis of N64 cartridge connector
+
+docs/cd64
+*TO DO*
+
+docs/n64ops - Nintendo 64 Toolkit: opcodes v1.1 by anarko
+
+docs/rcp
+ucode_example.html - example microcode from Resident Evil 2
+
+docs/tutorial/gbaguy - gbaguy's N64 asm tutorial, using U64ASM
+
+docs/z64
+*TO DO*
+
+include/ultra64
+cartmem.h - cartridge memory addresses and sizes
+rom.h - ROM header structure
+
+include/ultra64/host
+cartinfo.h - not much
+cd64lib.h - CD64 communication definitions
+
+include/ultra64/n64
+n32regs.h - names for MIPS GPR registers
+
+lib/alt-libn64 - hardware library by hcs
+
+lib/cart
+*TO DO*
+
+lib/cd64
+*TO DO*
+
+lib/libn64
+
+src/boot
+crt0.s - sets up VI registers and does nothing (U64ASM source)
+pif.S - PIF Boot ROM emulation, for use in simulation environments
+
+src/boot/bootcodes - boot headers for different CIC chips
+
+src/demo/gnuintro - a simple demo and information on using GNU tools by Tom Whittock
+
+src/demo/jpegview - libn64-based JPEG viewer by Garth Elgar
+
+
+src/demo/libdemo - simple libn64 demo by Garth Elgar
+
+util/cap64 - N64 screen capture program, complementary PC program to read result to BMP (U64ASM and C++ source)
+
+util/cd64comm
+*TO DO*
+
+util/cd64ftp
+*TO DO*
+
+util/dexux - DexDrive communication library and tools by William Ono and Ben Galliart
+
+util/gsupload - upload data to N64 RAM via Game Shark by hcs
+
+util/linxdex - DexDrive Utilities For Linux by Dan Page
+
+util/misc
+rominfo - Perl source to read ROM header info
+
+util/n64tools - Linux N64 tools
+cd64comm.c - CD64 communication source by cn@UFO
+decode.cc - GBI command decoder by Pooka
+dlrip.cc - dlist ripper by Pooka
+drjr.c - Dr. V64jr communication source by Bung Enterprises
+insertfs.c - tool to "Insert a filing system into a Nintendo 64 ROM" by Garth Elgar
+n64term.c - Terminal to communicate with N64 by Garth Elgar (for what type of interface?)
+nifty.c - ROM header tool by Tom Whittock
+raw2s.c - Covert a binary file into a GCC .S asm file by Tom Whittock
+renamer.c - Rename and split ROMs across CDs, make HTML list by Garth Elgar
+tiff2rgb.c - Convert a TIFF image into N64 format RGB by Garth Elgar
+
+util/sendtov64 - Doctor V64 send tool by Christopher Field
+
+util/u64asm - DOS MIPS assembler, with demo and the long-lost source
+
+web/
+*TO DO*
+
+**** not done yet ***
+also not sure whether to bother listing purpose of different files in a single logical group
