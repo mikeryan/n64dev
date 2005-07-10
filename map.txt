@@ -62,6 +62,8 @@ src/demo/jpegview - libn64-based JPEG viewer by Garth Elgar
 
 src/demo/libdemo - simple libn64 demo by Garth Elgar
 
+src/neon64 - NES Emulator with examples of RSP, RDP, controller pack usage, by hcs (U64ASM source)
+
 util/cap64 - N64 screen capture program, complementary PC program to read result to BMP (U64ASM and C++ source)
 
 util/cd64comm
