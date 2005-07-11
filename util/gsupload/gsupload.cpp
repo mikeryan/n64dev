@@ -55,7 +55,7 @@ int Upload(unsigned char * buffer, unsigned long size, unsigned long address) {
 	int timeout=0x3e8;
 	while (GSFcn1(3) && timeout) {
 		timeout--; c++;
-		printf("init failed, try %d\n",c);
+		//printf("init failed, try %d\n",c);
 	}
 	if (!timeout) {printf("init failed\n"); return 1;}
 	CheckGSPresence();
@@ -87,7 +87,7 @@ int UploadFile(FILE * infile, unsigned long address) {
 
 	while (GSFcn1(3) && timeout) {
 		timeout--; c++;
-		printf("init failed, try %d\n",c);
+		//printf("init failed, try %d\n",c);
 	}
 	if (!timeout) {printf("init failed\n"); return 1;}
 	CheckGSPresence();
@@ -118,16 +118,18 @@ int UploadFile(FILE * infile, unsigned long address) {
 // my guess: used to get the GS and PC sync'd
 int GSFcn1(int x) {
 	int timeout=0x3e8;
-	int result;
+	unsigned char result;
 	
 	while (timeout) {
-		Out32(LPT1,x);
 
-		result=(SendNibble(x>>4)<<4)|SendNibble(x); // in that order
+		result<<=4;
+		result|=SendNibble(x);
 
+		// when we recieve a 6, then a 7, we're sync'd
 		if (result==0x67) break;
 
 		SendNibble(x);
+		SendNibble(x>>4);
 
 		timeout--;
 	}
