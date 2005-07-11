@@ -16,7 +16,10 @@ docs/cart
 oscill.html - analysis of N64 cartridge connector
 
 docs/cd64
-*TO DO*
+cd64_misc - Snippets from dextrose forums regarding CD64
+cd64_protocols - Comms link protocols used by CD64 BIOS and Ghemor
+comms_link - Notes about the comms link interface supplied by UFO
+ppa_workings - Notes about how the CD64 PPA operates
 
 docs/n64ops - Nintendo 64 Toolkit: opcodes v1.1 by anarko
 
@@ -26,7 +29,8 @@ ucode_example.html - example microcode from Resident Evil 2
 docs/tutorial/gbaguy - gbaguy's N64 asm tutorial, using U64ASM
 
 docs/z64
-*TO DO*
+z64_arch - _kid's Z64 hardware description
+z64hw_dextrose*.html - threads from dextrose describing the Z64 hardware
 
 include/ultra64
 cartmem.h - cartridge memory addresses and sizes
@@ -42,12 +46,13 @@ n32regs.h - names for MIPS GPR registers
 lib/alt-libn64 - hardware library by hcs
 
 lib/cart
-*TO DO*
+u64cartinfo.c - print some information about a N64 program file
 
 lib/cd64
-*TO DO*
+libcd64, a library for high-level and low-level CD64 communication on the host
 
 lib/libn64
+Garth Elgar's libn64, first try at an open source N64 development platform
 
 src/boot
 crt0.s - sets up VI registers and does nothing (U64ASM source)
@@ -59,7 +64,6 @@ src/demo/gnuintro - a simple demo and information on using GNU tools by Tom Whit
 
 src/demo/jpegview - libn64-based JPEG viewer by Garth Elgar
 
-
 src/demo/libdemo - simple libn64 demo by Garth Elgar
 
 src/neon64 - NES Emulator with examples of RSP, RDP, controller pack usage, by hcs (U64ASM source)
@@ -67,10 +71,14 @@ src/neon64 - NES Emulator with examples of RSP, RDP, controller pack usage, by h
 util/cap64 - N64 screen capture program, complementary PC program to read result to BMP (U64ASM and C++ source)
 
 util/cd64comm
-*TO DO*
+cd64comm.cpp - UFO's DOS CD64 transfer utility
+cd64comm.cc - chuckjr's port of an older version of the DOS utility
+cd64comm.c - UFO's Linux CD64 transfer utility
+098/ - Older version of cd64comm (n64comm)
+102/ - Older version of cd64comm
 
 util/cd64ftp
-*TO DO*
+A libcd64 program that implements a traditional FTP client interface for CD64 usage.
 
 util/dexux - DexDrive communication library and tools by William Ono and Ben Galliart
 
@@ -87,7 +95,7 @@ decode.cc - GBI command decoder by Pooka
 dlrip.cc - dlist ripper by Pooka
 drjr.c - Dr. V64jr communication source by Bung Enterprises
 insertfs.c - tool to "Insert a filing system into a Nintendo 64 ROM" by Garth Elgar
-n64term.c - Terminal to communicate with N64 by Garth Elgar (for what type of interface?)
+n64term.c - Terminal to communicate with N64 by Garth Elgar (for CD64)
 nifty.c - ROM header tool by Tom Whittock
 raw2s.c - Covert a binary file into a GCC .S asm file by Tom Whittock
 renamer.c - Rename and split ROMs across CDs, make HTML list by Garth Elgar
