@@ -1,7 +1,7 @@
 ; Neon64 logo by themind (hcs)
 
 logo00  db $0b,"                        ллллллллллл",$0a
-        db     "                      лллл          ",$0c,"(c) 2001-2004 Halley's Comet Software",$0a
+        db     "                      лллл          ",$0c,"(c) 2001-2005 Halley's Comet Software",$0a
         db $0b,"                      лллллллл           ",$0c,"http://here.is/halleyscomet",$0a
         db $0b,"                       ллллллллллл",$0a
         db     "                         ллллллллл           лл",$0a
@@ -24,7 +24,7 @@ logo00  db $0b,"                        ллллллллллл",$0a
         db     "               лллл                          ",$0c,"66666666   44    44",$0a
         db     "                                             66         44    44",$0a
         db     "                                             66         44    44",$0a
-        db     "         Neon64 1.2a                         66666666   44444444",$0a
-        db     "           6/1/04                            66    66         44",$0a
+        db     "         Neon64 1.2b                         66666666   44444444",$0a
+        db     "           7/12/05                           66    66         44",$0a
         db     "                                             66    66         44",$0a
         db     "                                             66666666         44",0

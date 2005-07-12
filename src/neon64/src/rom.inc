@@ -221,6 +221,25 @@ notmapper11:    li      t1,34
                 j       endofloadrom
                 nop
 notmapper34
+		
+                li      t1,65
+                bne     t0,t1,notmapper65
+                nop
+                ; Mapper 65 (Dragon Warrior II, should be Mapper 1)
+                li      t0,1
+                _tpa(sb,t0,mapper)
+
+                jal     unprgrom
+                nop
+                jal     nchrrom
+                nop
+
+                li      t0,$c   ; on reset based on matt richey
+                _tpa(sb,t0,mmc1reg)
+
+                j       endofloadrom
+                nop
+notmapper65:
 
                 li      t1,66
                 bne     t0,t1,notmapper66

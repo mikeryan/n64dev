@@ -1,10 +1,24 @@
-; The decompression stub for Neon64, GS version
+; The decompression stub for Neon64, relocatable GS version
+
 #imacros "macros.inc"
- org    $80300000
+    org 0
+
+    ; determine PC (jal to a known location and back, ra contains PC)
+    la      t0,31<21|8 ; jr ra
+    lui     t1,$a000
+    sw      t0,0x400(t1)
+    cache   20,0x400(t1) ; instruction cache fill
+    sw      r0,0x404(t1)
+    cache   20,0x404(t1) ; instruction cache fill
+    jal     0x80000400
+    nop
+    addiu   v0,ra,-pc
 
     la      t0,$a0200000
     la      t1,depackdata_start
+    addu   t1,v0
     la      t2,depackdata_end
+    addu   t2,v0
 copyloop
     ld      t3,(t1)
     addi    t1,8
@@ -13,7 +27,7 @@ copyloop
     addi    t0,8
 
     la      t0,$a0200000
-    la      t1,$a0300000
+    la      t1,$a02c0000
 fillloop    cache   20,0(t0) ; instruction cache fill
     addi    t0,8
     bne     t0,t1,fillloop
