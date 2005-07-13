@@ -1471,12 +1471,13 @@ This unit produces analog audio output from digital audio samples.
  It supports up to 48kHz samples and 4 to 16-bit sample resolution.
  It uses DMA to play samples directly from system memory.
  A sample can be queued for play while one is currently playing.
- It has built-in ADPCM decompression and has some sort of wavetable synthesis
- (FIXME).
- Built in special effects (Voice, Pitch Shifting, Gain and Pan, Reverb and
- Chorus).
  Unfortunately there is no mixing of samples, so we must employ our own
  mixing routines.
+ Mixing of multiple PCM streams, as well as sound manipulation such as ADPCM
+ decompression, wavetable synthesis, and special effects (Voice, Pitch
+ Shifting, Gain and Pan, Reverb and Chorus) are performed by
+ application-specific RSP microcode.
+
 \layout Subsection
 
 PI (Peripheral Interface)
