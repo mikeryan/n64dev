@@ -5,6 +5,7 @@ bootcode_start_addresses - where the first 1MB of code is loaded into RAM by dif
 eeprom - eeprom interfacing info by LaC
 mipscheck.html - documentation for SGI mipscheck, "Examines binaries for instruction sequences"
 n64.lyx - MIPS Development with the Nintendo 64 by Ryan Underwood (runderwo)
+n64_dma_pathways.dia - diagram of all possible DMA pathways within the N64 by hcs (suggested by runderwo)
 n64dox.txt - LaC's n64 hardware dox v0.8: low-level VI, AI, and especially PIF information
 n64dox-0.5.txt - LaC's n64 hardware dox v0.5
 n64info.txt - N64 ROM header format and memory map
