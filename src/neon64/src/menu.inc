@@ -302,6 +302,7 @@ traperrors  db 0
 vidmode     db 0    ; 0=NTSC, 1=PAL
 frametoggle db 0
 dmcenable   db 1
+VIvidmode   db 0    ; 0=NTSC, 1=PAL (included here to persist past reset)
  _align(4)
 menutab dw menu0,menu1,menu2,menu3,menu4,menu5,menu6,menu7,menu8,menu9,menua,0
 menuscrtemp dw  0

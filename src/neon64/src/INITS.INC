@@ -36,52 +36,8 @@ destination ; absolute target for loadcode (GS ver)
      jal     cls
      nop
 
-    ; Set up VI (512x240x16bit) (high res horizontal, nice aspect ratio)
-    ; Control
-    lui     t0, 0xa440
-    la      t1, 0x00013002  ; 16 bit/pixel
-    sw      t1, 0(t0)
-    ; framebuffer
-    la      t1, screenbuffer
-    sw      t1, 4(t0)
-    _tpa(sw,t1,scrbuf)
-    ; width
-    li      t1, 0x280
-    sw      t1, 8(t0)
-    ; vertical interrupt
-    li      t1, 0
-    sw      t1, 12(t0)
-    ; current line
-    li      t1, 0
-    sw      t1, 16(t0)
-    ; video timing
-    la      t1, 0x03e52227
-    sw      t1, 20(t0)
-    ; v_sync
-    li      t1, 0x020d
-    sw      t1, 24(t0)
-    ; h_sync
-    li      t1, 0x0c15
-    sw      t1, 28(t0)
-    ; h_sync again (twice)
-    sll     t2, t1, 16
-    or      t1, t1, t2
-    sw      t1, 32(t0)
-    ; h screen limits
-    la      t1, 0x007602f4
-    sw      t1, 36(t0)
-    ; v screen limits
-    la      t1, 0x001f01ff
-    sw      t1, 40(t0)
-    ; "color burst"
-    la      t1, 0x000e0204
-    sw      t1, 44(t0)
-    ; h scale-up factor
-    li      t1, 0x19f*$28/$10
-    sw      t1, 48(t0)
-    ; v scale-up factor
-    li      t1, 0x400
-    sw      t1, 52(t0)
+     jal    setupVIhires
+     nop
 
                 _tpa(sw,r0,text_x)
                 la      t0,screenbuffer|$A0000000
@@ -349,33 +305,121 @@ fill_screen_loop:
                 jr      ra
                 nop
 
-pastintstuff:   _tpa(lbu,t0,resetflag)
-                _tpa(sb,r0,resetflag)
-                bnez    t0,nowait
-                nop
-                
-                jal     Pause   ; wait for the user to load the ROM
-                nop
-nowait
-                ;li      t0,$40
-                ;_tpa(sw,t0,0xa430000c)  ; disable VI interrupt
+setupVIhires
+    ; Set up VI (512x240x16bit) (high res horizontal, nice aspect ratio)
+    lui     t0, 0xa440
 
-                jal detatchGS
-                nop
+    _tpa(lbu,t1,VIvidmode)
+    nop
+    bnez    t1,setupVIhiresPAL
+    nop
 
-    mtc0    r0,count
-    la      t0,50000000/fpsrate
-    mtc0    t0,compare
-    
-    mfc0    t0,status   ; activate count
-    ori     t0,$8000
-    mtc0    t0,status
+    ; Control
+    la      t1, 0x00013002  ; 16 bit/pixel
+    sw      t1, 0(t0)
+    ; framebuffer
+    la      t1, screenbuffer
+    sw      t1, 4(t0)
+    _tpa(sw,t1,scrbuf)
+    ; width
+    li      t1, 0x280
+    sw      t1, 8(t0)
+    ; vertical interrupt
+    li      t1, 0
+    sw      t1, 12(t0)
+    ; current line
+    li      t1, 0
+    sw      t1, 16(t0)
+    ; video timing
+    la      t1, 0x03e52227
+    sw      t1, 20(t0)
+    ; v_sync
+    li      t1, 0x020d
+    sw      t1, 24(t0)
+    ; h_sync
+    li      t1, 0x0c15
+    sw      t1, 28(t0)
+    ; h_sync again (twice)
+    sll     t2, t1, 16
+    or      t1, t1, t2
+    sw      t1, 32(t0)
+    ; h screen limits
+    la      t1, 0x007602f4
+    sw      t1, 36(t0)
+    ; v screen limits
+    la      t1, 0x001f01ff
+    sw      t1, 40(t0)
+    ; "color burst"
+    la      t1, 0x000e0204
+    sw      t1, 44(t0)
+    ; h scale-up factor
+    li      t1, 0x19f*$28/$10
+    sw      t1, 48(t0)
+    ; v scale-up factor
+    li      t1, 0x400
+    sw      t1, 52(t0)
 
-                jal     cls
-                nop
+    jr      ra
+    nop
+
+setupVIhiresPAL
+
+    ; Control
+    la      t1, 0x00013002  ; 16 bit/pixel
+    sw      t1, 0(t0)
+    ; framebuffer
+    la      t1, screenbuffer
+    sw      t1, 4(t0)
+    _tpa(sw,t1,scrbuf)
+    ; width
+    li      t1, 0x320
+    sw      t1, 8(t0)
+    ; vertical interrupt
+    li      t1, 0
+    sw      t1, 12(t0)
+    ; current line
+    li      t1, 0
+    sw      t1, 16(t0)
+    ; video timing
+    la      t1, 0x4541E3A
+    sw      t1, 20(t0)
+    ; v_sync
+    li      t1, 0x271
+    sw      t1, 24(t0)
+    ; h_sync
+    la      t1, 0x170c69
+    sw      t1, 28(t0)
+    ; h_sync again (twice)
+    la      t1,0xc6f0c6d
+    sw      t1, 32(t0)
+    ; h screen limits
+    la      t1, 0x007602f4
+    sw      t1, 36(t0)
+    ; v screen limits
+    la      t1, 0x001f01ff
+    sw      t1, 40(t0)
+    ; "color burst"
+    la      t1, 0x9026b
+    sw      t1, 44(t0)
+    ; h scale-up factor
+    li      t1, 0x19f*$28/$10
+    sw      t1, 48(t0)
+    ; v scale-up factor
+    li      t1, 0x400
+    sw      t1, 52(t0)
+
+    jr      ra
+    nop
+
+setupVINESres
 
                 ; Set up VI (280x240x16bit)
                 lui     t0,$a440
+
+    _tpa(lbu,t1,VIvidmode)
+    bnez    t1,setupVINESresPAL
+    nop
+
                 ; width
                 li      t1, 0x118
                 sw      t1, 8(t0)
@@ -407,6 +451,91 @@ nowait
                 ; v scale-up factor
                 li      t1, 0x400
                 sw      t1, 52(t0)
+
+                jr      ra
+                nop
+
+setupVINESresPAL:
+                ; width
+                li      t1, 0x118
+                sw      t1, 8(t0)
+    ; video timing
+    ;la      t1, 0x03e52227
+    la      t1, 0x4541E3A
+    sw      t1, 20(t0)
+    ; v_sync
+    ;li      t1, 0x020d
+    li      t1, 0x271
+    sw      t1, 24(t0)
+    ; h_sync
+    ;li      t1, 0x0c15
+    la      t1, 0x170c69
+    sw      t1, 28(t0)
+    ; h_sync again (twice)
+    ;sll     t2, t1, 16
+    ;or      t1, t1, t2
+    la      t1,0xc6f0c6d
+    sw      t1, 32(t0)
+    ; h screen limits
+    la      t1, 0x007602f4
+    sw      t1, 36(t0)
+    ; v screen limits
+    ;la      t1, 0x001f01ff
+    la      t1, 0x001f0250
+    sw      t1, 40(t0)
+    ; "color burst"
+    ;la      t1, 0x000e0204
+    la      t1, 0x9026b
+    sw      t1, 44(t0)
+                ; h scale-up factor
+                li      t1, 0x1aa
+                sw      t1, 48(t0)
+                ; v scale-up factor
+                li      t1, 0x350
+                sw      t1, 52(t0)
+
+                jr      ra
+                nop
+
+
+pastintstuff:   _tpa(lbu,t0,resetflag)
+                _tpa(sb,r0,resetflag)
+                bnez    t0,nowait
+                nop
+                
+                jal     Pause   ; wait for the user to load the ROM
+                nop
+
+                ; (button value is returned in t0)
+                andi    t0,8 ; c-up
+                beqz    t0, nowait
+                nop
+                _tpa(lbu,t0,VIvidmode)
+                nop
+                xori    t0,1
+                _tpa(sb,t0,VIvidmode)
+                j       loadnewrom
+                nop
+nowait
+                ;li      t0,$40
+                ;_tpa(sw,t0,0xa430000c)  ; disable VI interrupt
+
+                jal detatchGS
+                nop
+
+    mtc0    r0,count
+    la      t0,50000000/fpsrate
+    mtc0    t0,compare
+    
+    mfc0    t0,status   ; activate count
+    ori     t0,$8000
+    mtc0    t0,status
+
+                jal     cls
+                nop
+
+                jal     setupVINESres
+                nop
 
                 ; initialize variables to zero
                 la      t0,lastvar-firstvar-1
