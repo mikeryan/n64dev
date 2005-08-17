@@ -372,7 +372,7 @@ setupVIhiresPAL
     sw      t1, 4(t0)
     _tpa(sw,t1,scrbuf)
     ; width
-    li      t1, 0x320
+    li      t1, 0x318
     sw      t1, 8(t0)
     ; vertical interrupt
     li      t1, 0
@@ -393,10 +393,10 @@ setupVIhiresPAL
     la      t1,0xc6f0c6d
     sw      t1, 32(t0)
     ; h screen limits
-    la      t1, 0x007602f4
+    la      t1, 0x009802f4
     sw      t1, 36(t0)
     ; v screen limits
-    la      t1, 0x001f01ff
+    la      t1, 0x00220250
     sw      t1, 40(t0)
     ; "color burst"
     la      t1, 0x9026b
@@ -405,7 +405,7 @@ setupVIhiresPAL
     li      t1, 0x19f*$28/$10
     sw      t1, 48(t0)
     ; v scale-up factor
-    li      t1, 0x400
+    li      t1, 0x350
     sw      t1, 52(t0)
 
     jr      ra
@@ -456,35 +456,28 @@ setupVINESres
                 nop
 
 setupVINESresPAL:
-                ; width
-                li      t1, 0x118
-                sw      t1, 8(t0)
+            ; width
+            li      t1, 0x118
+            sw      t1, 8(t0)
     ; video timing
-    ;la      t1, 0x03e52227
     la      t1, 0x4541E3A
     sw      t1, 20(t0)
     ; v_sync
-    ;li      t1, 0x020d
     li      t1, 0x271
     sw      t1, 24(t0)
     ; h_sync
-    ;li      t1, 0x0c15
     la      t1, 0x170c69
     sw      t1, 28(t0)
     ; h_sync again (twice)
-    ;sll     t2, t1, 16
-    ;or      t1, t1, t2
     la      t1,0xc6f0c6d
     sw      t1, 32(t0)
     ; h screen limits
-    la      t1, 0x007602f4
+    la      t1, 0x007202f4
     sw      t1, 36(t0)
     ; v screen limits
-    ;la      t1, 0x001f01ff
     la      t1, 0x001f0250
     sw      t1, 40(t0)
     ; "color burst"
-    ;la      t1, 0x000e0204
     la      t1, 0x9026b
     sw      t1, 44(t0)
                 ; h scale-up factor
