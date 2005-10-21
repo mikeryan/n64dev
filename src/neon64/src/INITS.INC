@@ -507,7 +507,7 @@ pastintstuff:   _tpa(lbu,t0,resetflag)
                 nop
                 xori    t0,1
                 _tpa(sb,t0,VIvidmode)
-                j       loadnewrom
+                j        destination
                 nop
 nowait
                 ;li      t0,$40
