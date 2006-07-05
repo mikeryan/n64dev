@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <conio.h>
 
-// GSUpload
-// An open source N64 Game Shark (tm) uploader
-// based on disassembly of "Generic Uploader" and official utilities
+/*
+   GSUpload 0.3
+   An open source N64 Game Shark (tm) uploader
+   based on disassembly of "Generic Uploader" and official utilities
+*/
 
 short __stdcall Inp32(short PortAddress);
 void __stdcall Out32(short PortAddress, short data);
@@ -12,7 +14,7 @@ unsigned int LPT1=0x378;
 
 int InitGSComms(void);
 int CloseGSComms(void);
-int Upload(unsigned char * buffer, unsigned long size, unsigned long address);
+int Upload(const unsigned char * buffer, unsigned long size, unsigned long address);
 int UploadFile(FILE * infile, unsigned long address);
 int Read(unsigned char * buffer, unsigned long size, unsigned long address);
 int GSFcn1(int);
@@ -22,38 +24,45 @@ int ReadWriteByte(int);
 unsigned long ReadWrite32(unsigned long);
 int CheckGSPresence(void);
 
-// Super Mario 64 memory locations
+/* Patches - all patches and signatures are 4 bytes */
 
-unsigned long USpatchloc=0x80263844;
-unsigned char USpatch[4]={8,0x0C,0,0};
-unsigned char USpatchsig[4]={0x85,0xCF,0,0xAE};
-unsigned long USuploadloc=0x80300000;
+typedef struct patch {
+    unsigned long loc; /* where to put the patch code */
+    unsigned char code[4]; /* the patch code */
+    unsigned char sig[4]; /* the patch signature (what should be where the patch is to be written) */
+    unsigned long uploadloc; /* where to upload the executable */
+    char * name; /* name of the game being patched */
+} patch;
 
-unsigned long EUpatchloc=0x80259228;
-unsigned char EUpatch[4]={8,0xB,0x38,0xB0};
-unsigned char EUpatchsig[4]={0x86,0x0A,0,0xAE};
-unsigned long EUuploadloc=0x802ce2c0;
+#define PATCHCOUNT 6
 
-/*unsigned long JPShinpatchloc=0x80261528;
-unsigned char JPShinpatch[4]={8,0xB,0x71,0x07}; //{8,0xc,0,0};
-unsigned char JPShinpatchsig[4]={0x86,0x0A,00,0xAE};
-unsigned long JPShinuploadloc=0x802DC41C; //0x80300000;*/
+const patch patches[PATCHCOUNT] = {
 
-unsigned long JPShinpatchloc=0x80261528;
-unsigned char JPShinpatch[4]={8,0xB,0xEB,0x0}; //{8,0xc,0,0};
-unsigned char JPShinpatchsig[4]={0x86,0x0A,00,0xAE};
-unsigned long JPShinuploadloc=0x802FAC00; //0x80300000;
+/* Super Mario 64 (U) - hcs */
+    {0x80263844, {8,0x0C,0,0}, {0x85,0xCF,0,0xAE}, 0x80300000, "Super Mario 64 US"},
+/* Super Mario 64 (E) - hcs */
+    {0x80259228, {8,0xB,0x38,0xB0}, {0x86,0x0A,0,0xAE}, 0x802ce2c0, "Super Mario 64 PAL"},
+/* Super Mario 64 (J) - nekokabu */
+    {0x80263438, {8,0x0B,0xFB,0xD4}, {0x85,0xCF,0,0xAE}, 0x802FEF50, "Super Mario 64 JP"},
+/* Super Mario 64 - Shindou Edition (J) - nekokabu */
+    {0x8025583C, {8,0x0B,0x70,0xE8}, {0x31,0xF8,0xFF,0xEF}, 0x802DC3A0, "Super Mario 64 JP Shindou Edition"},
+/* Mario Party (U) - nekokabu */
+    {0x8002cd6c, {8,0x0B,0x20,0x00}, {0x00,0x02,0x14,0x03}, 0x802C8000, "Mario Party US"},
+/* Mario Party (J) - nekokabu */
+    {0x8002cc9c, {8,0x0B,0xF3,0xC0}, {0x00,0x02,0x14,0x03}, 0x802fcf00, "Mario Party JP"}
 
+};
 
 int main(int argc, char ** argv) {
 	unsigned char buf[4];
 	FILE * infile, * romfile;
+	int i;
 
-	printf("Neon64 GS uploader v0.2\n");
+	printf("Neon64 GS uploader v0.3\n");
 
 	if (argc != 2) {
 		printf("usage: %s rom.nes\n",argv[0]);
-		Out32(LPT1,0); // clear output pins, GS sometimes fails to boot with some pins high
+		Out32(LPT1,0); /* clear output pins, GS sometimes fails to boot with some pins high */
 		return 1;
 	}
 		
@@ -63,40 +72,28 @@ int main(int argc, char ** argv) {
 	romfile = fopen(argv[1],"rb");
 	if (!romfile) {printf("error opening %s\n",argv[1]); return 1;}
 
-	// test memory locations to find version
-	
-	if (Read(buf,4,USpatchloc)) {printf("read failed\n"); return 1;}
-	if (buf[0]==USpatchsig[0] && buf[1]==USpatchsig[1] &&
-		buf[2]==USpatchsig[2] && buf[3]==USpatchsig[3]) {
-		printf("Super Mario 64 US version detected\n");
-		if (Upload(USpatch,4,USpatchloc)) {printf("\nupload failed\n"); return 1;}
-		if (UploadFile(infile,USuploadloc)) {printf("\nupload failed\n"); return 1;}
-	} else {	
-		if (Read(buf,4,EUpatchloc)) {printf("read failed\n"); return 1;}
-		if (buf[0]==EUpatchsig[0] && buf[1]==EUpatchsig[1] &&
-			buf[2]==EUpatchsig[2] && buf[3]==EUpatchsig[3]) {
-			printf("Super Mario 64 EU version detected\n");
-			if (Upload(EUpatch,4,EUpatchloc)) {printf("\nupload failed\n"); return 1;}
-			if (UploadFile(infile,EUuploadloc)) {printf("\nupload failed\n"); return 1;}
-		} else {
-			if (Read(buf,4,JPShinpatchloc)) {printf("read failed\n"); return 1;}
-			if (buf[0]==JPShinpatchsig[0] && buf[1]==JPShinpatchsig[1] &&
-				buf[2]==JPShinpatchsig[2] && buf[3]==JPShinpatchsig[3]) {
-				printf("Super Mario 64 JP Shindou Edition detected\nUnfortunately there's no working support for it yet.\n");
-				return 1;
-			} else {
-				if (Read(buf,2,0x80000400)) {printf("read failed\n"); return 1;}
-				// Neon64 starts with a beq r0,r0
-				if (buf[0]==0x10 && buf[1]==0x00) {
-					printf("Neon64 already loaded.\n");
-				} else {
-					printf("unknown game in RAM, please report your situation to\nhalleyscometsoftware@hotmail.com\n");
-					return 1;
-				}
-			}
-		}
+	/* test memory locations to find version */
+	for (i=0;i<PATCHCOUNT;i++) {
+	    if (Read(buf,4,patches[i].loc)) {printf("read failed\n"); return 1;}
+	    if (!memcmp(buf,patches[i].sig,4)) {
+		    printf("%s detected\n",patches[i].name);
+		    if (Upload(patches[i].code,4,patches[i].loc)) {printf("\nupload failed\n"); return 1;}
+		    if (UploadFile(infile,patches[i].uploadloc)) {printf("\nupload failed\n"); return 1;}
+		    break;
+	    }
 	}
-		
+
+	if (i==PATCHCOUNT) {
+	    if (Read(buf,2,0x80000400)) {printf("read failed\n"); return 1;}
+	    /* Neon64 starts with a beq r0,r0 */
+	    if (buf[0]==0x10 && buf[1]==0x00) {
+		    printf("Neon64 already loaded.\n");
+	    } else {
+		    printf("unknown game in RAM, please report your situation to\nhalleyscometsoftware@hotmail.com\n");
+		    return 1;
+	    }
+	}
+	
 	fclose(infile);
 
 	printf("press a key when Neon64 screen appears\n");
@@ -145,7 +142,7 @@ int Read(unsigned char * buffer, unsigned long size, unsigned long address) {
 }
 
 
-int Upload(unsigned char * buffer, unsigned long size, unsigned long address) {
+int Upload(const unsigned char * buffer, unsigned long size, unsigned long address) {
 	unsigned long c=0;
 	
 	if (InitGSComms()) return 1;
@@ -195,7 +192,7 @@ int UploadFile(FILE * infile, unsigned long address) {
 	return 0;
 }
 
-// my guess: used to get the GS and PC sync'd
+/* my guess: used to get the GS and PC sync'd */
 int GSFcn1(int x) {
 	int timeout=0x3e8;
 	unsigned char result;
@@ -205,7 +202,7 @@ int GSFcn1(int x) {
 		result<<=4;
 		result|=SendNibble(x);
 
-		// when we recieve a 6, then a 7, we're sync'd
+		/* when we recieve a 6, then a 7, we're sync'd */
 		if (result==0x67) break;
 
 		SendNibble(x);
@@ -268,7 +265,7 @@ unsigned long ReadWrite32(unsigned long x) {
 		(unsigned long)ReadWriteNibble(x);
 }
 
-// perhaps this is what actually freezes operation?
+/* perhaps this is what actually freezes operation? */
 int CheckGSPresence(void) {
 	int timeout=0x3e8,result;
 	
