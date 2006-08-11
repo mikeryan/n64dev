@@ -1,0 +1,3 @@
+newlib comes with libnosys, stubs for OS functions. These stubs generate linker
+warnings, reminding you that they will always fail. stripwarnings is a script to
+remove the warnings sections.

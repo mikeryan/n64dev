@@ -1,17 +1,23 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
+
+#export CC=gcc32
+
+export PATH=$PATH:/usr/local/gccn64/bin
 
 mkdir build-binutils ; cd build-binutils
-../binutils-2.16/configure --target=mips64 --with-cpu=mips64vr4300
+../binutils-2.16/configure --prefix=/usr/local/gccn64 --target=mips64 --with-cpu=mips64vr4300
 make all install
 cd ..
 
 mkdir build-gcc ; cd build-gcc
-../gcc-3.3.6/configure --target=mips64 --with-cpu=mip64vr4300 -with-languages=c --disable-threads --with-newlib
+../gcc-3.3.6/configure --prefix=/usr/local/gccn64 --target=mips64 --with-cpu=mip64vr4300 -with-languages=c --disable-threads --with-newlib
 make all-gcc install-gcc
 cd ..
 
 mkdir build-newlib ; cd build-newlib
-../newlib-1.13.0/configure --target=mips64 --with-cpu=mips64vr4300 --prefix=/usr/local --disable-multilib --disable-threads
+../newlib-1.14.0/configure --prefix=/usr/local/gccn64 --target=mips64 --with-cpu=mips64vr4300 --disable-multilib --disable-threads
 make all install
 cd ..
 

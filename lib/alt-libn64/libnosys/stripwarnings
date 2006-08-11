@@ -1,0 +1,16 @@
+#!/bin/bash
+
+GCCN64PATH=/usr/local/gccn64
+GCCN64LIBNOSYS=$GCCN64PATH/mips64/lib/libnosys.a
+GCCN64BINPATH=$GCCN64PATH/bin
+
+$GCCN64BINPATH/mips64-ar x $GCCN64LIBNOSYS
+
+for a in *.o ; do
+    $GCCN64BINPATH/mips64-objcopy --remove-section .gnu.warning.`echo $a | cut -f1 -d.` $a $a.2;
+    rm $a
+    mv $a.2 $a
+done
+
+$GCCN64BINPATH/mips64-ar -rcs -o libnosys.a *.o
+rm *.o
