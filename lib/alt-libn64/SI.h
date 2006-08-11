@@ -2,10 +2,10 @@
 #define _SI_h
 
 typedef struct SI_regs_s {
-    void * DRAM_addr;
-    void * PIF_addr_read; // for a read from PIF RAM
+    volatile void * DRAM_addr;
+    volatile void * PIF_addr_read; // for a read from PIF RAM
     unsigned long reserved1,reserved2;
-    void * PIF_addr_write; // for a write to PIF RAM
+    volatile void * PIF_addr_write; // for a write to PIF RAM
     unsigned long reserved3;
     unsigned long status;
 } _SI_regs_s;

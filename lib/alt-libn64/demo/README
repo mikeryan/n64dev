@@ -1,0 +1,14 @@
+alt-libn64 demo
+
+Here's a basic demo of the alt-libn64 library. Also included are
+interrupt-driver audio and video schedulers. The audio isn't too great, stutters
+a bit when starting. The video is quite usable, and will support either double
+or triple buffering.
+
+It is not a terribly interesting demo, it displays information about the
+controllers and a scrollable waveform. A sine save is continuously rendered and
+played, adjust its volume and balance with the analog stick of the first
+controller. Timing information is also displayed. Oh, and the screen turns red
+when start is pressed on the first controller.
+
+Paths may need to be adjusted, see the top of the Makefile.

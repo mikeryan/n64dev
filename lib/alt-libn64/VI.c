@@ -1,3 +1,7 @@
+/*
+ * VI (Video Interface)
+ */
+
 #include "VI.h"
 #include "VI_font.c"
 
@@ -9,8 +13,8 @@ void VI_WriteRegs(struct VI_config * conf) {
 	conf->bitdepth==32?3:0)); // 32 bpp not really supported too well
    VI_regs->framebuffer=conf->framebuffer;
    VI_regs->width=conf->xres;
-   VI_regs->v_int=0;	// used for VI interrupt
-   VI_regs->cur_line=0;  // tells current line, write to clear interrupt
+   //VI_regs->v_int=0;	// used for VI interrupt
+   //VI_regs->cur_line=0;  // tells current line, write to clear interrupt
    VI_regs->timing=0x3e52239; // fairly standard?
    VI_regs->v_sync=0x20d;
    VI_regs->h_sync=0xc15;

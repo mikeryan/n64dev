@@ -47,8 +47,8 @@ unsigned long long SI_read_con_block[8] = {
 
 int SI_DMA_busy(void) {
     // clear interrupt
-    while (SI_regs->status & (SI_status_DMA_busy|SI_status_IO_busy))
-	SI_regs->status=0; // clear interrupt while waiting
+    while (SI_regs->status & (SI_status_DMA_busy|SI_status_IO_busy)) {
+    }
 }
 
 void controller_exec_PIF(unsigned long long const inblock[8],
@@ -56,6 +56,7 @@ void controller_exec_PIF(unsigned long long const inblock[8],
     volatile unsigned long long inblock_temp[8];
     volatile unsigned long long outblock_temp[8];
 
+    data_cache_writeback_invalidate(inblock_temp,64);
     memcpy(UncachedAddr(inblock_temp),inblock,64);
 
     SI_DMA_busy();
@@ -64,6 +65,8 @@ void controller_exec_PIF(unsigned long long const inblock[8],
     SI_regs->PIF_addr_write = PIF_RAM; // is it really ever anything else?
 
     SI_DMA_busy();
+
+    data_cache_writeback_invalidate(outblock_temp,64);
 
     SI_regs->DRAM_addr = outblock_temp;
     SI_regs->PIF_addr_read = PIF_RAM;

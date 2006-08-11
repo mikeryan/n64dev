@@ -18,6 +18,8 @@ typedef struct VI_regs_s {
    unsigned long v_scale;
 } _VI_regs_s;
 
+extern volatile struct VI_regs_s * const VI_regs;
+
 typedef struct VI_config {
     int bitdepth;
     int xres,yres;

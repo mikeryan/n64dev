@@ -12,15 +12,15 @@
  * Developed by Frank Somers <frank@g0dev.com>
  * Modifications by hcs (halleyscometsoftware@hotmail.com)
  *
- * $Header: /afs/icequake.net/users/nemesis/n64/sf/asdf/n64dev/lib/alt-libn64/n64ld.x,v 1.1 2005-07-10 19:24:01 halleyscometsw Exp $
+ * $Header: /afs/icequake.net/users/nemesis/n64/sf/asdf/n64dev/lib/alt-libn64/n64ld.x,v 1.2 2006-08-11 15:54:11 halleyscometsw Exp $
  *
  * ========================================================================
  */
 
 OUTPUT_FORMAT ("elf32-bigmips", "elf32-bigmips", "elf32-littlemips")
 OUTPUT_ARCH (mips)
+EXTERN (_start)
 ENTRY (_start)
-SEARCH_DIR (/n64dev/mips-elf/lib);
 
 SECTIONS {
    /* Start address of code is 1K up in uncached, unmapped RAM.  We have

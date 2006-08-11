@@ -1,0 +1,18 @@
+alt-libn64 - a free library for N64 hardware
+
+Here are some low-level routines for N64 hardware. Don't get too comfortable
+with the interface, as it is all very much subject to change.
+
+Features:
+- structures for VI, AI, SI, and MI regs
+- fairly simple video and audio configuration
+- pixel-level writing to the screen, full-screen fill
+- text writing
+- raw audio buffer writing
+- controller reading
+- structure for controller state info
+- exception handler, with AI and VI interrupt callback registration
+- link script
+- demo, containing working Makefile
+
+-hcs
