@@ -22,6 +22,25 @@ cd64_protocols - Comms link protocols used by CD64 BIOS and Ghemor
 comms_link - Notes about the comms link interface supplied by UFO
 ppa_workings - Notes about how the CD64 PPA operates
 
+docs/controller
+lablecckpt1.pdf - DreamKatz controller interface coursework
+
+docs/mips
+007-2597-001.pdf - MIPS IV Instruction Set, Revision 3.2 (334 page version)
+mips-isa.pdf - MIPS IV Instruction Set, Revision 3.2 (328 page alternate version)
+007-2816-004.pdf - MIPSpro N32 ABI Handbook, Revision 004 (May 1999)
+007-2816-005.pdf - MIPSpro N32 ABI Handbook, Revision 005 (Oct 2002)
+MIPS-N32-ABI-Handbook.pdf - MIPSpro N32 ABI Handbook, Revision 004 alt from Linux-MIPS
+R4300_datasheet.Rev0.3.pdf - MIPS R4300 Data Sheet, Rev 0.3, April 1997
+U10116EJ6V0DS00.pdf - NEC uPD30200-100 (VR4300) Data Sheet, 6th Edition, December 1999 
+U10116EJ7V0DS00.pdf - NEC uPD30200-100 (VR4300) Data Sheet, 7th Edition, November 2000
+vr4300.html - NEC VR4300 press release from 1998
+
+docs/mips/tutorial
+InstructionSets3.PDF - MIPS Subroutines and Programs coursework
+data.pdf - SPIM R2000 coursework reference
+mips_instructions.pdf - MIPS III instructions quick reference
+
 docs/n64ops - Nintendo 64 Toolkit: opcodes v1.1 by anarko
 
 docs/rcp
@@ -111,3 +130,4 @@ web/
 
 **** not done yet ***
 also not sure whether to bother listing purpose of different files in a single logical group
+
