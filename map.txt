@@ -10,6 +10,7 @@ n64dox.txt - LaC's n64 hardware dox v0.8: low-level VI, AI, and especially PIF i
 n64dox-0.5.txt - LaC's n64 hardware dox v0.5
 n64info.txt - N64 ROM header format and memory map
 n64pifmod.html - import modification (run NTSC or PAL games on either model N64)
+Nintendo_64_Game_Console-BPT.pdf - Nintendo 64 Console Annotated Circuit Board
 start.html - Starting N64 Coding by JL_Picard
 trainer.txt - How to make a N64 Trainer Documentation by Icarus
 
@@ -32,6 +33,7 @@ mips-isa.pdf - MIPS IV Instruction Set, Revision 3.2 (328 page alternate version
 007-2816-005.pdf - MIPSpro N32 ABI Handbook, Revision 005 (Oct 2002)
 MIPS-N32-ABI-Handbook.pdf - MIPSpro N32 ABI Handbook, Revision 004 alt from Linux-MIPS
 R4300_datasheet.Rev0.3.pdf - MIPS R4300 Data Sheet, Rev 0.3, April 1997
+R4300i_Prod_Ov.ps.gz - MIPS R4300i Technical Backgrounder
 U10116EJ6V0DS00.pdf - NEC uPD30200-100 (VR4300) Data Sheet, 6th Edition, December 1999 
 U10116EJ7V0DS00.pdf - NEC uPD30200-100 (VR4300) Data Sheet, 7th Edition, November 2000
 vr4300.html - NEC VR4300 press release from 1998
