@@ -45,6 +45,9 @@ mips_instructions.pdf - MIPS III instructions quick reference
 
 docs/n64ops - Nintendo 64 Toolkit: opcodes v1.1 by anarko
 
+docs/rambus
+64dDDS.pdf - Rambus Direct RDRAM 64/72-Mbit Data Sheet, DL0035-00.7, August 1998 (missing?)
+
 docs/rcp
 ucode_example.html - example microcode from Resident Evil 2
 

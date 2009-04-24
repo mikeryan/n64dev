@@ -502,6 +502,14 @@ The various functional subunits of the RCP can be accessed through memory-mapped
 \end_layout
 
 \begin_layout Itemize
+RAC (Rambus ASIC Cell)
+\newline
+A memory controller IP for the Rambus RDRAM system
+ memory.
+ This could be off-the-shelf depending on the design.
+\end_layout
+
+\begin_layout Itemize
 RSP (Reality Signal Processor)
 \newline
 A custom RISC processor with vector operations.
@@ -547,7 +555,7 @@ A control interface for CPU-related functionality, such
 \begin_layout Itemize
 RI (RDRAM Interface)
 \newline
-The RCP's interface to system memory.
+The RCP's interface to the RAC and RDRAM system memory.
 \end_layout
 
 \begin_layout Itemize
@@ -563,8 +571,8 @@ CP0 Registers
 
 \begin_layout Paragraph
 Here we list the CP0 registers that interest us.
- There are more, but the others deal with OS memory management (TLB), which
- we are not particularly concerned with at the moment.
+ There are more, but the others deal with memory management (TLB), which
+ we are not particularly concerned with unless we are writing an OS.
 \end_layout
 
 \begin_layout List
@@ -767,12 +775,12 @@ Interfacing System RAM
 \begin_layout Paragraph
 The Rambus RDRAM memory used in the N64 has a 128-bit interface to the RCP,
  and is capable of 562.5 MB/s bandwidth.
- It has parity so it should generate a NMI when a parity error is detected
- (FIXME right?).
+ It implements parity checking, so it should generate a NMI when a parity
+ error is detected (FIXME right?).
  The RAM is mapped at 0x00000000, and 64MB of address space is reserved
  for it.
  However, only 63MB of this address space can be used for physical memory,
- since the last 1MB is reserved for memory configuration registers.
+ since the last 1MB is reserved for the Rambus memory controller registers.
 \end_layout
 
 \begin_layout Subsubsection
@@ -847,17 +855,70 @@ Access Strategy
 \end_layout
 
 \begin_layout Paragraph
-Since Rambus memory has a high latency but high bandwidth compared to SDRAM,
- observe the following strategy when using memory:
-\end_layout
-
-\begin_layout Itemize
-Try to batch memory accesses as much as possible to avoid access latency.
+The N64's Rambus RDRAM system memory has a high bandwidth but trades latency
+ for this bandwidth.
+ Compared to the same speed SDRAM, accessing main memory in a scattered
+ fashion is exceptionally slow.
+ Also, since the memory controller is part of the RCP and can only be accessed
+ through the RCP, the R4300 CPU may be locked out from accessing memory
+ if the RCP is busy, causing program slowdown.
 \end_layout
 
 \begin_layout Paragraph
-You can accomplish this by reading or writing data as words or double words
- instead of as bytes, when possible.
+To avoid this latency, programs should be optimized in a fashion such that
+ registers are utilized both for passing procedure parameters and for procedure
+ temporary (stack) variables.
+ Thanks to the MIPS architecture providing 32 64-bit general-purpose registers
+ (GPR), there are ample registers to use for this purpose.
+\end_layout
+
+\begin_layout Paragraph
+The 
+\series medium
+\emph on
+n32
+\series default
+\emph default
+ ABI developed by SGI
+\begin_inset LatexCommand ref
+reference "sub:64-Bit-Issues"
+
+\end_inset
+
+ leverages this advantage.
+ When this ABI is employed, up to eight 64-bit words, whether integer, float,
+ struct, or union members, are passed in registers.
+ Any data in excess of the eight 64-bit words is then additionally passed
+ on the stack.
+ Inside a function, up to 18 integer registers minus the number of register-pass
+ed integer arguments are available, and up to 26 floating-point registers
+ minus the number of register-passed FP arguments are available, without
+ allocating additional stack space in main memory for local temporary variables.
+\end_layout
+
+\begin_layout Paragraph
+For this reason, it is a good idea to break up functions that make excessive
+ use of local temporary variables into simpler functions.
+ One must at the same time observe the limitations on register passing,
+ so that data is not simply shuffled around in memory to call subfunctions,
+ thus negating the optimization.
+ If a number of registers are used by the caller and its callers, they will
+ be saved to the stack before the call, even if the subfunction parameters
+ fit into the allocated registers.
+ For this reason, recursive functions and other algorithms with deep call
+ graphs or high space complexity are memory-intensive and, all other things
+ equal, are a poor choice for the N64.
+\end_layout
+
+\begin_layout Paragraph
+When main memory must be read from or stored to, try to design programs
+ such that it is accessed in bursts of contiguous reads or writes.
+ This can be most easily accomplished by utilizing data structures of size
+ 64-bits or less that can be manipulated entirely in CPU registers, or by
+ using DMA transfers back and forth to main memory when large amounts of
+ data must be read or written.
+ Do not read chunks of data from memory to then simply write to another
+ memory location! This is what DMA is for.
 \end_layout
 
 \begin_layout Subsubsection
@@ -865,9 +926,9 @@ Configuration
 \end_layout
 
 \begin_layout Paragraph
-The RDRAM controller configuration registers are 32-bit words mapped starting
- at 0x03F00000.
- Usually these registers do not need any configuration.
+The RDRAM memory controller (RAC) configuration registers are 32-bit words
+ mapped starting at 0x03F00000.
+ Usually these registers are configured by firmware.
 \newline
 
 \end_layout
@@ -1234,14 +1295,14 @@ Unknown/Unused
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Programming the RI (RDRAM Interface)
 \end_layout
 
 \begin_layout Paragraph
 These registers are located in the RCP and are of 32-bit width.
- Usually they will not need to be modified.
- RI registers are mapped at 0x04700000.
+ Usually these registers are configured by firmware.
+ The RI registers are mapped at 0x04700000.
 \end_layout
 
 \begin_layout Standard
@@ -1731,10 +1792,10 @@ This unit produces analog audio output from digital audio samples.
  A sample can be queued for play while one is currently playing.
  Unfortunately there is no mixing of samples, so we must employ our own
  mixing routines.
- Mixing of multiple PCM streams, as well as sound manipulation such as ADPCM
- decompression, wavetable synthesis, and special effects (Voice, Pitch Shifting,
- Gain and Pan, Reverb and Chorus) are performed by application-specific
- RSP microcode.
+ Typically, mixing of multiple PCM streams, as well as sound manipulation
+ such as ADPCM decompression, wavetable synthesis, and special effects (Voice,
+ Pitch Shifting, Gain and Pan, Reverb and Chorus) are performed by an RSP
+ microcode task.
 \end_layout
 
 \begin_layout Subsection
@@ -1744,10 +1805,12 @@ PI (Peripheral Interface)
 \begin_layout Paragraph
 This can be used to attach program cartridges to the system, or to attach
  development or other peripheral devices.
+ The serial data lines to the cartridge EEPROM and lockout chip run through
+ it, as do the left and right audio outputs.
  It can be physically accessed both via the cartridge port on the top, or
  the 64DD port on the bottom.
- Accessing it is performed via DMA transfers to and from memory addresses
- in KUSEG.
+ Accessing it is performed via DMA transfers to and from the kseg1 (physical)
+ region.
  Does this have anything to do with SysAD?
 \end_layout
 
@@ -1821,6 +1884,14 @@ reference "sub:Programming-the-SI"
  A DMA transfer transfers the entire PIF RAM in one read or write, ensuring
  that the state of the data structures it contains remains consistent with
  respect to both the reader process and the PIF hardware.
+\end_layout
+
+\begin_layout Standard
+7FC Read 0x80 ?
+\end_layout
+
+\begin_layout Standard
+Write 0x10 ?
 \end_layout
 
 \begin_layout Subsection
@@ -1967,8 +2038,8 @@ The PIF ROM is located at 0xBFC00000, which is the reset vector for the
 
 \begin_layout Paragraph
 The first part of the PIF ROM procedure checks for bit 0x80 at PIF RAM offset
- $7FC (probably to check if the PIF RAM is finished resetting), then loads
- a word from PIF RAM offset $7E4.
+ $4C (probably to check if the PIF is finished resetting), then loads a
+ word from PIF offset $7E4 in PIF RAM.
  (Bit 19 determines whether program memory is located at 0xB0000000 (normal),
  or at 0xA6000000 (N64DD?).
  It is then stored to $7E44 in RAM.
@@ -1983,16 +2054,17 @@ The first part of the PIF ROM procedure checks for bit 0x80 at PIF RAM offset
  to one, and this value used to seed the lockout algorithm.
  The initial values of s2, s1, and s0 are stored to $7E40, $7E3C, and $7E38
  respectively.
- The value at $7FC is read, or'd with 0x10, and stored back once SI no longer
- shows busy I/O.)
+ The value at PIF RAM offset $4C is read, or'd with 0x10, and stored back
+ once SI no longer shows busy I/O.)
 \end_layout
 
 \begin_layout Paragraph
-The default values of 03,0F,FF,FF are used for the PI timing registers RLS,PGS,P
-WD,LAT.
+The default values of $03,$0F,$FF,$FF are used for the PI timing registers
+ RLS,PGS,PWD,LAT.
  It then reads the first four bytes from the cartridge and uses these values
- -- which are the same in all released commercial software, 8037xxxx --
- to set the permanent values of the PI timing registers.
+ -- which are the same in all released commercial software, 80,37,12,40
+ -- to set the permanent values of the PI timing registers, which are $40,
+ $803712, $8037, and $803.
  It reads RDP_STATUS to check if RSP DMEM DMA shows busy (0x01), and if
  so, it repeatedly checks the pipe busy flag (0x20) until it is clear.
  It then uses programmed I/O to copy the memory range 0x40 until 0x1000
@@ -2016,6 +2088,10 @@ $13C (hashing routine?)
 
 \begin_layout Standard
 $1e8 (main loop)
+\end_layout
+
+\begin_layout Standard
+$380 should be MIPS exception vector, but it is the middle of a routine.
 \end_layout
 
 \begin_layout Standard
@@ -2071,7 +2147,917 @@ For NUS-CIC-6106 programs, add 0x200000 to the start address.
 \end_layout
 
 \begin_layout Subsubsection
-Bootstrap code
+Boot code in RSP DMEM
+\end_layout
+
+\begin_layout Itemize
+Zero coprocessor exception and timer registers
+\end_layout
+
+\begin_layout Itemize
+If RDRAM reg C == 0 {
+\end_layout
+
+\begin_layout Itemize
+store regs passed from PIF ROM to stack
+\end_layout
+
+\begin_layout Itemize
+t0 := A4700000
+\end_layout
+
+\begin_layout Itemize
+t2 := A3F80000
+\end_layout
+
+\begin_layout Itemize
+t3 := A3F00000
+\end_layout
+
+\begin_layout Itemize
+t4 := A4300000
+\end_layout
+
+\begin_layout Itemize
+RI_CONFIG_REG = $40 // current control enable (0)
+\end_layout
+
+\begin_layout Itemize
+Delay 24000 cyclces
+\end_layout
+
+\begin_layout Itemize
+RI_CURRENT_CONTROL = 0
+\end_layout
+
+\begin_layout Itemize
+RI_SELECT = $14
+\end_layout
+
+\begin_layout Itemize
+RI_MODE = 0
+\end_layout
+
+\begin_layout Itemize
+Delay 12 cycles
+\end_layout
+
+\begin_layout Itemize
+RI_MODE = $0E (stop T active, stop R active, operating mode 0x2
+\end_layout
+
+\begin_layout Itemize
+Delay 64 cycles
+\end_layout
+
+\begin_layout Itemize
+MI_MODE = $010F (set init mode)
+\end_layout
+
+\begin_layout Itemize
+RDRAM_DELAY = 0x18082838
+\end_layout
+
+\begin_layout Itemize
+RDRAM_REF_ROW = 0
+\end_layout
+
+\begin_layout Itemize
+RDRAM_DEVICE_ID = 0x80000000
+\end_layout
+
+\begin_layout Itemize
+t5 := t6 := t8 := s2 := s7 := 0
+\end_layout
+
+\begin_layout Itemize
+t7 := t9 := a2 := A3F00000
+\end_layout
+
+\begin_layout Itemize
+s4 := s6 := a3 := A0000000
+\end_layout
+
+\begin_layout Itemize
+fp = sp
+\end_layout
+
+\begin_layout Itemize
+if MI_VERSION != 0x01010101 (io,rac,rsp,rdp) {
+\end_layout
+
+\begin_layout Itemize
+s0 = $400
+\end_layout
+
+\begin_layout Itemize
+s1 = $A3F08000
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+else {
+\end_layout
+
+\begin_layout Itemize
+s0 = $200
+\end_layout
+
+\begin_layout Itemize
+s1 = $A3F04000
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+$168: 
+\end_layout
+
+\begin_layout Itemize
+*(s1+4) = 0
+\end_layout
+
+\begin_layout Itemize
+s5 = &RDRAM_MODE // for $778 func?
+\end_layout
+
+\begin_layout Itemize
+if (call($778) != 0) { // else goto $25C
+\end_layout
+
+\begin_layout Itemize
+tmp1 = ret
+\end_layout
+
+\begin_layout Itemize
+MI_MODE = 0x2000 // RDRAM reg mode
+\end_layout
+
+\begin_layout Itemize
+tmp2 := t3 := RDRAM_CONFIG & 0xf0ff0000
+\end_layout
+
+\begin_layout Itemize
+MI_MODE = 0x1000 // clear RDRAM reg
+\end_layout
+
+\begin_layout Itemize
+if (tmp2 == 0xB0190000) {
+\end_layout
+
+\begin_layout Itemize
+t8 += 0x08000000
+\end_layout
+
+\begin_layout Itemize
+t9 += s0*2 (either $200 or $400 depending on version)
+\end_layout
+
+\begin_layout Itemize
+s4 = s6 = A0200000 // 2MB RAM
+\end_layout
+
+\begin_layout Itemize
+s2 = 1
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+else {
+\end_layout
+
+\begin_layout Itemize
+s4 = A0100000 // 1MB RAM
+\end_layout
+
+\begin_layout Itemize
+} //RDRAM_CONFIG
+\end_layout
+
+\begin_layout Itemize
+MI_MODE = 0x2000 // RDRAM reg mode
+\end_layout
+
+\begin_layout Itemize
+t1 = RDRAM_DEVICE_MANUF & 0xffff
+\end_layout
+
+\begin_layout Itemize
+k0 = RDRAM_CONFIG
+\end_layout
+
+\begin_layout Itemize
+MI_MODE = 0x1000 // clear RDRAM reg
+\end_layout
+
+\begin_layout Itemize
+if (t1 == 0x500 && (k0 & 0x01000000) == 0 ) {
+\end_layout
+
+\begin_layout Itemize
+RDRAM_RAS_INTERVAL = 0x101c0a04
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+else {
+\end_layout
+
+\begin_layout Itemize
+RDRAM_RAS_INTERVAL = 0x080c1204
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+t6 += 0x08000000
+\end_layout
+
+\begin_layout Itemize
+t7 += s0*2
+\end_layout
+
+\begin_layout Itemize
+if ++t5 < 8 goto $168
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+$25C:
+\end_layout
+
+\begin_layout Itemize
+A3F8000C = 0xC4000000
+\end_layout
+
+\begin_layout Itemize
+A3F80004 = 0x80000000
+\end_layout
+
+\begin_layout Itemize
+sp = fp
+\end_layout
+
+\begin_layout Itemize
+v1 = 0
+\end_layout
+
+\begin_layout Itemize
+$274:
+\end_layout
+
+\begin_layout Itemize
+if (tmp2 == 0xB0090000) { // RDRAM_CONFIG
+\end_layout
+
+\begin_layout Itemize
+*(s1+4) = t8
+\end_layout
+
+\begin_layout Itemize
+call($a40)(tmp1, 1)
+\end_layout
+
+\begin_layout Itemize
+// Confusing code follows, trace in debugger
+\end_layout
+
+\begin_layout Itemize
+t0 = *s6 // what's s6 here, a load from hw regs?
+\end_layout
+
+\begin_layout Itemize
+t0 = 0x00080000 // overwrite t0
+\end_layout
+
+\begin_layout Itemize
+t0 += s6
+\end_layout
+
+\begin_layout Itemize
+t1 = *t0
+\end_layout
+
+\begin_layout Itemize
+t0 = *s6 // but s6 hasn't changed
+\end_layout
+
+\begin_layout Itemize
+t0 = 0x00080000 // overwrite t0
+\end_layout
+
+\begin_layout Itemize
+t0 += s6
+\end_layout
+
+\begin_layout Itemize
+t1 = *t0 // but nothing has changed, unless s6 points to volatile
+\end_layout
+
+\begin_layout Itemize
+t6 += 0x400
+\end_layout
+
+\begin_layout Itemize
+t9 += s0
+\end_layout
+
+\begin_layout Itemize
+s6 += 0x10
+\end_layout
+
+\begin_layout Itemize
+*(s1 + 4) = s7
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+else {
+\end_layout
+
+\begin_layout Itemize
+*(s1 + 4) = s7
+\end_layout
+
+\begin_layout Itemize
+s5 = a2 + 12
+\end_layout
+
+\begin_layout Itemize
+call($a40)(tmp1, 1)
+\end_layout
+
+\begin_layout Itemize
+t0 = *a3 (A0000000?) // uncached ram
+\end_layout
+
+\begin_layout Itemize
+t0 = a3 + 0x8 //overwrite?
+\end_layout
+
+\begin_layout Itemize
+t1 = *t0
+\end_layout
+
+\begin_layout Itemize
+t0 = *a3 (A0000000?) // uncached ram
+\end_layout
+
+\begin_layout Itemize
+t0 = a3 + 0x10 //overwrite?
+\end_layout
+
+\begin_layout Itemize
+t1 = *t0
+\end_layout
+
+\begin_layout Itemize
+t0 = *a3 (A0000000?) // uncached ram
+\end_layout
+
+\begin_layout Itemize
+t0 = a3 + 0x18 //overwrite?
+\end_layout
+
+\begin_layout Itemize
+t1 = *t0
+\end_layout
+
+\begin_layout Itemize
+t0 = *a3 (A0000000?) // uncached ram
+\end_layout
+
+\begin_layout Itemize
+t0 = a3 + 0x8 //overwrite?
+\end_layout
+
+\begin_layout Itemize
+t1 = *t0
+\end_layout
+
+\begin_layout Itemize
+t0 = *a3 (A0000000?) // uncached ram
+\end_layout
+
+\begin_layout Itemize
+t0 = a3 + 0x10 //overwrite?
+\end_layout
+
+\begin_layout Itemize
+t1 = *t0
+\end_layout
+
+\begin_layout Itemize
+t0 = *a3 (A0000000?) // uncached ram
+\end_layout
+
+\begin_layout Itemize
+t0 = a3 + 0x18 //overwrite?
+\end_layout
+
+\begin_layout Itemize
+t1 = *t0
+\end_layout
+
+\begin_layout Itemize
+s7 += 0x800
+\end_layout
+
+\begin_layout Itemize
+a2 += s0*2
+\end_layout
+
+\begin_layout Itemize
+a3 += 0x20
+\end_layout
+
+\begin_layout Itemize
+v1++
+\end_layout
+
+\begin_layout Itemize
+if (v1 < t5) goto $274
+\end_layout
+
+\begin_layout Itemize
+s2 <<= 19
+\end_layout
+
+\begin_layout Itemize
+*A4700010 = 0x00063634 | s2
+\end_layout
+
+\begin_layout Itemize
+t1 = *A4700010 // ??? overwrites with this read, then gets overwritten again
+\end_layout
+
+\begin_layout Itemize
+*A0000318 = s6 & 0x0FFFFFFF; // osMemSize!
+\end_layout
+
+\begin_layout Itemize
+sp = fp
+\end_layout
+
+\begin_layout Itemize
+load s3,s4,s5,s6,s7 from stack
+\end_layout
+
+\begin_layout Itemize
+store i-cache tag 0/0 for 16k of main memory in 32 byte chunks starting
+ at 0x80000000
+\end_layout
+
+\begin_layout Itemize
+store d-cache tag 0/0 for 8k of main memory in 16 byte chunks starting at
+ 0x80000000
+\end_layout
+
+\begin_layout Itemize
+} // tmp2 == 0xB0090000
+\end_layout
+
+\begin_layout Itemize
+} // call($778)
+\end_layout
+
+\begin_layout Itemize
+} // reg 0c == 0
+\end_layout
+
+\begin_layout Itemize
+else {
+\end_layout
+
+\begin_layout Itemize
+(maybe if this was a soft reset?), invalidate 512 32-byte i-cache lines
+ and 512 16-byte d-cache lines in RDRAM // why invalidate d-cache here but
+ store tag 0/0 for dcache above?
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+$458:
+\end_layout
+
+\begin_layout Itemize
+Copy routine at $4C0-$774 in bootcode (lockout finale and program loader)
+ to uncached RAM, address zero, and jump to it
+\end_layout
+
+\begin_layout Itemize
+sub $778-$87c {
+\end_layout
+
+\begin_layout Itemize
+save regs to stack and call $880
+\end_layout
+
+\begin_layout Itemize
+} // sub $778
+\end_layout
+
+\begin_layout Itemize
+sub $880-$904 {
+\end_layout
+
+\begin_layout Itemize
+t1 = t3 = t4 = 0
+\end_layout
+
+\begin_layout Itemize
+for (t4 = 0; t4 < 64;) {
+\end_layout
+
+\begin_layout Itemize
+v0 = 0
+\end_layout
+
+\begin_layout Itemize
+call($90C)
+\end_layout
+
+\begin_layout Itemize
+a0 = t4
+\end_layout
+
+\begin_layout Itemize
+if (v0 > 0) {
+\end_layout
+
+\begin_layout Itemize
+k0 = lo((v0 - t1) * t4)
+\end_layout
+
+\begin_layout Itemize
+t1 = v0
+\end_layout
+
+\begin_layout Itemize
+t3 += k0
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+t4++
+\end_layout
+
+\begin_layout Itemize
+if (t1 >= 0x50) continue
+\end_layout
+
+\begin_layout Itemize
+a0 = (t3 * 4) - t3
+\end_layout
+
+\begin_layout Itemize
+a0 *= 4;
+\end_layout
+
+\begin_layout Itemize
+a0 -= t3;
+\end_layout
+
+\begin_layout Itemize
+a0 *= 2;
+\end_layout
+
+\begin_layout Itemize
+a0 -= 880
+\end_layout
+
+\begin_layout Itemize
+call($980)(a0, a1, s5)
+\end_layout
+
+\begin_layout Itemize
+break
+\end_layout
+
+\begin_layout Itemize
+} // loop t4
+\end_layout
+
+\begin_layout Itemize
+} // sub $880
+\end_layout
+
+\begin_layout Itemize
+sub $90c-$978 {
+\end_layout
+
+\begin_layout Itemize
+v0 = 0
+\end_layout
+
+\begin_layout Itemize
+a1 = 2
+\end_layout
+
+\begin_layout Itemize
+call ($a40)
+\end_layout
+
+\begin_layout Itemize
+for (fp = 0; fp < 10; fp++) {
+\end_layout
+
+\begin_layout Itemize
+*(s4 + 4) = 0x0000ffff
+\end_layout
+
+\begin_layout Itemize
+v1 = *(s4 + 4) 
+\end_layout
+
+\begin_layout Itemize
+*s4 = 0x0000ffff
+\end_layout
+
+\begin_layout Itemize
+*s4 = 0x0000ffff
+\end_layout
+
+\begin_layout Itemize
+gp = 0
+\end_layout
+
+\begin_layout Itemize
+v1 >>= 16
+\end_layout
+
+\begin_layout Itemize
+while ((v1 & 1) && gp++ < 8, v1 >>= 1) {
+\end_layout
+
+\begin_layout Itemize
+v0++
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+} // fp loop
+\end_layout
+
+\begin_layout Itemize
+} // sub $90c
+\end_layout
+
+\begin_layout Itemize
+sub $980-$a38 {
+\end_layout
+
+\begin_layout Itemize
+// TO BE CONTINUED
+\end_layout
+
+\begin_layout Itemize
+} // sub $980
+\end_layout
+
+\begin_layout Itemize
+sub $a40-$ac8 (a0, a1, s5) {
+\end_layout
+
+\begin_layout Itemize
+a0 &= 0xff
+\end_layout
+
+\begin_layout Itemize
+a0 ^= 0x3f
+\end_layout
+
+\begin_layout Itemize
+t7 = 0x46000000
+\end_layout
+
+\begin_layout Itemize
+if (a1 == 1) {
+\end_layout
+
+\begin_layout Itemize
+t7 |= 0x80000000
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+t7 |= (a0 & 1) << 6
+\end_layout
+
+\begin_layout Itemize
+t7 |= (a0 & 2) << 13
+\end_layout
+
+\begin_layout Itemize
+t7 |= (a0 & 4) << 20
+\end_layout
+
+\begin_layout Itemize
+t7 |= (a0 & 8) << 4
+\end_layout
+
+\begin_layout Itemize
+t7 |= (a0 & 0x10) << 11
+\end_layout
+
+\begin_layout Itemize
+t7 |= (a0 & 0x20) << 18
+\end_layout
+
+\begin_layout Itemize
+*s5 = t7
+\end_layout
+
+\begin_layout Itemize
+if (a1 == 1) {
+\end_layout
+
+\begin_layout Itemize
+*MI_MODE = 0
+\end_layout
+
+\begin_layout Itemize
+}
+\end_layout
+
+\begin_layout Itemize
+} // sub $a40
+\end_layout
+
+\begin_layout Itemize
+sub $ad0-$b64 (a0, s5) {
+\end_layout
+
+\begin_layout Itemize
+MI_MODE = 0x2000 // MI set RDRAM
+\end_layout
+
+\begin_layout Itemize
+load *s5
+\end_layout
+
+\begin_layout Itemize
+MI_MODE = 0x1000 // MI clear RDRAM
+\end_layout
+
+\begin_layout Itemize
+k0 = (*s5 & 0x40) << 6
+\end_layout
+
+\begin_layout Itemize
+k0 |= (*s5 & 0x4000) << 13
+\end_layout
+
+\begin_layout Itemize
+k0 |= (*s5 & 0x00400000) << 20
+\end_layout
+
+\begin_layout Itemize
+k0 |= (*s5 & 0x80) << 4
+\end_layout
+
+\begin_layout Itemize
+k0 |= (*s5 & 0x8000) << 11
+\end_layout
+
+\begin_layout Itemize
+k0 |= (*s5 & 0x00800000) << 18
+\end_layout
+
+\begin_layout Itemize
+msb(*a0) = k0 & 0xff;
+\end_layout
+
+\begin_layout Itemize
+} // sub $ad0
+\end_layout
+
+\begin_layout Itemize
+followed by unknown stuff at $b70-$fec
+\end_layout
+
+\begin_layout Subsubsection
+Boot code in RAM
+\end_layout
+
+\begin_layout Standard
+This code comes from $4C0-$774 in the 6102 bootcode and executes from RDRAM
+ location zero where it has been copied to.
+\end_layout
+
+\begin_layout Standard
+*A4600000 (PI DRAM_ADDR) = 3rd word of Cart header (start address?) & 0x1FFFFFFF
+\end_layout
+
+\begin_layout Standard
+while ((*A4600010 & 2 )) { loop } // wait for PI no I/O busy
+\end_layout
+
+\begin_layout Standard
+*A4600004 = 0x10001000 // PI DMA cart address
+\end_layout
+
+\begin_layout Standard
+*A460000C = 0x000FFFFF // PI DMA write length (1MB)
+\end_layout
+
+\begin_layout Standard
+do { wait 28 cycles } while ((*A4600010 & 1)) // wait for PI no DMA busy
+\end_layout
+
+\begin_layout Standard
+a0 = 3rd word of cart header (boot address)
+\end_layout
+
+\begin_layout Standard
+a1 = s6 * 0x5D588B65
+\end_layout
+
+\begin_layout Standard
+ra to stack, s0 to stack
+\end_layout
+
+\begin_layout Standard
+ra = 0x00100000 // length to checksum over starting at cart header
+\end_layout
+
+\begin_layout Standard
+t1 = a0
+\end_layout
+
+\begin_layout Standard
+start checksum loop {
+\end_layout
+
+\begin_layout Standard
+v0 = *t1 // pick up next word in program code?
+\end_layout
+
+\begin_layout Standard
+math stuff
+\end_layout
+
+\begin_layout Standard
+} // checksum loop
+\end_layout
+
+\begin_layout Standard
+if a3 != *0xB0000010 // 5th word of cart header checksum?
+\end_layout
+
+\begin_layout Standard
+jump to garbage
+\end_layout
+
+\begin_layout Standard
+if s0 != *0xB0000014 // 6th word of cart header checksum?
+\end_layout
+
+\begin_layout Standard
+jump to garbage
+\end_layout
+
+\begin_layout Standard
+690:
+\end_layout
+
+\begin_layout Standard
+// OS setup
+\end_layout
+
+\begin_layout Standard
+// TO BE COMPLETED
 \end_layout
 
 \begin_layout Subsubsection
@@ -2493,7 +3479,9 @@ does not require boot rom from N64, since we have existing boot emulators
 
 \begin_layout Standard
 Can be incrementally developed by attempting to run known-working software
- and filling in what is missing one piece at a time
+ and filling in what is missing one piece at a time.
+ Real machines have to be built according to specifications and tested for
+ adherence to them.
 \end_layout
 
 \begin_layout Itemize
@@ -2521,8 +3509,8 @@ Register device emulators with IRQ machine[0].cpu[0].X (2-6)
 \end_layout
 
 \begin_layout Itemize
-Emulate PIF (and possibly boot-code for inserted cart) if user has not provided
- PIF
+Emulate PIF ROM (and possibly boot-code for inserted cart) if user has not
+ provided PIF ROM
 \end_layout
 
 \begin_layout Paragraph
@@ -2566,6 +3554,20 @@ Edit src/devices/Makefile.skel and src/machines/Makefile.skel adding the corresp
 ding .o for whatever .c file you created.
  Then ./configure && make.
  ./gxemul -H and you should see your N64 port in the list.
+ If you have dumped an image of the PIF/Bootstrap ROM from your N64, you
+ can try executing it.
+ Otherwise, try executing your own test program that is written according
+ to this manual.
+ Fill in hardware functionality as required.
+\end_layout
+
+\begin_layout Standard
+Make sure the bootstrap rom is the last ROM specified if PROM emulation
+ is not implemented or disabled.
+\end_layout
+
+\begin_layout Standard
+gxemul -En64 -viJQT 0xffffffffb0000000:DX-BE12B.ROM 0xffffffffbfc00000:pifntsc.raw
 \end_layout
 
 \begin_layout Section
