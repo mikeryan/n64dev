@@ -256,15 +256,27 @@ Programming the N64 CPU
 \end_layout
 
 \begin_layout Paragraph
-The NEC R4300i implements the MIPS III instruction set.
+The N64 CPU is a NEC VR4300, which is a clone of the MIPS R4300i, a low
+ power version of the R4300, which is it itself a low cost version of the
+ R4200.
+ The main differences between the VR4300 and the R4200 are that the VR4300
+ does not support cache parity and implements only a 32-bit data bus.
+ The R4300 implements the MIPS III instruction set.
  The CPU runs at 93.75 MHz PClock (MasterClock*1.5) and can be switched at
  runtime between 32-bit and 64-bit addressing.
- It can execute one instruction per clock cycle and has a 5-stage pipeline.
+ It can execute one instruction per clock cycle and has a 5-stage logical
+ pipeline, though the internal pipeline is longer.
  It has a 16KB instruction cache and a 8KB write-back data cache (both non-parit
 y).
- At this clock speed, it attains 125 MIPS and a score of 60/45 on SPECint/fp92.
- It has fixed-width instructions and clearly defined coprocessor interfaces.
- The N64 CPU is configured to run in big-endian mode.
+ At this clock speed, it attains 125 MIPS and a score of 60/45 on SPECint/fp92,
+ while dissipating 1.8 watts on average, a very modest amount.
+ It has fixed-width instructions and a clearly specified interface for up
+ to four coprocessors, two of which are implemented on-board (COP0, the
+ MMU, and COP1, the FPU).
+ The N64 configures the CPU to run in big-endian mode, but it is capable
+ of running in either endian mode.
+ It can be switched to reduced power mode to slow the processor to 1/4 of
+ its nominal clock speed at any time.
 \end_layout
 
 \begin_layout Subsubsection
@@ -272,16 +284,15 @@ Addressing and Cacheability
 \end_layout
 
 \begin_layout Paragraph
-The CPU has three modes of execution according to the R4300 datasheet: kernel,
- supervisor, and user mode.
+The CPU has three modes of execution: kernel, supervisor, and user mode.
  Since we are in complete control of the machine, we will exclusively be
  operating in kernel mode.
  (If we were writing a general purpose operating system, we would implement
  the operating system in kernel mode, and processes would be executed in
  user mode.
- kseg0 and kseg1 would be inaccessible in user mode.) We will also use 32-bit
- addressing instead of 64-bit; since the N64 is limited to 8 megabytes of
- system memory, 64-bit pointers gain us no benefit on this platform.
+ kseg0 and kseg1 would be inaccessible to user code.) We will also use 32-bit
+ addressing instead of 64-bit; since the N64 is physically limited to 8
+ megabytes of system memory, 64-bit pointers would only be a waste of space.
 \end_layout
 
 \begin_layout Paragraph
@@ -314,37 +325,45 @@ An important effect of the mode of the processor is in determining the system's
 \begin_layout Paragraph
 We are concerned mainly with the first three regions.
  The power-on configuration causes the physical memory of the N64 to be
- repeated in kuseg, kseg0, and kseg1.
+ mirrored in kuseg, kseg0, and kseg1.
  The access characteristics differ, however.
  The only difference we are concerned with between kuseg and kseg0 is that
- kuseg is accessed through the CPU's TLB (translation lookaside buffer).
- This can incur a performance penalty.
+ when accessed by the CPU, kuseg memory is accessed through the CPU's TLB
+ (translation lookaside buffer).
+ This can incur a performance penalty, and is unnecessary except for when
+ operating system virtual memory is in use.
  Since we do not need more than a 512MB virtual address space on the N64,
- we will use kseg0 instead of kuseg under almost all conditions.
- kseg1 is useful because occasionally bypassing the CPU's cache is desirable.
- With some exceptions, usually we will use the following guidelines for
- selecting memory regions:
+ we will use kseg0 addressing to access main memory from the CPU.
+ kseg1 is useful because in some cases, bypassing the CPU's cache is desirable.
+ And external hardware attached to the CPU/memory bus does not cache or
+ mirror memory, so physical addresses are required there.
+ Usually we will use the following guidelines for selecting memory addressing
+ modes:
 \end_layout
 
 \begin_layout Itemize
-Use kseg0 for general programming and especially when high performance is
- required.
+Use physical addresses when setting up peripheral hardware DMA transactions.
 \end_layout
 
 \begin_layout Itemize
-Use kseg1 when accessing hardware registers and external memories, and when
- writing data intended to be picked up by peripheral DMA.
+Use kseg0 (cached) virtual addresses for general software purposes.
+\end_layout
+
+\begin_layout Itemize
+Use kseg1 (uncached) virtual addresses when the CPU must access hardware
+ registers and external peripherals.
 \end_layout
 
 \begin_layout Paragraph
-If we write to a cached region (kseg0), we must always remember to flush
- the CPU data cache before using that memory for operations in the RCP or
- other peripherals; when peripherals are programmed to perform DMA reads,
- they will always access the uncached version of the data directly from
- memory.
- Also, when a peripheral performs a DMA write to memory, we need to invalidate
- the CPU cache for that region to ensure that a subsequent CPU cache flush
- doesn't overwrite any data fetched from the peripheral.
+When peripherals are programmed to perform DMA reads, they will always access
+ the uncached version of the data directly from memory.
+ Therefore, if a cached region (kuseg/kseg0) is written to, the CPU data
+ cache must be flushed before using that memory for operations in the RCP
+ or other peripherals.
+ Conversely, when a peripheral performs a DMA write to memory, the CPU cache
+ for that region must be invalidated to ensure both that reads from cached
+ memory reflect the updated data and that a subsequent CPU cache flush doesn't
+ overwrite the new data from the peripheral.
 \end_layout
 
 \begin_layout Paragraph
@@ -360,32 +379,20 @@ reference "sub:Programming-the-RCP"
 
 \begin_layout Paragraph
 Remember that if the low 29 bits of two addresses are identical, their physical
- location is identical.
- Changing the upper four bits only changes the CPU's access strategy (cached/unc
-ached and TLB-mapped or direct-mapped).
+ location in main memory is identical.
+ Changing the upper four bits only changes the CPU's access semantics (cached/un
+cached and TLB-mapped or direct-mapped).
  For example, the PIF-ROM can be found at two seemingly different locations
  -- 0x1FC00000 and 0xBFC00000.
- Using the knowledge we just gained, we realize that these two locations
- are actually one and the same, because the low-order 29 bits in the two
- addresses are identical.
- One difference is that accessing the PIF-ROM through 0x1FC00000 uses the
- TLB, and accessing it through 0xBFC00000 does not require any address translati
-on.
- The other difference is that accessing it through 0xBFC00000 bypasses the
- CPU's data cache, whereas 0x1FC00000 is always a cached access (unless
- we have previously invalidated the CPU data cache for that address, or
- have disabled the TLB cache bit for that region).
-\end_layout
-
-\begin_layout Paragraph
-When describing hardware addresses, the preferred region to access whatever
- unit is being described will be given.
- Do not infer, however, that the given address is the only method of access.
- Indeed, under some circumstances, we will find ourselves forced to use
- unconventional procedure, to work around performance problems or unexpected
- hardware interactions.
- Use whatever addressing scheme is best for the particular unit of code
- under question.
+ These two locations are actually one and the same, because the low-order
+ 29 bits in the two addresses are identical.
+ They only differ in the access semantics.
+ One difference is that accessing the PIF-ROM through 0x1FC00000 utilizes
+ the MMU, but accessing it through 0xBFC00000 does not perform any address
+ translation; the other difference is that accessing it through 0xBFC00000
+ bypasses the CPU's data cache, whereas 0x1FC00000 is always a cached access,
+ unless the CPU data cache for that address has been invalidated since a
+ previous access.
 \end_layout
 
 \begin_layout Subsubsection
@@ -403,7 +410,7 @@ For the highest performing code, we must observe the necessity of delay
 A conditional branch is taken.
 \newline
 The instruction in the delay slot is executed,
- unless the branch instruction is a 
+ unless the branch instruction is of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -411,7 +418,7 @@ Likely
 \begin_inset Quotes erd
 \end_inset
 
- branch.
+ type.
 \end_layout
 
 \begin_layout Itemize
@@ -419,16 +426,22 @@ A register load is performed.
 \newline
 If the instruction in the delay slot is dependent
  on the register being loaded, an interlock condition occurs and the processor
- must stall while its pipeline is reloaded (5 clock cycles).
- In the case of a register load with a coprocessor source, the destination
- register is not filled until after the next instruction has executed! (There
- is no interlock on coprocessor loads.)
+ must stall until the register load has completed.
+\end_layout
+
+\begin_layout Itemize
+A register load is performed from a coprocessor.
+\newline
+Since there is no interlock
+ on coprocessor loads, the destination register is not filled until after
+ the next instruction has executed! (This is similar to pre-MIPS IV behavior,
+ but limited to from-coprocessor loads only.)
 \end_layout
 
 \begin_layout Paragraph*
-Not observing the branch or load delay slots will cause a decline in performance
- or unwanted behavior.
- Not observing the coprocessor delay slots will cause unspecified behavior.
+Not observing the branch or load delay slots will cause seemingly-mysterious
+ performance declines or unwanted program behavior.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -436,8 +449,8 @@ Exception Handling
 \end_layout
 
 \begin_layout Paragraph
-The MIPS reset/NMI vector is mapped at reset to 0xBFC00000 (0x1FC00000 in
- kuseg).
+The CPU reset/NMI vector is mapped to 0xBFC00000, which is 0x1FC00000 in
+ physical RAM.
  As we will later see, the reset condition is always handled by an embedded
  ROM (PIF-ROM) in the N64 which manages the lockout lock-out chip.
  The vector can be changed later for purposes of NMI or soft-reset (generated
@@ -476,97 +489,8 @@ Assembling MIPS instructions to binary can be performed using the GNU binutils
  invoke main().
 \end_layout
 
-\begin_layout Subsection
-\begin_inset LatexCommand label
-name "sub:Programming-the-RCP"
-
-\end_inset
-
-Programming the RCP Coprocessor Unit
-\end_layout
-
-\begin_layout Paragraph
-The RCP is implemented as a standard MIPS coprocessor (CP0 and CP1).
- Most of its interface sub-units (*I) can be accessed through memory mapped
- registers.
- It runs at 62.5 MHz (MasterClock) and is capable of 500MFlops at that speed.
- It is based on a .35 micron manufacturing process.
- It is responsible for virtual memory, exception handling, and floating
- point processing.
-\end_layout
-
-\begin_layout Paragraph
-The various functional subunits of the RCP can be accessed through memory-mapped
- registers.
- The available subunits are:
-\end_layout
-
-\begin_layout Itemize
-RAC (Rambus ASIC Cell)
-\newline
-A memory controller IP for the Rambus RDRAM system
- memory.
- This could be off-the-shelf depending on the design.
-\end_layout
-
-\begin_layout Itemize
-RSP (Reality Signal Processor)
-\newline
-A custom RISC processor with vector operations.
- The N64 sends it microcode and a command list that the microcode interprets,
- to produce graphics commands for the RDP or sound output.
-\end_layout
-
-\begin_layout Itemize
-RDP (Reality Display Processor)
-\newline
-The rasterizing engine of the N64.
- The RDP receives commands from the RSP or a memory buffer, and writes the
- generated image data to the N64's framebuffer memory.
-\end_layout
-
-\begin_layout Itemize
-VI (Video Interface)
-\newline
-The N64's framebuffer interface.
- It displays the contents of the framebuffer on the external video display.
-\end_layout
-
-\begin_layout Itemize
-AI (Audio Interface)
-\newline
-Plays digital audio samples via DMA.
-\end_layout
-
-\begin_layout Itemize
-PI (Peripheral Interface)
-\newline
-Connects cartridges and external hardware units
- to the N64.
-\end_layout
-
-\begin_layout Itemize
-MI (MIPS Interface)
-\newline
-A control interface for CPU-related functionality, such
- as masking interrupts or determining the source of an interrupt.
-\end_layout
-
-\begin_layout Itemize
-RI (RDRAM Interface)
-\newline
-The RCP's interface to the RAC and RDRAM system memory.
-\end_layout
-
-\begin_layout Itemize
-SI (Serial Interface)
-\newline
-Responsible for accessing devices connected to the
- controller ports.
-\end_layout
-
 \begin_layout Subsubsection
-CP0 Registers
+MMU (COP0)
 \end_layout
 
 \begin_layout Paragraph
@@ -698,6 +622,99 @@ interrupt if IE / write to Compare to clear
 
 \begin_layout Standard
 Count increments at 1/2 PClock and rolls over.
+\end_layout
+
+\begin_layout Subsubsection
+FPU (COP1)
+\end_layout
+
+\begin_layout Subsection
+\begin_inset LatexCommand label
+name "sub:Programming-the-RCP"
+
+\end_inset
+
+Programming the RCP Coprocessor Unit
+\end_layout
+
+\begin_layout Paragraph
+The RCP is interfaced to the CPU as a standard MIPS coprocessor unit (COP2).
+ It runs at 62.5 MHz (==MasterClock) and is capable of 500MFlops at that
+ speed.
+ It is based on a .35 micron manufacturing process.
+ It actually is a custom MIPS III-based CPU with its own set of internal
+ coprocessors: its own COP0 is the RDP, COP1 is (???), and COP2 is the SIMD
+ integer unit.
+\end_layout
+
+\begin_layout Paragraph
+The various functional subunits of the RCP can be accessed through memory-mapped
+ registers.
+ The available subunits are:
+\end_layout
+
+\begin_layout Itemize
+RAC (Rambus ASIC Cell)
+\newline
+A memory controller IP for the Rambus RDRAM system
+ memory.
+ This could be off-the-shelf depending on the design.
+\end_layout
+
+\begin_layout Itemize
+RSP (Reality Signal Processor)
+\newline
+A custom RISC processor with vector operations.
+ The N64 sends it microcode and a command list that the microcode interprets,
+ to produce graphics commands for the RDP or sound output.
+\end_layout
+
+\begin_layout Itemize
+RDP (Reality Display Processor)
+\newline
+The rasterizing engine of the N64.
+ The RDP receives commands from the RSP or a memory buffer, and writes the
+ generated image data to the N64's framebuffer memory.
+\end_layout
+
+\begin_layout Itemize
+VI (Video Interface)
+\newline
+The N64's framebuffer interface.
+ It displays the contents of the framebuffer on the external video display.
+\end_layout
+
+\begin_layout Itemize
+AI (Audio Interface)
+\newline
+Plays digital audio samples via DMA.
+\end_layout
+
+\begin_layout Itemize
+PI (Peripheral Interface)
+\newline
+Connects cartridges and external hardware units
+ to the N64.
+\end_layout
+
+\begin_layout Itemize
+MI (MIPS Interface)
+\newline
+A control interface for CPU-related functionality, such
+ as masking interrupts or determining the source of an interrupt.
+\end_layout
+
+\begin_layout Itemize
+RI (RDRAM Interface)
+\newline
+The RCP's interface to the RAC and RDRAM system memory.
+\end_layout
+
+\begin_layout Itemize
+SI (Serial Interface)
+\newline
+Responsible for accessing devices connected to the
+ controller ports.
 \end_layout
 
 \begin_layout Subsection
@@ -859,6 +876,19 @@ The N64's Rambus RDRAM system memory has a high bandwidth but trades latency
  for this bandwidth.
  Compared to the same speed SDRAM, accessing main memory in a scattered
  fashion is exceptionally slow.
+ A poster at the 
+\emph on
+Beyond3d.com 
+\emph default
+forums claimed that it would take 64 clocks (640ns) to initiate memory access,
+ which is crippling latency when combined with the lack of prefetch and
+ read-around-write capabilities
+\begin_inset LatexCommand cite
+key "beyond3d-forum"
+
+\end_inset
+
+.
  Also, since the memory controller is part of the RCP and can only be accessed
  through the RCP, the R4300 CPU may be locked out from accessing memory
  if the RCP is busy, causing program slowdown.
@@ -1799,23 +1829,1113 @@ This unit produces analog audio output from digital audio samples.
 \end_layout
 
 \begin_layout Subsection
-PI (Peripheral Interface)
+Programming the PI (Peripheral Interface)
+\begin_inset LatexCommand label
+name "sub:Programming-the-PI"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
-This can be used to attach program cartridges to the system, or to attach
- development or other peripheral devices.
- The serial data lines to the cartridge EEPROM and lockout chip run through
- it, as do the left and right audio outputs.
- It can be physically accessed both via the cartridge port on the top, or
+The PI is used to attach program cartridges, development units, or other
+ peripheral devices to the system.
+ Besides cartridge data, the serial data lines to the cartridge EEPROM and
+ lockout (CIC) chip run through it, and the left and right audio outputs
+ are cloned onto it.
+ It can be physically accessed both via the cartridge port on the top and
  the 64DD port on the bottom.
- Accessing it is performed via DMA transfers to and from the kseg1 (physical)
- region.
- Does this have anything to do with SysAD?
+ It is utilized in software via simple memory-mapped I/O as well as DMA
+ transfers to and from system memory.
+\end_layout
+
+\begin_layout Paragraph
+The PI is possibly implemented as a MIPS SysAD device, explaining why both
+ the CPU and RCP have direct access to it (FIXME: verify).
+ The PI bus requires an embedded address decoder in any attached device,
+ since the address and data are multiplexed onto the same lines.
 \end_layout
 
 \begin_layout Standard
-(the PI bus calls for embedded address decodes inside the devices...)
+\begin_inset Tabular
+<lyxtabular version="3" rows="15" columns="3">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Address
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Symbolic Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_DRAM_ADDR
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Target or source in RDRAM of PI DMA transaction & 0x1FFFFFFF (64-bit aligned)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600004
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_CART_ADDR
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Target or source in PI domain of PI DMA transaction (16-bit aligned)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600008
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_RD_LEN
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Final offset of data to be read from PI bus
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA460000C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_WR_LEN
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Final offset of data to be written to PI bus
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600010
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_STATUS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Read { error | I/O busy | DMA busy }; Write { Clear interrupt | Reset and
+ abort }
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600014
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_BSD_DOM1_LAT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI Domain 1 device latency
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600018
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_BSD_DOM1_PWD
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI Domain 1 device R/W strobe pulse width
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA460001C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_BSD_DOM1_PGS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI Domain 1 device page size
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600020
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_BSD_DOM1_RLS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI Domain 1 device R/W release duration
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600024
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_BSD_DOM2_LAT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI Domain 2 device latency
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600028
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_BSD_DOM2_PWD
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI Domain 2 device R/W strobe pulse width
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA460002C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_BSD_DOM2_PGS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI Domain 2 device page size
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600030
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI_BSD_DOM2_RLS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PI Domain 2 device R/W release duration
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0xA4600034-0xA46FFFFF
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Unknown/Unused
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+The purpose of two separate domains is so that access timings for two PI
+ devices can simultaneously be set.
+ Domain 1 is used to access cartridge ROM memory, whether physical, 64DD,
+ emulated as in the V64, or emulated as in the Indy development board, while
+ domain 2 is used to access other PI memory devices, such as SRAM and FlashRAM.
+ The domain 1 registers are programmed by the bootstrap ROM with the values
+ in the first 32-bit word of the cartridge header.
+ The timings for domain 2 must be programmed by software based on what type
+ of memory device the software expects to see on the bus (typically the
+ one that is included with the cartridge).
+ 
+\end_layout
+
+\begin_layout Paragraph
+The PI will show I/O busy if the device is on the bus or if another I/O
+ operation has not yet completed.
+ Before writing to PI registers, software must wait for I/O busy to clear,
+ or reset the PI if excessive time has elapsed.
+ Also, before starting a DMA transfer, software must check if the PI is
+ busy with an existing DMA request.
+ A DMA request submitted while I/O or DMA is busy will be ignored.
+ The I/O busy and DMA busy conditions can both be checked by reading PI
+ offset 0x10.
+\end_layout
+
+\begin_layout Paragraph
+When the PI has completed a DMA transfer, it will assert an interrupt.
+ This will both set the interrupt flag in the RCP and, if not masked out,
+ trigger a CPU interrupt request.
+ Another condition that will cause an interrupt to be asserted is if the
+ PI is reset while busy.
+ In order to not lose future PI interrupts, the interrupt flag must be cleared
+ before proceeding by setting bit 2 of PI offset 0x10.
+\end_layout
+
+\begin_layout Paragraph
+Programmed I/O can be used to read from and write to the mapped PI memory
+ locations, but this method is quite slow and requires careful timing.
+ Also, there are mapping collisions in the PI memory space, such as the
+ PIF ROM/RAM and the CD64 registers, which are avoided when using DMA.
+ Using DMA is the fastest and most reliable method.
+ To perform a PI DMA transfer:
+\end_layout
+
+\begin_layout Itemize
+Write the starting DMA physical RDRAM address to PI offset 0, ensuring 64-bit
+ alignment
+\end_layout
+
+\begin_layout Itemize
+Write the starting DMA address in mapped PI space to PI offset 4, ensuring
+ 16-bit alignment
+\end_layout
+
+\begin_layout Itemize
+If reading, write the final offset from the starting DMA address to PI offset
+ 8; if writing, write the final offset from the starting DMA address to
+ PI offset 0xC; this action triggers the start of DMA
+\end_layout
+
+\begin_layout Itemize
+Invalidate CPU cache lines corresponding to any memory region that was written
+ to, unless uncached memory (0xA0000000-0xBFFFFFFF) is always used in the
+ program.
+\end_layout
+
+\begin_layout Itemize
+If PI interrupts are enabled, wait for an interrupt, otherwise, wait for
+ the PI to become idle by reading offset 0x10 and ANDing it with 3.
+ When the PI generates an interrupt and/or reads idle, the DMA operation
+ has completed.
+\end_layout
+
+\begin_layout Paragraph
+PI memory locations are as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="5">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Start address
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+End address
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Length
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Domain
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x06000000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x07FFFFFF
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+32MB
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Indy GIO card (???)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x10000000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x1FBFFFFF
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+252MB
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0-252MB Cartridge 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x1FD00000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x7FFFFFFF
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+1539MB
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Rest of Cartridge
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x05000000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x05FFFFFF
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+16MB
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+???
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x08000000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x0FFFFFFF
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+128MB
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+SRAM/FlashRAM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Known PI timings for various peripherals are as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="5">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" width="0">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0">
+<column alignment="center" valignment="top" rightline="true" width="0">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+RLS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PGS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+PWD
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+LAT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Type
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x40
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x803712
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x8037
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x803
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Cartridge
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x02
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x0D
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x0C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+0x05
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+SRAM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Indy
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+FlashRAM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -2019,21 +3139,67 @@ Another variant on the boot emulator approach is possible.
  the payload boot code under some circumstance.
 \end_layout
 
+\begin_layout Paragraph
+A final method to work around the PIF ROM lockout check is to find a bootcode
+ that causes a hash collision.
+ It is unlikely that the Nintendo algorithm is free of collisions, so it
+ should be possible to create a replacement bootcode consisting of nothing
+ more than 1) a routine that simply copies the program to RAM and jumps
+ to the program start address, and 2) junk padding crafted to create a hash
+ collision.
+\end_layout
+
+\begin_layout Paragraph
+While the PIF ROM check can only be worked around and not exploited, since
+ the only external inputs it depends upon are inside hardware, the boot
+ code both is running from RAM and depends on a user input -- the program
+ start address -- and can thus be exploited.
+ When the boot code, running from RAM, copies part of the program to RAM
+ in order to verify it against the results of the PIF ROM, the program start
+ address can be crafted such that the boot code routine overwrites the rest
+ of itself with arbitrary user code, which evades the already-performed
+ PIF ROM check.
+ The user code loader can then re-do the copy operation that the boot code
+ would have performed, this time substituting the correct start address,
+ preparing the hardware, and then jumping to the start address without verifying
+ the checksum.
+ The drawback of this approach is that the start address in the cartridge
+ header remains incorrect for the rest of the program execution.
+ If a black-box program code utilizes this address in some way, it will
+ need to be modified or worked around.
+ One workaround is for the user code loader to set a CPU breakpoint on this
+ address so that any reads will trap back to the user code to be handled
+ appropriately.
+\end_layout
+
+\begin_layout Paragraph
+It is unclear what the practical advantage of this approach is, since for
+ each boot code used in existing software, a different start address would
+ have to be set in the cartridge header according to the address of the
+ code in RAM that must be overwritten to disable the checksum verification.
+ This doesn't save the user any more time over the current method, which
+ is to run a program to modify the checksums in the cartridge header to
+ match those expected by the current boot code (if known).
+ It only obviates the need to know how to calculate the checksums, which
+ is a meager savings indeed since the checksum code itself can be easily
+ analyzed and mimiced.
+\end_layout
+
 \begin_layout Subsubsection
 PIF / Bootstrap ROM
 \end_layout
 
 \begin_layout Paragraph
 The main task the PIF ROM performs is to ensure that a stored program is
- authorized for execution by the PIF chip.
- It performs a two-part verification procedure before jumping to the boot
- code.
+ authorized for execution by the lockout interface in the PIF chip.
+ It performs a verification procedure over the boot code before assuming
+ that it is authorized and jumping to it.
 \end_layout
 
 \begin_layout Paragraph
 The PIF ROM is located at 0xBFC00000, which is the reset vector for the
  R4300 CPU.
- $PC is immediately set to this value and the code is jumped to at power-on.
+ The program counter is immediately set to this value at power on.
 \end_layout
 
 \begin_layout Paragraph
@@ -2050,8 +3216,10 @@ The first part of the PIF ROM procedure checks for bit 0x80 at PIF RAM offset
  1 is stored to $7E48.
  A pointer to the function following $138 in PIF ROM is stored to location
  $7E5C in RAM.
- The low byte is multiplied by 0x6C078965, the low part taken and added
- to one, and this value used to seed the lockout algorithm.
+ (Possibly this could be called by program code as a secondary lockout check
+ if ROM is not hidden by the final actions of PIF ROM?) The low byte is
+ multiplied by 0x6C078965, the low part taken and added to one, and this
+ value used to seed the lockout algorithm.
  The initial values of s2, s1, and s0 are stored to $7E40, $7E3C, and $7E38
  respectively.
  The value at PIF RAM offset $4C is read, or'd with 0x10, and stored back
@@ -2062,7 +3230,7 @@ The first part of the PIF ROM procedure checks for bit 0x80 at PIF RAM offset
 The default values of $03,$0F,$FF,$FF are used for the PI timing registers
  RLS,PGS,PWD,LAT.
  It then reads the first four bytes from the cartridge and uses these values
- -- which are the same in all released commercial software, 80,37,12,40
+ -- which are the same in all released commercial cartridges, 80,37,12,40
  -- to set the permanent values of the PI timing registers, which are $40,
  $803712, $8037, and $803.
  It reads RDP_STATUS to check if RSP DMEM DMA shows busy (0x01), and if
@@ -2073,8 +3241,8 @@ The default values of $03,$0F,$FF,$FF are used for the PI timing registers
 \end_layout
 
 \begin_layout Paragraph
-Once the program boot-code is copied to memory, the lockout algorithm starts
- by considering offset $40 in RSP DMEM, which is the first byte of the program
+Once the program boot-code is copied to RSP DMEM, the lockout algorithm
+ starts by considering offset $40, which is the first byte of the program
  boot-code.
 \end_layout
 
@@ -2091,11 +3259,12 @@ $1e8 (main loop)
 \end_layout
 
 \begin_layout Standard
-$380 should be MIPS exception vector, but it is the middle of a routine.
+$380 should be CPU exception vector, but it is the middle of a routine.
+ OS must set an exception vector.
 \end_layout
 
 \begin_layout Standard
-$550 (multu(x, y, *hi, *lo) routine
+$550 multu(x, y, *hi, *lo)
 \end_layout
 
 \begin_layout Standard
@@ -2147,7 +3316,7 @@ For NUS-CIC-6106 programs, add 0x200000 to the start address.
 \end_layout
 
 \begin_layout Subsubsection
-Boot code in RSP DMEM
+NUS-CIC-6102 boot code in RSP DMEM
 \end_layout
 
 \begin_layout Itemize
@@ -2968,12 +4137,75 @@ followed by unknown stuff at $b70-$fec
 \end_layout
 
 \begin_layout Subsubsection
-Boot code in RAM
+NUS-CIC-6102 loader stub in RAM
 \end_layout
 
-\begin_layout Standard
-This code comes from $4C0-$774 in the 6102 bootcode and executes from RDRAM
- location zero where it has been copied to.
+\begin_layout Paragraph
+This loader is copied to RDRAM address zero from $4C0-$774 in the 6102 bootcode,
+ and then executes from RDRAM to load the first 1MB of the program, verify
+ its integrity, and execute it.
+ Pseudocode:
+\end_layout
+
+\begin_layout Itemize
+Read the 3rd word of cart header, which is the program start address in
+ RAM (which must be past the end of this routine).
+\end_layout
+
+\begin_layout Itemize
+Wait for PI I/O to quiesce.
+\end_layout
+
+\begin_layout Itemize
+Use PI DMA to copy 1MB to the start address in RAM starting at cartridge
+ offset 0x1000.
+\end_layout
+
+\begin_layout Itemize
+Wait for PI DMA to complete.
+\end_layout
+
+\begin_layout Itemize
+Starting at program start address in RAM, perform checksum seeded with a1=s6*0x5
+D588B65 over first 0x100000 (1MB) bytes of program.
+ (FIXME: s6 comes from the PIF?) Checksum routine places results in a3 and
+ s0.
+\end_layout
+
+\begin_layout Itemize
+If a3 is not equal to the first checksum word in the cart header, or if
+ s0 is not equal to the second checksum word in the cart header, loop forever
+ (halt).
+\end_layout
+
+\begin_layout Itemize
+If RSP has a PC other than zero, set RSP single step and clear halt and
+ then set the RSP PC to zero.
+\end_layout
+
+\begin_layout Itemize
+Set RSP halt and clear all other RSP conditions.
+\end_layout
+
+\begin_layout Itemize
+Unmask all MI interrupts and clear each one individually.
+\end_layout
+
+\begin_layout Itemize
+Place various parameters to be passed to program on stack at 0xA0000300.
+ (FIXME: Describe)
+\end_layout
+
+\begin_layout Itemize
+Write zeros to entire RSP DMEM and IMEM regions
+\end_layout
+
+\begin_layout Itemize
+Jump to program start address in RAM (from cart header)
+\end_layout
+
+\begin_layout Paragraph
+Annotation:
 \end_layout
 
 \begin_layout Standard
@@ -3037,7 +4269,7 @@ if a3 != *0xB0000010 // 5th word of cart header checksum?
 \end_layout
 
 \begin_layout Standard
-jump to garbage
+then loop forever
 \end_layout
 
 \begin_layout Standard
@@ -3045,7 +4277,7 @@ if s0 != *0xB0000014 // 6th word of cart header checksum?
 \end_layout
 
 \begin_layout Standard
-jump to garbage
+then loop forever
 \end_layout
 
 \begin_layout Standard
@@ -3057,7 +4289,104 @@ jump to garbage
 \end_layout
 
 \begin_layout Standard
-// TO BE COMPLETED
+s0 = tmp1
+\end_layout
+
+\begin_layout Standard
+ra = tmp?
+\end_layout
+
+\begin_layout Standard
+if (*A4080000 != 0) { // RSP PC reg
+\end_layout
+
+\begin_layout Standard
+*A4040010 = 0x41 // set single step, clear halt?
+\end_layout
+
+\begin_layout Standard
+*A4080000 = 0 // PC = 0
+\end_layout
+
+\begin_layout Standard
+}
+\end_layout
+
+\begin_layout Standard
+*A4040010 = 0x00AAAAAE // set halt, clear broke, clear intr, clear sstep,
+ clear all sigs
+\end_layout
+
+\begin_layout Standard
+*A430000C = 0x555 // enable all interrupts
+\end_layout
+
+\begin_layout Standard
+*A4800018 = 0 // clear SI interrupt
+\end_layout
+
+\begin_layout Standard
+*A450000C = 0 // clear AI interrupt
+\end_layout
+
+\begin_layout Standard
+*A4300000 = 0x800 // clear DP interrupt
+\end_layout
+
+\begin_layout Standard
+*A4600010 = 2 // clear PI interrupt
+\end_layout
+
+\begin_layout Standard
+*A0000314 = s7 // A0000300 is initial stack?
+\end_layout
+
+\begin_layout Standard
+*A000030C = s5
+\end_layout
+
+\begin_layout Standard
+*A0000304 = s3
+\end_layout
+
+\begin_layout Standard
+*A0000300 = s4
+\end_layout
+
+\begin_layout Standard
+if (s3 != 0) {
+\end_layout
+
+\begin_layout Standard
+*A0000308 = 0xA6000000 // devkit?
+\end_layout
+
+\begin_layout Standard
+}
+\end_layout
+
+\begin_layout Standard
+else {
+\end_layout
+
+\begin_layout Standard
+*A0000308 = 0xB0000000 // cart
+\end_layout
+
+\begin_layout Standard
+}
+\end_layout
+
+\begin_layout Standard
+Clear RSP DMEM
+\end_layout
+
+\begin_layout Standard
+Clear RSP IMEM
+\end_layout
+
+\begin_layout Standard
+Jump to start address in cart header
 \end_layout
 
 \begin_layout Subsubsection
@@ -3084,6 +4413,19 @@ There is one snag we might encounter, and that is that the PIF ROM has only
  This situation may manifest itself as seemingly random crashes on large
  projects, because the CPU will eventually jump to a program address that
  has not yet been loaded into RAM.
+\end_layout
+
+\begin_layout Paragraph
+The program start address must be after the end of the bootcode stub, if
+ any, that executes from RAM, or the stub will be wholly or partially obliterate
+d, causing boot failure.
+ Also, when linking, the linker must have knowledge of the program start
+ address if it is not offset zero.
+ For example, if the program thinks it is being loaded at address zero,
+ but in reality has been copied by the bootcode to address 0x400, any jumps
+ to absolute addresses will jump to an incorrect location.
+ For correct operation, the linker must take these addresses and add the
+ start address.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4232,6 +5574,16 @@ N64 Country Adapters (Passport, etc)
 \begin_layout Standard
 Do they have a program/bootemu or are they only a physical adapter? Semantics
  of booting PAL vs NTSC (lockout chip), PAL-fixing, cart interchangeability
+\end_layout
+
+\begin_layout Standard
+\begin_inset LatexCommand bibtex
+options "plain"
+bibfiles "n64"
+
+\end_inset
+
+
 \end_layout
 
 \end_body

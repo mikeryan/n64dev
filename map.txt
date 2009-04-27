@@ -13,6 +13,9 @@ n64pifmod.html - import modification (run NTSC or PAL games on either model N64)
 Nintendo_64_Game_Console-BPT.pdf - Nintendo 64 Console Annotated Circuit Board
 start.html - Starting N64 Coding by JL_Picard
 trainer.txt - How to make a N64 Trainer Documentation by Icarus
+US6239810.High_performance_low_cost_video_game_sys.pdf - N64 patent, May 29, 2001
+US6331856.Video_game_system_with_coprocessor_provi.pdf - N64 patent, December 18, 2001
+
 
 docs/cart
 oscill.html - analysis of N64 cartridge connector
