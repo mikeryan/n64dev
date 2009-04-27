@@ -15,7 +15,9 @@ start.html - Starting N64 Coding by JL_Picard
 trainer.txt - How to make a N64 Trainer Documentation by Icarus
 US6239810.High_performance_low_cost_video_game_sys.pdf - N64 patent, May 29, 2001
 US6331856.Video_game_system_with_coprocessor_provi.pdf - N64 patent, December 18, 2001
-
+US4799635.pdf - NES lockout chip patent, January 24, 1989
+US5070479.pdf - Super NES lockout chip patent, December 3, 1991
+US20010016517.pdf - N64 Rumble Pak patent, August 23, 2001
 
 docs/cart
 oscill.html - analysis of N64 cartridge connector
@@ -50,6 +52,7 @@ docs/n64ops - Nintendo 64 Toolkit: opcodes v1.1 by anarko
 
 docs/rambus
 64dDDS.pdf - Rambus Direct RDRAM 64/72-Mbit Data Sheet, DL0035-00.7, August 1998 (missing?)
+n64_rdram_datasheet.pdf - OKI 18/64-Mbit Concurrent RDRAM Data Sheet, Feb 1999
 
 docs/rcp
 ucode_example.html - example microcode from Resident Evil 2
