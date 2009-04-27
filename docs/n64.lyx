@@ -638,13 +638,13 @@ Programming the RCP Coprocessor Unit
 \end_layout
 
 \begin_layout Paragraph
-The RCP is interfaced to the CPU as a standard MIPS coprocessor unit (COP2).
- It runs at 62.5 MHz (==MasterClock) and is capable of 500MFlops at that
- speed.
+The RCP is interfaced to the CPU as a standard MIPS coprocessor unit (COP2)
+ and connected to the CPU via the 32-bit SysAD interface that the R4300
+ provides.
+ The RCP is clocked at 62.5 MHz (==MasterClock) and is capable of 500MFlops
+ at that speed.
  It is based on a .35 micron manufacturing process.
- It actually is a custom MIPS III-based CPU with its own set of internal
- coprocessors: its own COP0 is the RDP, COP1 is (???), and COP2 is the SIMD
- integer unit.
+ The RCP is connected to CPU interrupt 0 (INT0).
 \end_layout
 
 \begin_layout Paragraph
@@ -664,24 +664,34 @@ A memory controller IP for the Rambus RDRAM system
 \begin_layout Itemize
 RSP (Reality Signal Processor)
 \newline
-A custom RISC processor with vector operations.
- The N64 sends it microcode and a command list that the microcode interprets,
- to produce graphics commands for the RDP or sound output.
+A custom R4300-like and DSP-like processor
+ with 32-bit data width, integer SIMD capability, and a Harvard microarchitectur
+e with separated 4K instruction memory (IMEM) and 4K data memory (DMEM).
+ In typical usage, it reads the next operation from a task list, uses DMA
+ to fetch the microcode and data for the next task, and executes the microcode.
+ Typical tasks are to preprocess graphics commands for dispatch to the RDP,
+ or to process sound data that is then written to the Audio Interface.
+ The The RSP has its own set of internal MIPS-like coprocessors: its own
+ COP0 is the RDP, COP1 is (???), and COP2 is the integer SIMD Vector Unit
+ (VU).
+ 
 \end_layout
 
 \begin_layout Itemize
 RDP (Reality Display Processor)
 \newline
 The rasterizing engine of the N64.
- The RDP receives commands from the RSP or a memory buffer, and writes the
- generated image data to the N64's framebuffer memory.
+ The RDP receives commands from the RSP or a memory buffer, filters and
+ manipulates the image data, and writes the final image data to an off-screen
+ framebuffer in main memory.
 \end_layout
 
 \begin_layout Itemize
 VI (Video Interface)
 \newline
 The N64's framebuffer interface.
- It displays the contents of the framebuffer on the external video display.
+ It displays the contents of the on-screen framebuffer onto the external
+ video display.
 \end_layout
 
 \begin_layout Itemize
@@ -793,7 +803,7 @@ Interfacing System RAM
 The Rambus RDRAM memory used in the N64 has a 128-bit interface to the RCP,
  and is capable of 562.5 MB/s bandwidth.
  It implements parity checking, so it should generate a NMI when a parity
- error is detected (FIXME right?).
+ error is detected (FIXME but R4300 doesn't support parity?).
  The RAM is mapped at 0x00000000, and 64MB of address space is reserved
  for it.
  However, only 63MB of this address space can be used for physical memory,
@@ -805,8 +815,8 @@ Addressing
 \end_layout
 
 \begin_layout Paragraph
-The N64 console ships with 4MB of memory onboard, and a Rambus terminator
- called a 
+The N64 console ships with 4MB of memory onboard, and a bus terminator called
+ a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -890,14 +900,16 @@ key "beyond3d-forum"
 
 .
  Also, since the memory controller is part of the RCP and can only be accessed
- through the RCP, the R4300 CPU may be locked out from accessing memory
- if the RCP is busy, causing program slowdown.
+ through the RCP, the data width of memory access is limited to the 32-bit
+ interface between the CPU and RCP.
+ Additionally, the R4300 CPU may be locked out from accessing memory if
+ the RCP is busy, causing program slowdown.
 \end_layout
 
 \begin_layout Paragraph
-To avoid this latency, programs should be optimized in a fashion such that
- registers are utilized both for passing procedure parameters and for procedure
- temporary (stack) variables.
+To avoid this latency, CPU programs should be optimized in a fashion such
+ that registers are utilized both for passing procedure parameters and for
+ procedure temporary (stack) variables.
  Thanks to the MIPS architecture providing 32 64-bit general-purpose registers
  (GPR), there are ample registers to use for this purpose.
 \end_layout
@@ -936,8 +948,8 @@ For this reason, it is a good idea to break up functions that make excessive
  be saved to the stack before the call, even if the subfunction parameters
  fit into the allocated registers.
  For this reason, recursive functions and other algorithms with deep call
- graphs or high space complexity are memory-intensive and, all other things
- equal, are a poor choice for the N64.
+ graphs or high space complexity that are memory-intensive are, all other
+ things equal, a poor choice for the N64 CPU.
 \end_layout
 
 \begin_layout Paragraph
@@ -947,8 +959,20 @@ When main memory must be read from or stored to, try to design programs
  64-bits or less that can be manipulated entirely in CPU registers, or by
  using DMA transfers back and forth to main memory when large amounts of
  data must be read or written.
- Do not read chunks of data from memory to then simply write to another
- memory location! This is what DMA is for.
+ Do not read a whole data structure into memory to then simply write a modified
+ copy to another memory location! This is what DMA is for.
+ Trying to do all of this on the CPU will be extraordinarily slow due to
+ the 32-bit interface between the CPU and RCP.
+\end_layout
+
+\begin_layout Paragraph
+Programming the RCP presents a different set of challenges.
+ While the RCP has a full 64-bit data bus internally, the RSP and RDP cannot
+ access main memory directly; either the RSP program must make a DMA request
+ in order to transfer data back and forth from DMEM/IMEM/TMEM and main memory,
+ or it must request that the CPU copy the data on its behalf, which is slow.
+ To get the most performance out of the CPU and RCP, a program must thus
+ employ an efficient DMA strategy.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1829,7 +1853,7 @@ This unit produces analog audio output from digital audio samples.
 \end_layout
 
 \begin_layout Subsection
-Programming the PI (Peripheral Interface)
+Programming the PI (Parallel Peripheral Interface)
 \begin_inset LatexCommand label
 name "sub:Programming-the-PI"
 
@@ -1848,12 +1872,11 @@ The PI is used to attach program cartridges, development units, or other
  the 64DD port on the bottom.
  It is utilized in software via simple memory-mapped I/O as well as DMA
  transfers to and from system memory.
+ It is connected to INT1 of the CPU.
 \end_layout
 
 \begin_layout Paragraph
-The PI is possibly implemented as a MIPS SysAD device, explaining why both
- the CPU and RCP have direct access to it (FIXME: verify).
- The PI bus requires an embedded address decoder in any attached device,
+The PI bus requires an embedded address decoder in any attached device,
  since the address and data are multiplexed onto the same lines.
 \end_layout
 
@@ -2949,22 +2972,25 @@ name "sub:Programming-the-SI"
 \end_layout
 
 \begin_layout Subsection
-Programming the PIF (Peripheral InterFace)
+Programming the PIF (Serial Peripheral InterFace)
 \end_layout
 
 \begin_layout Paragraph
 PIF-NUS (U6) has 2K of internal storage, divided between RAM and ROM.
  It is chiefly responsible for input device management.
- The 64-byte PIF-RAM can be used to examine the current state of input devices,
- and commands can be written there for the PIF to execute.
+ The 64-byte PIF-RAM (JoyChannel RAM) can be used to examine the current
+ state of input devices, and commands can be written there for the PIF to
+ execute.
  In its ROM region, it stores a small bootstrap program (PIF-ROM) that the
  MIPS CPU's reset vector (0xBFC00000) is pointed to at power-on.
  The PIF-ROM also plays a role in the hardware lockout scheme and will be
  discussed at length in that section.
+ The PIF is directly connected to the CPU bus and is connected to INT2 of
+ the CPU.
 \end_layout
 
 \begin_layout Paragraph
-Don't confuse this with the PI which is also referred to as 
+Don't confuse this with the PI which is also referred to as a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2984,7 +3010,11 @@ The PIF memory map is as follows:
 \end_layout
 
 \begin_layout Itemize
-0xBFC007C0-0xBFC007FF: PIF-RAM
+0xBFC007C0-0xBFC007FB: PIF-RAM
+\end_layout
+
+\begin_layout Itemize
+0xBFC007FC-0xBFC007FF: PIF Status Register
 \end_layout
 
 \begin_layout Paragraph
