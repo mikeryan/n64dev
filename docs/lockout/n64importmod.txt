@@ -1,0 +1,64 @@
+[n64 import mod]
+
+for PAL and NTSC consoles
+
+you might wonder what an "import mod" is,basically,it's an
+internal modification inside the n64 that lets you play import games
+on your console without the need of an adaptor or somethin else.
+i never found infos on the net about such a mod,dunno why,perhaps because
+only europeans suffer from this problem,between japanese and
+american carts,there is no lockout incompatiblity,just the tabs in the cart slot
+that need to be cut away,so propably im the first to do this 
+tell me if im wrong on that one...
+this mod is complete and runs ALL NTSC AND PAL CARTS(obviously ;) on a PAL- or NTSC-N64.
+
+You need the following parts:
+
+NINTENDO64 ;-) pal and ntsc version 
+good soldering skills 
+5 2-way switches 
+screwdrivers for nintendo systems(since you aint got them,ill explain you how to make them yourself ;-) 
+some desolder pump or what its called.is not neccessary,but VERY useful,i recommend you get one for about $5 in ur electronics store 
+
+the mod works like this:
+
+basically you just cut out the security-chip [PIF(P)-NUS] out of a pal-n64 and connect most pins to the equivalent pins of the ntsc security-chip [PIF-NUS] of a ntsc-n64.the pins
+that were not connected are seperated and soldered via 5 two-way switches to the pcb.
+now you can switch between pal and ntsc n64 settings and there are NO limitations,EVERY single cart will work ;)
+be warned:
+you should only do this mod if you are experienced with soldering and stuff!!
+while doing this mod,you mess around with the pins of smd-chips,that will break if you bend
+them more than 2 times.(if they do,you even need to open the chip itself and this is REALLY tricky,trust me >:-[ ) 
+
+ok,you should do it like this:
+open both n64 (how to build a nintendo screwdriver is explained in the cheap mod guide).
+now you have 2 choices:
+take out the PIF-NUS of a pal n64(use a needle and a soldering iron to lift up the pins) and solder it directly onto the ntsc-pif,but i cant recommend this one,cause its very likely that you break a pin.
+for me,the best choice was to desolder both,the ntsc and the pal PIF-NUS,solder both on seperate pcb ( you can buy readymade boards for all kinds of smd-chips in your fav electronic store) and run wires from these pcbs.that means you arent in danger of breaking any pins on the PIFs,cause these little babys are worth a whole n64,you know ;)
+
+
+once this is done,run wires from a pifs pins that are marked green on the pic to their equivalent pins on the other pif and the pcb(bad explanation,sorry ;)
+for example you run a wire from PIF(P)-NUS pin 1 to pin 1 of PIF-NUS and to pin 1 on the pcb,so all pin 1s are hooked up together.
+run wires from the pins marked white to ground somewhere on the n64 board.
+the other pins running from pif-nus and pif(P)-nus are connected to the pcb via a relais and a 2 way switch(or a jk flip flop + button if ur cool dude ;)
+
+to switch all lines at once (theres no relais in the diagram coz i was too lazy,but u know how to wire them lines up ;)
+
+so you can decide if the n64 uses the pins of the pal or the ntsc pif.
+
+the pink pins on the pcbs are not connected.
+
+thats it, you are done now.
+mail me for further questions :)
+
+btw,since your pal n64 is not working anymore,you can send it to nintendo of europe
+
+and tell them to fix it,it isnt expensive.
+
+
+
+always remember,this mod was invented by ME(i searched the whole net and didnt find anything like this,perhaps something similar exist somewhere,but this mod is 100% from my brain ;)
+if you wanna put it on your page,you are free to do so,as long as you inform me and GIVE
+ME FULL CREDITS ;)
+ohh,and of course i'm in no way responsible if you damage your n64 or something.
+
