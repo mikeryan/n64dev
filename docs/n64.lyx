@@ -260,23 +260,29 @@ The N64 CPU is a NEC VR4300, which is a clone of the MIPS R4300i, a low
  power version of the R4300, which is it itself a low cost version of the
  R4200.
  The main differences between the VR4300 and the R4200 are that the VR4300
- does not support cache parity and implements only a 32-bit data bus.
- The R4300 implements the MIPS III instruction set.
- The CPU runs at 93.75 MHz PClock (MasterClock*1.5) and can be switched at
- runtime between 32-bit and 64-bit addressing.
- It can execute one instruction per clock cycle and has a 5-stage logical
- pipeline, though the internal pipeline is longer.
- It has a 16KB instruction cache and a 8KB write-back data cache (both non-parit
-y).
- At this clock speed, it attains 125 MIPS and a score of 60/45 on SPECint/fp92,
- while dissipating 1.8 watts on average, a very modest amount.
+ does not support cache parity, implements only a 32-bit data bus (SysAD),
+ and supports only a 32-bit (4GB) address space instead of the 36-bit (64GB)
+ address space of the R4200.
+ The R4300, like all R4000 processors, implements the MIPS III instruction
+ set.
+ The CPU runs at 93.75 MHz PClock (MasterClock*1.5).
+ It can execute one instruction per clock cycle and has a 5-stage static
+ pipeline.
+ It has a 16KB instruction cache and a 8KB write-back data cache, both non-parit
+y.
+ At the nominal 93.75MHz clock speed, the VR4300 attains 125 MIPS and a score
+ of 60/45 on SPECint/fp92, while dissipating 1.8 watts on average, a very
+ modest amount.
  It has fixed-width instructions and a clearly specified interface for up
- to four coprocessors, two of which are implemented on-board (COP0, the
- MMU, and COP1, the FPU).
+ to four coprocessors, two of which are implemented on-board (CP0, the MMU,
+ and CP1, the FPU).
  The N64 configures the CPU to run in big-endian mode, but it is capable
- of running in either endian mode.
+ of running in either endian mode, and can be switched at runtime between
+ 32-bit and 64-bit addressing.
  It can be switched to reduced power mode to slow the processor to 1/4 of
  its nominal clock speed at any time.
+ The memory management unit (MMU) is powered off when not in use, saving
+ power.
 \end_layout
 
 \begin_layout Subsubsection
@@ -284,9 +290,10 @@ Addressing and Cacheability
 \end_layout
 
 \begin_layout Paragraph
-The CPU has three modes of execution: kernel, supervisor, and user mode.
- Since we are in complete control of the machine, we will exclusively be
- operating in kernel mode.
+The CPU has three modes of execution, kernel, supervisor, and user mode,
+ each with a different memory map.
+ Since a normal program is in complete control of the machine, we will exclusive
+ly be operating in kernel mode.
  (If we were writing a general purpose operating system, we would implement
  the operating system in kernel mode, and processes would be executed in
  user mode.
@@ -325,56 +332,47 @@ An important effect of the mode of the processor is in determining the system's
 \begin_layout Paragraph
 We are concerned mainly with the first three regions.
  The power-on configuration causes the physical memory of the N64 to be
- mirrored in kuseg, kseg0, and kseg1.
- The access characteristics differ, however.
- The only difference we are concerned with between kuseg and kseg0 is that
- when accessed by the CPU, kuseg memory is accessed through the CPU's TLB
- (translation lookaside buffer).
- This can incur a performance penalty, and is unnecessary except for when
- operating system virtual memory is in use.
+ mirrored in kseg0 and kseg1.
+ kuseg, ksseg, and kseg3 are unmapped and cannot be accessed until mapped.
  Since we do not need more than a 512MB virtual address space on the N64,
- we will use kseg0 addressing to access main memory from the CPU.
+ we will use kseg0 addressing when the CPU needs to access main memory.
  kseg1 is useful because in some cases, bypassing the CPU's cache is desirable.
- And external hardware attached to the CPU/memory bus does not cache or
- mirror memory, so physical addresses are required there.
+ The RCP, on the other hand, does not cache or mirror memory, so physical
+ addresses are required when programming the RCP to access memory.
  Usually we will use the following guidelines for selecting memory addressing
  modes:
 \end_layout
 
 \begin_layout Itemize
-Use physical addresses when setting up peripheral hardware DMA transactions.
+Use kseg0 (cached) virtual addresses in general.
 \end_layout
 
 \begin_layout Itemize
-Use kseg0 (cached) virtual addresses for general software purposes.
+Use kseg1 (uncached) virtual addresses when the CPU must access memory-mapped
+ hardware registers.
 \end_layout
 
 \begin_layout Itemize
-Use kseg1 (uncached) virtual addresses when the CPU must access hardware
- registers and external peripherals.
+Use physical addresses when informing the RCP of a memory location (i.e.
+ for a DMA transaction).
 \end_layout
 
 \begin_layout Paragraph
 When peripherals are programmed to perform DMA reads, they will always access
  the uncached version of the data directly from memory.
- Therefore, if a cached region (kuseg/kseg0) is written to, the CPU data
- cache must be flushed before using that memory for operations in the RCP
- or other peripherals.
+ Therefore, if a cached region (kseg0 or kuseg) is written to, the CPU cache
+ line corresponding to that region must be flushed before using that memory
+ for operations in the RCP or other peripherals.
  Conversely, when a peripheral performs a DMA write to memory, the CPU cache
- for that region must be invalidated to ensure both that reads from cached
- memory reflect the updated data and that a subsequent CPU cache flush doesn't
- overwrite the new data from the peripheral.
+ line corresponding to that region must be invalidated to ensure two things:
+ that reads from cached memory reflect the updated data, and that a subsequent
+ CPU cache flush doesn't overwrite the new data from the peripheral.
 \end_layout
 
 \begin_layout Paragraph
 It is possible to disable the kseg0 caching to aid in debugging.
- See section 
-\begin_inset LatexCommand ref
-reference "sub:Programming-the-RCP"
-
-\end_inset
-
- for more information.
+ In order to do this, set the low three bits of the CP0 config to 2 instead
+ of the default 3.
 \end_layout
 
 \begin_layout Paragraph
@@ -383,16 +381,12 @@ Remember that if the low 29 bits of two addresses are identical, their physical
  Changing the upper four bits only changes the CPU's access semantics (cached/un
 cached and TLB-mapped or direct-mapped).
  For example, the PIF-ROM can be found at two seemingly different locations
- -- 0x1FC00000 and 0xBFC00000.
+ -- 0x9FC00000 and 0xBFC00000.
  These two locations are actually one and the same, because the low-order
  29 bits in the two addresses are identical.
  They only differ in the access semantics.
- One difference is that accessing the PIF-ROM through 0x1FC00000 utilizes
- the MMU, but accessing it through 0xBFC00000 does not perform any address
- translation; the other difference is that accessing it through 0xBFC00000
- bypasses the CPU's data cache, whereas 0x1FC00000 is always a cached access,
- unless the CPU data cache for that address has been invalidated since a
- previous access.
+ Note that even though the physical address 0x1FC00000 is in the kuseg address
+ space, it cannot be accessed until it has been mapped by the user.
 \end_layout
 
 \begin_layout Subsubsection
@@ -418,7 +412,8 @@ Likely
 \begin_inset Quotes erd
 \end_inset
 
- type.
+ type, in which case the instruction in the delay slot is not executed if
+ the branch is not taken.
 \end_layout
 
 \begin_layout Itemize
@@ -490,7 +485,7 @@ Assembling MIPS instructions to binary can be performed using the GNU binutils
 \end_layout
 
 \begin_layout Subsubsection
-MMU (COP0)
+MMU (CP0)
 \end_layout
 
 \begin_layout Paragraph
@@ -625,7 +620,7 @@ Count increments at 1/2 PClock and rolls over.
 \end_layout
 
 \begin_layout Subsubsection
-FPU (COP1)
+FPU (CP1)
 \end_layout
 
 \begin_layout Subsection
@@ -638,7 +633,7 @@ Programming the RCP Coprocessor Unit
 \end_layout
 
 \begin_layout Paragraph
-The RCP is interfaced to the CPU as a standard MIPS coprocessor unit (COP2)
+The RCP is interfaced to the CPU as a standard MIPS coprocessor unit (CP2)
  and connected to the CPU via the 32-bit SysAD interface that the R4300
  provides.
  The RCP is clocked at 62.5 MHz (==MasterClock) and is capable of 500MFlops
@@ -664,17 +659,20 @@ A memory controller IP for the Rambus RDRAM system
 \begin_layout Itemize
 RSP (Reality Signal Processor)
 \newline
-A custom R4300-like and DSP-like processor
- with 32-bit data width, integer SIMD capability, and a Harvard microarchitectur
-e with separated 4K instruction memory (IMEM) and 4K data memory (DMEM).
+A custom R4000-like and DSP-like processor
+ with 64-bit instruction width, 32-bit scalar register width, 16-bit integer
+ SIMD capability, and a Harvard microarchitecture with separated 4K instruction
+ memory (IMEM) of 64 64-bit words and 4K data memory (DMEM) of 32 128-bit
+ words.
  In typical usage, it reads the next operation from a task list, uses DMA
  to fetch the microcode and data for the next task, and executes the microcode.
  Typical tasks are to preprocess graphics commands for dispatch to the RDP,
  or to process sound data that is then written to the Audio Interface.
- The The RSP has its own set of internal MIPS-like coprocessors: its own
- COP0 is the RDP, COP1 is (???), and COP2 is the integer SIMD Vector Unit
- (VU).
- 
+ The RSP has its own set of internal coprocessors: its own CP0 is the RDP,
+ and CP1 is the 16-bit integer SIMD Vector Unit (VU).
+ While they are accessed through the MIPS coprocessor interface, the RDP
+ and VU are not intended to be at all compatible with the CP0 (MMU) and
+ CP1 (FPU) that would be found on a MIPS CPU.
 \end_layout
 
 \begin_layout Itemize
@@ -800,14 +798,15 @@ Interfacing System RAM
 \end_layout
 
 \begin_layout Paragraph
-The Rambus RDRAM memory used in the N64 has a 128-bit interface to the RCP,
- and is capable of 562.5 MB/s bandwidth.
+The Rambus RDRAM memory used in the N64 has a narrow 9-bit interface to
+ the Rambus ASIC Cell (RAC) in the RCP, and is capable of 562.5 MB/s burst
+ bandwidth.
  It implements parity checking, so it should generate a NMI when a parity
  error is detected (FIXME but R4300 doesn't support parity?).
  The RAM is mapped at 0x00000000, and 64MB of address space is reserved
  for it.
  However, only 63MB of this address space can be used for physical memory,
- since the last 1MB is reserved for the Rambus memory controller registers.
+ since the last 1MB is reserved for the RAC registers.
 \end_layout
 
 \begin_layout Subsubsection
@@ -815,8 +814,8 @@ Addressing
 \end_layout
 
 \begin_layout Paragraph
-The N64 console ships with 4MB of memory onboard, and a bus terminator called
- a 
+The N64 console ships with 4MB of memory onboard, and a required bus terminator
+ called a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -831,11 +830,19 @@ Jumper Pak
 \end_layout
 
 \begin_layout Itemize
-For 4MB memory, use 0x80000000-0x803FFFFF.
+For cached access to 4MB memory, use 0x80000000-0x803FFFFF.
 \end_layout
 
 \begin_layout Itemize
-For 8MB memory, use 0x80000000-0x807FFFFF.
+For cached access to 8MB memory, use 0x80000000-0x807FFFFF.
+\end_layout
+
+\begin_layout Itemize
+For uncached access to 4MB memory, use 0xA0000000-0xA03FFFFF.
+\end_layout
+
+\begin_layout Itemize
+For uncached access to 8MB memory, use 0xA0000000-0xA07FFFFF.
 \end_layout
 
 \begin_layout Subsubsection
@@ -853,7 +860,7 @@ To check how much memory is installed, we consult the address 0x80000318.
 \end_layout
 
 \begin_layout Enumerate
-Start at address (0x80400000 - 4) and a memory count of 4MB.
+Start at address (0xA0400000 - 4) and a memory count of 4MB.
 \end_layout
 
 \begin_layout Enumerate
@@ -867,8 +874,8 @@ If it is the same, add 0x100000 to the address and 1MB to the memory count.
 
 \begin_layout Enumerate
 Repeat until the memory count is equal to the desired amount of memory.
- If we are only verifying the existence of an official memory expansion,
- stop when the memory count is equal to 8MB.
+ If we are only verifying the (non)existence of an officially-released memory
+ expansion pack, stop when the memory count is equal to 8MB.
 \end_layout
 
 \begin_layout Paragraph
@@ -882,16 +889,16 @@ Access Strategy
 \end_layout
 
 \begin_layout Paragraph
-The N64's Rambus RDRAM system memory has a high bandwidth but trades latency
- for this bandwidth.
- Compared to the same speed SDRAM, accessing main memory in a scattered
- fashion is exceptionally slow.
+The N64's Rambus RDRAM system memory has a high burst bandwidth but trades
+ access latency for this bandwidth.
+ Compared to the same speed SDRAM, accessing main memory in a random fashion
+ is exceptionally slow.
  A poster at the 
 \emph on
 Beyond3d.com 
 \emph default
 forums claimed that it would take 64 clocks (640ns) to initiate memory access,
- which is crippling latency when combined with the lack of prefetch and
+ which is a crippling latency when combined with the lack of prefetch and
  read-around-write capabilities
 \begin_inset LatexCommand cite
 key "beyond3d-forum"
@@ -899,17 +906,25 @@ key "beyond3d-forum"
 \end_inset
 
 .
- Also, since the memory controller is part of the RCP and can only be accessed
- through the RCP, the data width of memory access is limited to the 32-bit
- interface between the CPU and RCP.
- Additionally, the R4300 CPU may be locked out from accessing memory if
- the RCP is busy, causing program slowdown.
+ (benchmark)
 \end_layout
 
 \begin_layout Paragraph
-To avoid this latency, CPU programs should be optimized in a fashion such
- that registers are utilized both for passing procedure parameters and for
- procedure temporary (stack) variables.
+Also, since the memory controller is part of the RCP and can only be accessed
+ through the RCP, the data width of memory access is limited to the 32-bit
+ SysAD interface between the CPU and RCP; storing a 64-bit longword to memory
+ will thus require two transfers to the RCP, while storing a value of size
+ 32 bits or less requires only one transfer.
+ (benchmark) Additionally, the R4300 CPU will be locked out from accessing
+ memory whenever the RCP's internal bus is busy, causing program slowdown.
+ (benchmark while e.g.
+ PI DMA is going on)
+\end_layout
+
+\begin_layout Paragraph
+To avoid this latency, programs that run on the R4300 CPU should be optimized
+ in a fashion such that in both passing procedure parameters and for procedure
+ temporary (stack) variables, registers are primarily utilized.
  Thanks to the MIPS architecture providing 32 64-bit general-purpose registers
  (GPR), there are ample registers to use for this purpose.
 \end_layout
@@ -921,48 +936,71 @@ The
 n32
 \series default
 \emph default
- ABI developed by SGI
+ Application Binary Interface (ABI) developed by SGI
 \begin_inset LatexCommand ref
 reference "sub:64-Bit-Issues"
 
 \end_inset
 
- leverages this advantage.
+ leverages this advantage at the compiler and linker level.
  When this ABI is employed, up to eight 64-bit words, whether integer, float,
  struct, or union members, are passed in registers.
  Any data in excess of the eight 64-bit words is then additionally passed
  on the stack.
  Inside a function, up to 18 integer registers minus the number of register-pass
 ed integer arguments are available, and up to 26 floating-point registers
- minus the number of register-passed FP arguments are available, without
+ minus the number of register-passed FP arguments are available without
  allocating additional stack space in main memory for local temporary variables.
 \end_layout
 
 \begin_layout Paragraph
-For this reason, it is a good idea to break up functions that make excessive
- use of local temporary variables into simpler functions.
- One must at the same time observe the limitations on register passing,
- so that data is not simply shuffled around in memory to call subfunctions,
- thus negating the optimization.
- If a number of registers are used by the caller and its callers, they will
- be saved to the stack before the call, even if the subfunction parameters
+If register variables are allocated by the caller and its callers, they
+ will be saved to the stack before the call, even if the subroutine parameters
  fit into the allocated registers.
  For this reason, recursive functions and other algorithms with deep call
- graphs or high space complexity that are memory-intensive are, all other
- things equal, a poor choice for the N64 CPU.
+ graphs, as well as algorithms with high space complexity, are, all other
+ things equal, a poor choice for the N64; eventually the data cache will
+ be exhausted and the stack will spill over into the main memory that is
+ extremely slow when accessed by the CPU.
+ Functions written in a way such that they can be inlined into the caller,
+ on the other hand, both leverage the high register count of the R4300 and
+ have less data cache impact, but caution must be exercised such that excessive
+ use of inline code inside a loop does not thrash the relatively small instructi
+on cache.
+ (Instruction cache misses are almost as expensive as data cache misses,
+ only being somewhat mitigated by the R4300 design, which prefetches two
+ instructions at a time to save power.) As standard practice goes, pass variables
+ by reference when possible, and minimize a subroutine's copying of its
+ parameters into stack-allocated temporary variables by simply passing the
+ variable by value instead.
 \end_layout
 
 \begin_layout Paragraph
-When main memory must be read from or stored to, try to design programs
- such that it is accessed in bursts of contiguous reads or writes.
- This can be most easily accomplished by utilizing data structures of size
- 64-bits or less that can be manipulated entirely in CPU registers, or by
- using DMA transfers back and forth to main memory when large amounts of
- data must be read or written.
- Do not read a whole data structure into memory to then simply write a modified
- copy to another memory location! This is what DMA is for.
+Always use DMA transfers back and forth to main memory when large amounts
+ of data must be read from or written to peripherals.
+ Do not read a whole data structure into memory to then simply write a (possibly
+ modified) copy to another memory-mapped location! This is what DMA is for.
  Trying to do all of this on the CPU will be extraordinarily slow due to
- the 32-bit interface between the CPU and RCP.
+ the 32-bit interface between the CPU and RCP, high latency of RDRAM, and
+ internal bus competition with the RCP.
+ When main memory must be read from or stored to, try to design programs
+ such that memory is accessed in bursts of contiguous reads or writes that
+ are smaller than the data cache size.
+ Then use the cache flush command to write the cache out to memory all at
+ once, instead of waiting for individual cache lines to be automatically
+ flushed to memory by the LRU algorithm.
+ (FIXME test is this really faster?)
+\end_layout
+
+\begin_layout Paragraph
+Also remember that the CPU has a 16K instruction cache (512 32-bit instruction
+ words) organized with 32-byte lines, and an 8K data cache (256 32-bit or
+ 128 64-bit data words) organized with 16-byte lines.
+ If, in a given program mode, your program's call graph and data structures
+ can be made to fit within these cache limits, main memory accesses will
+ be avoided providing a tremendous speedup.
+ Try profiling the amount of stack and heap that is used in a given program
+ mode to see if your program is thrashing the cache.
 \end_layout
 
 \begin_layout Paragraph
@@ -2985,8 +3023,8 @@ PIF-NUS (U6) has 2K of internal storage, divided between RAM and ROM.
  MIPS CPU's reset vector (0xBFC00000) is pointed to at power-on.
  The PIF-ROM also plays a role in the hardware lockout scheme and will be
  discussed at length in that section.
- The PIF is directly connected to the CPU bus and is connected to INT2 of
- the CPU.
+ The PIF is connected to INT2 of the CPU as well as to the CPU NMI (Non
+ Maskable Interrupt) and RST (Reset) pins.
 \end_layout
 
 \begin_layout Paragraph
@@ -3358,7 +3396,7 @@ If RDRAM reg C == 0 {
 \end_layout
 
 \begin_layout Itemize
-store regs passed from PIF ROM to stack
+store s3-s7 passed from PIF ROM to stack
 \end_layout
 
 \begin_layout Itemize
@@ -3386,11 +3424,11 @@ Delay 24000 cyclces
 \end_layout
 
 \begin_layout Itemize
-RI_CURRENT_CONTROL = 0
+RI_CURRENT_LOAD = 0
 \end_layout
 
 \begin_layout Itemize
-RI_SELECT = $14
+RI_SELECT = $14 // receive select / transmit select
 \end_layout
 
 \begin_layout Itemize
@@ -3410,7 +3448,7 @@ Delay 64 cycles
 \end_layout
 
 \begin_layout Itemize
-MI_MODE = $010F (set init mode)
+MI_MODE = $010F (set init mode, initial code length = $F)
 \end_layout
 
 \begin_layout Itemize
@@ -3442,7 +3480,7 @@ fp = sp
 \end_layout
 
 \begin_layout Itemize
-if MI_VERSION != 0x01010101 (io,rac,rsp,rdp) {
+if MI_VERSION != 0x01010101 { // if version >=2 rcp
 \end_layout
 
 \begin_layout Itemize
@@ -3450,7 +3488,7 @@ s0 = $400
 \end_layout
 
 \begin_layout Itemize
-s1 = $A3F08000
+s1 = $A3F08000 //what is this reg?
 \end_layout
 
 \begin_layout Itemize
@@ -3458,7 +3496,7 @@ s1 = $A3F08000
 \end_layout
 
 \begin_layout Itemize
-else {
+else { // version 1 rcp
 \end_layout
 
 \begin_layout Itemize
@@ -3466,7 +3504,7 @@ s0 = $200
 \end_layout
 
 \begin_layout Itemize
-s1 = $A3F04000
+s1 = $A3F04000 //what is this reg?
 \end_layout
 
 \begin_layout Itemize
@@ -3478,7 +3516,7 @@ $168:
 \end_layout
 
 \begin_layout Itemize
-*(s1+4) = 0
+*(s1+4) = 0 //what is this reg?
 \end_layout
 
 \begin_layout Itemize
@@ -3895,11 +3933,11 @@ v0 = 0
 \end_layout
 
 \begin_layout Itemize
-call($90C)
+a0 = t4
 \end_layout
 
 \begin_layout Itemize
-a0 = t4
+call($90C)(s4)
 \end_layout
 
 \begin_layout Itemize
@@ -3927,11 +3965,11 @@ t4++
 \end_layout
 
 \begin_layout Itemize
-if (t1 >= 0x50) continue
+if (t1 >= 0x50) continue for
 \end_layout
 
 \begin_layout Itemize
-a0 = (t3 * 4) - t3
+a0 = t3 * 3
 \end_layout
 
 \begin_layout Itemize
@@ -3979,7 +4017,7 @@ a1 = 2
 \end_layout
 
 \begin_layout Itemize
-call ($a40)
+call ($a40)(a0, a1, s5)
 \end_layout
 
 \begin_layout Itemize
@@ -3987,19 +4025,19 @@ for (fp = 0; fp < 10; fp++) {
 \end_layout
 
 \begin_layout Itemize
-*(s4 + 4) = 0x0000ffff
+*(s4 + 4) = 0xFFFFFFFF
 \end_layout
 
 \begin_layout Itemize
-v1 = *(s4 + 4) 
+v1 = 0xFFFFFFFF
 \end_layout
 
 \begin_layout Itemize
-*s4 = 0x0000ffff
+*s4 = 0xFFFFFFFF
 \end_layout
 
 \begin_layout Itemize
-*s4 = 0x0000ffff
+*s4 = 0xFFFFFFFF
 \end_layout
 
 \begin_layout Itemize
@@ -4007,7 +4045,7 @@ gp = 0
 \end_layout
 
 \begin_layout Itemize
-v1 >>= 16
+v1 = 0x0000FFFF
 \end_layout
 
 \begin_layout Itemize
@@ -4035,7 +4073,7 @@ sub $980-$a38 {
 \end_layout
 
 \begin_layout Itemize
-// TO BE CONTINUED
+// Looks like protection code?
 \end_layout
 
 \begin_layout Itemize
@@ -4095,7 +4133,7 @@ t7 |= (a0 & 0x20) << 18
 \end_layout
 
 \begin_layout Itemize
-*s5 = t7
+*s5 = t7 // writes to RDRAM_REGS
 \end_layout
 
 \begin_layout Itemize
@@ -4901,7 +4939,7 @@ u_types.h; use R4000 as a template and refer to cpu_mips.h.
 \end_layout
 
 \begin_layout Itemize
-Add code to initialize cop0 for the R4300 into src/cpus/cpu_mips_coproc.c
+Add code to initialize CP0 for the R4300 into src/cpus/cpu_mips_coproc.c
 \end_layout
 
 \begin_layout Paragraph

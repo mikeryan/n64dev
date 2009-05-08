@@ -37,6 +37,8 @@ mips-isa.pdf - MIPS IV Instruction Set, Revision 3.2 (328 page alternate version
 007-2816-004.pdf - MIPSpro N32 ABI Handbook, Revision 004 (May 1999)
 007-2816-005.pdf - MIPSpro N32 ABI Handbook, Revision 005 (Oct 2002)
 MIPS-N32-ABI-Handbook.pdf - MIPSpro N32 ABI Handbook, Revision 004 alt from Linux-MIPS
+007-2489-001.pdf - MIPS R4000 Microprocessor User's Manual, Second Edition, 1994
+Errata R4000-R4400 (...).pdf - Errata for R4000 manual, November 8, 1994
 R4300_datasheet.Rev0.3.pdf - MIPS R4300 Data Sheet, Rev 0.3, April 1997
 R4300i_Prod_Ov.ps.gz - MIPS R4300i Technical Backgrounder
 U10116EJ6V0DS00.pdf - NEC uPD30200-100 (VR4300) Data Sheet, 6th Edition, December 1999 
