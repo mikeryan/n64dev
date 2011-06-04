@@ -1,4 +1,4 @@
-CHKSUM64 = $(N64INST)/bin/chksum64
+CHKSUM64 = $(N64_INST)/bin/chksum64
 
 all: neon64bu.rom
 
