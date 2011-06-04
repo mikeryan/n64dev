@@ -8,7 +8,7 @@ struct Symbol {
    unsigned long value;
    int type;
    bool certain;
-   bool export;
+   bool bexport;
 };
 
 Symbol *SymbolList;
@@ -40,7 +40,7 @@ void InitRegs(void) {
       SymbolList[c].value = c;
       SymbolList[c].type = DTYPE_REGISTER;
       SymbolList[c].certain = true;
-      SymbolList[c].export = false;
+      SymbolList[c].bexport = false;
    }
 
    for (c=32; c < 64; c++) {
@@ -48,7 +48,7 @@ void InitRegs(void) {
       SymbolList[c].value = c-32;
       SymbolList[c].type = DTYPE_REGISTER;
       SymbolList[c].certain = true;
-      SymbolList[c].export = false;
+      SymbolList[c].bexport = false;
    }
 
    for (c=64; c < 74; c++) {
@@ -56,7 +56,7 @@ void InitRegs(void) {
       SymbolList[c].value = c-64;
       SymbolList[c].type = DTYPE_REGISTER;
       SymbolList[c].certain = true;
-      SymbolList[c].export = false;
+      SymbolList[c].bexport = false;
    }
 
    for (c=74; c < 106; c++) {
@@ -64,14 +64,14 @@ void InitRegs(void) {
       SymbolList[c].value = c-74;
       SymbolList[c].type = DTYPE_CREGISTER;
       SymbolList[c].certain = true;
-      SymbolList[c].export = false;
+      SymbolList[c].bexport = false;
    }
 
    strcpy(SymbolList[106].name,"pc ");
    SymbolList[106].value = 0;
    SymbolList[106].type = DTYPE_INTEGER;
    SymbolList[106].certain = true;
-   SymbolList[c].export = false;
+   SymbolList[c].bexport = false;
 
    symcount = BUILTINSYMBOLS;
    return;

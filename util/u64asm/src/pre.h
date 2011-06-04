@@ -294,7 +294,7 @@ int LoadMacs(Macro *macros, ifstream &input) {
          willtolive=true;
          thislen=0;
          strcpy(innerstr,instr);
-         spos = input.rdbuf()->seekoff(0, ios::cur, ios::in);
+         spos = input.tellg();
          cold=c;
          willtolive=false;
          cstrlen=strlen(innerstr);
@@ -307,7 +307,7 @@ int LoadMacs(Macro *macros, ifstream &input) {
                sc=-1;
             }
          }
-         input.rdbuf()->seekoff(spos,ios::beg,ios::in);
+         input.seekg(spos);
          
          // allocate mem for it
          macros[maccount].text = new char[thislen+1];

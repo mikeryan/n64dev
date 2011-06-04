@@ -251,7 +251,7 @@ int Assemble(char *instr, int outhandle, unsigned long &pc) {
       SymbolList[lc].value = pc;
       SymbolList[lc].type = DTYPE_INTEGER;
       SymbolList[lc].certain = pccertain;
-      SymbolList[lc].export = true;
+      SymbolList[lc].bexport = true;
    }
    if (blankline) return NO_ERROR;
 
