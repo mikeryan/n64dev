@@ -527,6 +527,7 @@ lastvramaddr    dh  0,0
 #include cap.asm
 #include pal.inc
 #include control.inc
+#include sram.inc
 #include rom.inc
 #include "pattab.inc"
 #include "atables.inc"

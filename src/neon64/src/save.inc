@@ -17,6 +17,8 @@ loadSRAM
         nop
         _tpa(sh,t0,doyouseewhatisee)
 
+        jal     init_sram
+
         li      t0,$ff
         _tpa(sb,t0,savespace)
         jal checkforconpack
@@ -30,16 +32,16 @@ lsrconpackfound
 ; and any changes will be made to both the one in RAM and on the pack, so this
 ; is the only point where we need to load sramheader.
         la      t0,sramheader
-        jal     read_conpack
+        jal     read_sram
         li      t1,0
         la      t0,sramheader+32
-        jal     read_conpack
+        jal     read_sram
         li      t1,1
         la      t0,sramheader+64
-        jal     read_conpack
+        jal     read_sram
         li      t1,2
         la      t0,sramheader+96
-        jal     read_conpack
+        jal     read_sram
         li      t1,3
 
         jal     checkformat
@@ -93,7 +95,7 @@ SRAMfound
 loadconpack
         move    t0,t6
         move    t1,t5
-        jal     read_conpack
+        jal     read_sram
         nop
         addiu   t6,32
         addi    t5,1
@@ -199,7 +201,7 @@ transsram2
 saveconpack
         move    t0,t6
         move    t1,t5
-        jal     write_conpack
+        jal     write_sram
         nop
         addiu   t6,32
         addi    t5,1
@@ -500,7 +502,12 @@ deleteSRAMend
 
 ; returns 0 or 1 (not found or found) in t0
 ; might also detect a rumble pack... oh well
+; hack for SRAM: always returns 1
 checkforconpack
+        li      t0, 1
+        jr      ra
+        nop
+
         _tpa(sw,ra,cfconpackra)
         ;jal     cls
         ;nop
@@ -590,19 +597,19 @@ writeheader
         _tpa(sw,ra,writeheaderra)
 
         la      t0,sramheader
-        jal     write_conpack
+        jal     write_sram
         li      t1,0
 
         la      t0,sramheader+32
-        jal     write_conpack
+        jal     write_sram
         li      t1,1
 
         la      t0,sramheader+64
-        jal     write_conpack
+        jal     write_sram
         li      t1,2
 
         la      t0,sramheader+96
-        jal     write_conpack
+        jal     write_sram
         li      t1,3
 
         _tpa(lw,ra,writeheaderra)
