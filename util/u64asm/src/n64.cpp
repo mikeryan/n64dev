@@ -152,17 +152,17 @@
 //#define QUOTES
 #pragma warn -obs
 
-#include <iostream.h>
-#include <iomanip.h>
-#include <fstream.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <conio.h>
-#include <dos.h>
-#include <io.h>
+using namespace std;
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <fcntl.h>
-#include <bios.h>
-#include "sys\stat.h"
+#include <sys/time.h>
+#include <sys/stat.h>
 #include "defines.h"
 
 bool ExpError;
@@ -246,13 +246,24 @@ int drjrsend(char *); // Parameter is name of file to send.
 #include "pre.h"
 #include "err.h"
 #include "crc.h"
+
+#ifdef WIN32
 #include "drjr.h"
+#endif
+
+// get time in milliseconds
+unsigned long gettime(void) {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+
+    return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+}
 
 int main(int argc, char *argv[]) {
    // fatalerror means the program was actually stopped
    // anerr means that a 'minor' error occured and was ignored
    bool fatalerror=false,willtolive,header=false,romout=false,drsend=false;
-   unsigned long bios_start_time=biostime(_TIME_GETCLOCK,0);
+   unsigned long bios_start_time=gettime();
    int err,c,c2;
    int outhandle,headhandle;
    unsigned long program_counter;
@@ -292,7 +303,9 @@ int main(int argc, char *argv[]) {
          headfile = argv[c]+2;
          if (argv[c][2]=='\0') headfile = (char *)0;
       } else if (argv[c][0] == '-' && argv[c][1] == 'r') romout=true;
+#ifdef WIN32
       else if (argv[c][0] == '-' && argv[c][1] == 's') {drsend=true; romout=true;}
+#endif
       else {
          realfile = argv[c];
          willtolive=true;
@@ -376,22 +389,22 @@ int main(int argc, char *argv[]) {
    // Once per pass.
    do {
 
-   outhandle = _creat(outfile, FA_ARCH);
-   if (!outhandle || outhandle == -1) {
+   outhandle = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+   if (outhandle < 0) {
       cout << "Error opening output file.\n";
       return 1;
    }
    close(outhandle);
-   outhandle = open(outfile, O_RDWR|O_BINARY|O_EXCL, S_IREAD|S_IWRITE);
+   outhandle = open(outfile, O_RDWR|O_EXCL, S_IREAD|S_IWRITE);
    
-   if (!outhandle || outhandle == -1) {
+   if (outhandle < 0) {
       cout << "Error opening output file.\n";
       return 1;
    }
 
    // A ROM needs a header.
    if (romout) {
-      headhandle = open("header", O_RDONLY|O_BINARY|O_EXCL, S_IREAD);
+      headhandle = open("header", O_RDONLY|O_EXCL, S_IREAD);
       if (headhandle <= 0) {
    
          pathfile=new char[strlen(asmpath)+7];
@@ -401,12 +414,12 @@ int main(int argc, char *argv[]) {
          pathfile[c]='h'; pathfile[c+1]='e'; pathfile[c+2]='a';
          pathfile[c+3]='d'; pathfile[c+4]='e'; pathfile[c+5]='r';
          pathfile[c+6]=0;
-         headhandle = open(pathfile, O_RDONLY|O_BINARY|O_EXCL, S_IREAD);
+         headhandle = open(pathfile, O_RDONLY|O_EXCL, S_IREAD);
          delete [] pathfile;
          if (headhandle <= 0) {cout << "Error opening N64 header.\n"; return 1;}
       }
       
-      temp = new char [4096];
+      temp = new unsigned char [4096];
       if (temp) {
          read(headhandle,temp,4096);
          write(outhandle,temp,4096);
@@ -454,10 +467,12 @@ int main(int argc, char *argv[]) {
    } while ((!symbolcertain || !pccertain) && !fatalerror);
    // ********** END OF MAIN ASSEMBLY LOOP ****************8
 
+#ifdef WIN32
    if (drsend && !fatalerror) {
       cout << "Sending";
       if (drjrsend(outfile)) return 1;
    }
+#endif
 
    if (header && !fatalerror) {
       cout << "Creating header " << headfile << " . . .\n";
@@ -466,7 +481,7 @@ int main(int argc, char *argv[]) {
       headerfile << "; U64ASM v" << VERSION << " header file.\n";
       headerfile << " assert " << firstorg << '\n';
       for (c=BUILTINSYMBOLS; c < maxsymbols; c++) {
-         if (SymbolList[c].type == DTYPE_INTEGER && SymbolList[c].export) {
+         if (SymbolList[c].type == DTYPE_INTEGER && SymbolList[c].bexport) {
             headerfile << SymbolList[c].name << " equ " << SymbolList[c].value << '\n';
          }
       }
@@ -476,7 +491,7 @@ int main(int argc, char *argv[]) {
 
    cout << flush;
    if (!fatalerror) {
-      float total_time = ((float)(biostime(_TIME_GETCLOCK,0)-bios_start_time))/_BIOS_CLOCKS_PER_SEC;
+      float total_time = ((float)(gettime()-bios_start_time))/1000.0;
       cout << "\n" << line_count << " lines assembled in ";
       cout << total_time << " seconds into " << program_counter << " bytes.\n";
       if (total_time==0) {
@@ -608,10 +623,10 @@ void Syntax(char * exename) {
    cout << "                    checksummed N64 ROM image. The assembler expects the N64\n";
    cout << "                    boot header to be in a file called \"header\" in either the\n";
    cout << "                    same directory as the source or the assembler.\n";
-   while (!kbhit()) {}
-   getch();
+#ifdef WIN32
    cout << "-s:                 This switch sends the N64 ROM image to a V64jr backup unit.\n";
    cout << "                    -s activates the -r switch automatically.\n";
+#endif
    cout << "-about or -credits  Gives some information about the program and those who made\n";
    cout << "                    it possible.\n";
    return;

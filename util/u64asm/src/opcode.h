@@ -450,7 +450,7 @@ int incbin_fn(char ** pointers, unsigned long * values, int * types, int numops,
    
    if (types[1]==DTYPE_STRING) {
       pointers[1][values[1]] = 0;
-      inhandle = open(pointers[1], O_RDONLY|O_BINARY|O_EXCL, S_IREAD);
+      inhandle = open(pointers[1], O_RDONLY|O_EXCL, S_IREAD);
       if (inhandle <= 0) {
    
 	 pathfile=new char[strlen(asmpath)+strlen(pointers[1])+1];
@@ -461,7 +461,7 @@ int incbin_fn(char ** pointers, unsigned long * values, int * types, int numops,
 	    pathfile[c]=pointers[1][c-strlen(asmpath)];
 	 }
 	 pathfile[c]=0;
-	 inhandle = open(pathfile, O_RDONLY|O_BINARY|O_EXCL, S_IREAD);
+	 inhandle = open(pathfile, O_RDONLY|O_EXCL, S_IREAD);
 	 delete [] pathfile;
 	 if (inhandle <= 0) {return ERR_FILE_ERROR;}
       }
@@ -470,7 +470,7 @@ int incbin_fn(char ** pointers, unsigned long * values, int * types, int numops,
       lseek(inhandle,0,SEEK_SET);
       
       if (pccertain && symbolcertain) {
-	 temp = new char [1024];
+	 temp = new unsigned char [1024];
 	 if (temp) {
 	    for (c=1024; c <= size; c+=1024) {
 	       read(inhandle,temp,1024);
@@ -530,7 +530,7 @@ int equ_fn(char *instr, int firstbyte) {
       }
       SymbolList[c].value = values[1];
       SymbolList[c].certain = !equ_uncert;
-      SymbolList[c].export = true;
+      SymbolList[c].bexport = true;
       return NO_ERROR;
    }
    
@@ -557,14 +557,14 @@ int equr_fn(char *instr, int firstbyte) {
       SymbolList[c].value = values[1];
       SymbolList[c].certain = !equr_uncert;
       SymbolList[c].type = types[1];
-      SymbolList[c].export = false; // equrs aren't exported
+      SymbolList[c].bexport = false; // equrs aren't bexported
       return NO_ERROR;
    }
    
    return ERR_BAD_OPERAND;
 }
 
-// ne=no export, keeps these declarations out of headers
+// ne=no bexport, keeps these declarations out of headers
 int equne_fn(char *instr, int firstbyte) {
    char * pointers[2];
    unsigned long values[2];
@@ -585,7 +585,7 @@ int equne_fn(char *instr, int firstbyte) {
       }
       SymbolList[c].value = values[1];
       SymbolList[c].certain = !equ_uncert;
-      SymbolList[c].export = false;
+      SymbolList[c].bexport = false;
       return NO_ERROR;
    }
    
