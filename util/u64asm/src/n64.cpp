@@ -161,6 +161,7 @@ using namespace std;
 #include <cstdio>
 #include <cstring>
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 #include "defines.h"
