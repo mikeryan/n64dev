@@ -278,7 +278,7 @@
                      2: resamp only (treat as all fully covered)                                             
                      3: neither (replicate pixels, no interpolate)                                          
                  [11] reserved - diagnostics only
-                 [15:12] reserved
+                 [15:12] reserved (note: if [13] is set, graphics will be corrupted on iQue Player)
         0x0440 0004 to 0x0440 0007  VI_ORIGIN_REG or VI_DRAM_ADDR_REG
                  VI origin
            (RW): [23:0] frame buffer origin in bytes
